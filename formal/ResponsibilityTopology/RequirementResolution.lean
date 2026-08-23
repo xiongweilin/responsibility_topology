@@ -193,7 +193,7 @@ private theorem lookupRequirementEntries_complete
     (hMem : entry ∈ entries)
     (hMatch : requirementKeyTest entry.key key = true) :
     lookupRequirementEntries entries key = some entry.requirement := by
-  induction entries with
+  induction entries generalizing entry with
   | nil =>
       cases hMem
   | cons head rest ih =>
@@ -285,13 +285,12 @@ theorem missingRequirement_noMatchingEntry
       ∀ entry, entry ∈ snapshot.entries → ¬ RequirementKeyMatches entry.key key := by
   constructor
   · intro hNone entry hMem hMatch
-    intro _
     have hSome := requirementLookup_complete snapshot key entry hMem hMatch
     rw [hNone] at hSome
     cases hSome
   · intro hNoMatch
     cases hLookup : lookupRequirement snapshot key with
-    | none => exact hLookup
+    | none => rfl
     | some R =>
         rcases requirementLookup_sound snapshot key hLookup with
           ⟨entry, hMem, hMatch, _⟩
@@ -332,8 +331,9 @@ theorem requirementLookup_permutation
       have hMemRight : entry ∈ right.entries :=
         (hPerm.mem_iff).mp hMemLeft
       have hRight := requirementLookup_complete right key entry hMemRight hMatch
-      rw [hRequirement] at hRight
-      exact hLeft.trans hRight.symm
+      have hRightR : lookupRequirement right key = some R := by
+        simpa [hRequirement] using hRight
+      exact hRightR.symm
 
 /-- Requirement-free portion of the existing canonical licensing read. -/
 structure UnresolvedLicensingRead where
@@ -399,6 +399,7 @@ theorem resolvedLicensingRead_requirement
   | some R =>
       simp [hLookup] at hResolved
       cases hResolved
+      change lookupRequirement snapshot ⟨τ, m⟩ = some R
       exact hLookup
 
 end ResponsibilityTopology
