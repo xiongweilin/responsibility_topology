@@ -1,84 +1,100 @@
 # Lean 4 formalization
 
-This directory contains the staged Lean 4 mechanization extracted from the V0.1.2.2 executable kernel and `branch_conservativity_v0_2.md`.
+This directory contains the mechanized core of the Responsibility Topology research program for finite epistemic kernels.
 
-The mechanization is intentionally layered. It does not import the full transition system unless a theorem requires it.
+The current formal thesis is narrow:
 
-Current contents:
+> **Historical justification and current epistemic responsibility are distinct state relations.**
 
-- `Syntax.lean`: raw `Requirement` and `Branch` syntax, plus the minimal vocabulary needed to name atomic obligations;
-- `Satisfaction.lean`: semantic `Env.atomSat`, extrinsic `Derives E β R`, and branch-local equivalence `SatEqOn`;
-- `Conservativity.lean`: `derives_transport` and machine-checked Branch Conservativity (BC);
-- `ExecutableSatisfaction.lean`: executable `SatOracle`, `firstSat`, left-biased `satisfy`, extensional candidate inclusion, No-New-Witness (NW), and executable Satisfaction Soundness (SS);
-- `Replay.lean`: ordered/filter-preserving replay lemmas, branch-support inclusion, canonical support projection, Support-Preserving Replay (SPR), and exact Support Projection (SP);
-- `KernelFloor.lean`: abstract branch-local floor observation, the exact current V0.1.2.2 floor clauses, and Kernel-Floor Locality (KFL);
-- `Entitlement.lean`: minimal ambient projection, the abstract entitlement judgment, Relative Branch Conservativity (RBC), executable entitlement soundness, and support-only entitlement replay;
-- `CanonicalRead.lean`: shared canonical licensing read model, derived ambient/satisfaction/floor projections, derived `SatOracle`, partial-lookup hygiene, fallback irrelevance, and branch-level Projection Coherence;
-- `PythonConformance.lean`: conformance-only executable adapter semantics for Python `Scope` subset behavior and the decidable canonical ambient projection; it does not add a Python operational semantics or a new entitlement theorem;
-- `ContextCurrentness.lean`: grounded adopted-context currentness, external activation-license `BaseCurrent`, finite bootstrap-rooted activation chains, invalidation monotonicity, semantic refresh idempotence, and the dynamic ambient currentness bridge;
-- `Audit.lean`: `#print axioms` audit surface for the current formal theorems and conformance bridges;
-- `lake-manifest.json`: committed Lake workspace manifest used by CI.
+The mechanization therefore separates four things that should not be conflated:
 
-Standing theorem boundary:
+1. historical derivability and canonical warrant formation;
+2. current evaluation and usability;
+3. entitlement under exact requirements, ambient conditions, and kernel-floor safety;
+4. adequacy of the profile or kernel regime itself.
 
-- `Env.atomSat : WarrantId → Atom → Prop` remains the abstract declarative observation interface;
-- `SatOracle` supplies a Boolean decision procedure together with a proof that it agrees with `Env.atomSat`;
-- BC concerns locality of derivability for a fixed branch;
-- NW uses extensional candidate inclusion only: retained IDs need only have occurred in the original sequence;
-- SS connects successful executable search to the declarative `Derives` relation;
-- replay additionally needs order preservation. The canonical projection is implemented as a list filter, hence an order-preserving sublist;
-- arbitrary `Γ' <+ Γ` plus mere membership of support IDs is not sufficient for exact replay when duplicate warrant IDs are allowed. Therefore SPR is stated for ID-level filtering that keeps every support ID, which retains every occurrence of those IDs while preserving order;
-- `projectSupport` uses the local pure Boolean predicate `supportHas`; `supportHas_exact` proves `supportHas w xs = true ↔ w ∈ xs`;
-- KFL does not define a full `History` or full `Move`. Its observation surface is exactly `FloorLeaf = (claim, role, scope)`, a fixed `LicenseType`, and `FloorMove = (kind, scope, revisionDepth)`;
-- `FloorSemantics.scopeLE` and `FloorSemantics.escalationDepth` abstract the existing Python scope containment and `EscalationDepth(n)` parsing without pulling finite-set normalization or string parsing into KFL;
-- KFL is a locality theorem about the existing floor. It is explicitly not `KernelFloorAdequacy`;
-- `AmbientView` projects only `bindingActive`, `useMatches`, `contextActive`, `moveWithinBindingScope`, and an already-resolved exact `requirement`;
-- `FixedAmbient A A' R` does not formalize profile lookup. It assumes both ambient views are admissible and both exact lookups have already resolved to the same `R`;
-- `Entitled` is the abstract judgment `Admissible ∧ Derives ∧ Safe`;
-- RBC remains the abstract composition theorem and still depends only on BC + KFL + `FixedAmbient`; SS and SP remain executable entitlement bridges rather than RBC premises;
-- `LicensingRead` is the first shared canonical interpretation source for `AmbientView`, `Env`, `FloorEnv`, and `SatOracle`;
-- `LicensingRead.requirement` is still an already-resolved exact requirement. `ProfileSnapshot.requirement_for` or any equivalent requirement-lookup implementation remains outside the theorem model;
-- canonical warrant lookup is partial (`WarrantId → Option CanonicalWarrant`), while abstract `Env` and `FloorEnv` remain total. `Canonical` and `WellFormedCandidates` therefore mark the concrete/refinement hygiene boundary without changing abstract NW;
-- the derived canonical `SatOracle` totalizes unknown IDs to ordinary `false`. Python fail-fast behavior for unknown candidate IDs is not identified with that abstract behavior; Python conformance is compared only on canonical encoded candidates, while explicit tests preserve unknown-ID fail-fast as a `¬WF` case;
-- `toFloorEnv` needs a fallback only because `FloorEnv.lookup` is total. `Derives (toEnv C) β R` proves every support ID is canonical, which makes the fallback unobservable on the derived branch and on projected entitlement;
-- ambient binding-scope checks and atomic requirement-scope checks use `C.semantics.scopeLE`; `ProjectedEntitled` evaluates the floor with that same `C.semantics`, preventing scope-semantics drift in the canonical interpretation;
-- `BranchProjectionCoherent C β` states branch-by-branch that satisfaction-relevant observations and floor observations arise from the same canonical warrant objects;
-- `PythonConformance.lean` supplies `pythonScopeLE` for the deterministic list encoding of Python `frozenset` scopes and proves `projectedAmbientAdmissible_true_iff`; this is an executable conformance bridge, not a proof that Python source execution refines Lean;
-- `ContextCurrentness.lean` closes the semantic meaning of adopted-context `contextActive`: currentness is the least grounded relation generated by explicit bootstrap activation and base-current Adopt licenses whose issuing contexts are recursively grounded;
-- `ActivationRead.baseCurrent` remains external. It contains all activation-license currentness obligations except issuing-context activity; the full Python `check_license_current` implementation is not modeled by this milestone;
-- `Grounded` is an inductive semantic closure, not a theorem that Python's current while-loop implements that closure. Python/currentness correspondence remains a separate conformance/refinement obligation;
-- the dynamic ambient projection `toGroundedAmbient` replaces arbitrary `contextActive` at the semantic interpretation boundary with `Grounded R` for the exact `(binding, context, use)` key, while preserving the other PR #6 ambient projections;
-- provenance ancestry, parent lineage, concrete Binding/Profile/Context transition systems, a theorem for requirement lookup, concrete context-currentness transition refinement, move args, warrant formation, `INFER`, `TRANSPORT`, challenge/revision transitions, formal Python operational semantics, verified extraction, Q_open, and Q_close remain outside this layer.
+The first three are partially connected by proved interfaces. The fourth is deliberately outside the current theorem claims.
 
-The replay projection is
+## Architecture
 
 ```text
-projectSupport Γ β = Γ.filter (fun w => supportHas w β.support)
+Abstract entitlement calculus
+  Requirement / Branch / Derives / Safe / Entitled
+        │
+        ├── BC / KFL / RBC
+        └── executable satisfaction + replay
+        │
+        ▼
+Canonical interpretation
+  LicensingRead
+        ├── AmbientView
+        ├── Env / SatOracle
+        └── FloorEnv
+        │
+        └── Projection Coherence
+        │
+        ▼
+Exact profile semantics
+  move identity / scope identity
+  requirement resolution
+  rule lookup / structural rule typing
+        │
+        ▼
+Reachable canonical kernel
+  InitialBoundary / Step / Reachable
+  CanonicalStateInvariant
+        ├── immutable canonical history
+        └── mutable evaluation plane
+        │
+        ├── grounded adopted-context currentness
+        ├── ROOT formation / admission
+        └── INFER formation / qualification
+        │
+        ▼
+Executable conformance boundary
+  selected Python V0.1.2.2 observations
 ```
 
-and SP states:
+The formal model is no longer limited to an arbitrary supplied licensing read. It now contains an explicit reachable state skeleton, exact requirement semantics, ROOT formation/admission, and ordinary INFER formation/qualification.
 
-```text
-satisfy O R Γ = some β
-→ satisfy O R (projectSupport Γ β) = some β
-```
+## Paper-facing result map
 
-The abstract floor projection is
+The source tree contains many helper and preservation lemmas. The intended first-paper surface is much smaller:
 
-```text
-floorView F β = β.support.map F.lookup
-```
+| Result | Representative Lean surface | Paper role |
+| --- | --- | --- |
+| **R1 Relative Branch Conservativity** | `relativeBranchConservativity` | Entitlement depends only on the recorded branch-local observations, fixed ambient requirement, and kernel-floor view. |
+| **R2 Exact Requirement Resolution** | `requirementLookup_exactKey`, `requirementLookup_deterministic`, `missingRequirement_notTop` | Full move identity participates in requirement lookup; absence is not identified with `Top`. |
+| **R3 Canonical Projection Coherence** | `derives_projection_coherent` | Satisfaction and floor observations for a derived branch come from the same canonical warrant objects. |
+| **R4 Reachable Canonical-State Invariance** | `reachable_invariant` | States generated from the explicit initial boundary preserve one shared canonical-history/evaluation invariant. |
+| **R5 Grounded Currentness / No Self-Support** | `grounded_has_bootstrap_chain`, `no_grounded_without_bootstrap` | Adopted-context currentness is bootstrap-rooted and cannot be generated by a pure activation cycle. |
+| **R6 ROOT Formation–Qualification Separation** | `rootStep_newWarrant_notUsable`, `admitRoot_makes_usable` | Historical ROOT formation does not silently establish current usability; explicit admission does. |
+| **R7 INFER Historical Formation Correctness** | `reachable_inferWarrantsWellFormed`, `inferStep_newWarrant_exact`, `inferStep_lineage_union` | Reachable INFER history preserves the exact bound rule, ordered parents, formation environment, guard/scope/strength discipline, and lineage construction. |
+| **R8 INFER Current-Parent Qualification** | `qualifyInfer_requires_usableParents`, `qualifyInfer_makes_usable` | Explicit qualification consumes current pre-state usability of every historical parent and establishes child usability at the exact evaluation key. |
+| **R9 INFER Lifecycle Separation** | `inferFormationQualification_boundary` | A historically formed derived warrant is present but non-usable before explicit qualification, then usable afterwards under current-parent responsibility. |
 
-where `F.lookup w` exposes only `(claim, role, scope)`.
+`Audit.lean` is the authoritative machine-readable surface for theorem axiom dependencies. The table above is a paper map, not an assertion that every listed theorem is axiom-free.
 
-`FloorEqOn F F' β` means the two floor environments agree on the warrant IDs in `β.support`. KFL states:
+## 1. Static entitlement calculus
 
-```text
-FloorEqOn F F' β
-→ (Safe S F β τ m ↔ Safe S F' β τ m)
-```
+The abstract static layer is intentionally small.
 
-The abstract entitlement judgment is
+### Core syntax and derivability
+
+- `Syntax.lean`: `Requirement`, `Branch`, atomic obligation vocabulary, and the minimal move/floor vocabulary used by the abstract calculus.
+- `Satisfaction.lean`: declarative `Env.atomSat`, extrinsic `Derives E β R`, and branch-local observation equivalence.
+- `Conservativity.lean`: Branch Conservativity.
+- `ExecutableSatisfaction.lean`: `SatOracle`, executable left-biased satisfaction, soundness, and no-new-witness properties.
+- `Replay.lean`: order-preserving support replay and exact support projection.
+
+Branch Conservativity is a locality theorem for one fixed branch. Executable satisfaction and replay are bridges into that relation; they are not premises of the abstract theorem itself.
+
+### Kernel floor and entitlement
+
+- `KernelFloor.lean`: the finite floor observation surface and Kernel-Floor Locality.
+- `Entitlement.lean`: `AmbientView`, `Entitled`, Relative Branch Conservativity, and executable entitlement/replay corollaries.
+
+The abstract entitlement judgment has the shape:
 
 ```text
 Entitled S A E F β τ m :=
@@ -87,318 +103,276 @@ Entitled S A E F β τ m :=
   Safe S F β τ m
 ```
 
-RBC is the abstract composition theorem:
+Relative Branch Conservativity composes branch-local derivability with floor locality under a fixed ambient requirement. It does **not** establish that the profile, requirement regime, or kernel floor is normatively adequate.
+
+## 2. Canonical interpretation and exact profile semantics
+
+### Shared canonical read
+
+- `CanonicalRead.lean`: one `LicensingRead` projects to the ambient view, declarative environment, executable satisfaction oracle, and floor environment.
+
+The key point is coherence: a derived branch's satisfaction and floor observations are tied to the same partial canonical warrant lookup. Unknown canonical IDs remain a refinement/well-formedness boundary rather than being silently identified with Python fail-fast behavior.
+
+`derives_projection_coherent` is the principal branch-level result.
+
+### Exact requirement resolution
+
+- `RequirementResolution.lean`: exact move/scope identity and finite requirement-table lookup.
+- `ProfileObjects.lean`: canonical profile objects and exact requirement/rule snapshots used by later formation semantics.
+
+Requirement lookup is now inside the formal model. It is keyed by the exact formal move identity rather than by a weakened projection. In particular, missing lookup and explicit `Top` are distinct cases:
 
 ```text
-FixedAmbient A A' R
-SatEqOn E E' β
-FloorEqOn F F' β
-→
-(Entitled S A E F β τ m ↔ Entitled S A' E' F' β τ m)
+lookup(k) = none
+    ≠
+lookup(k) = some Top
 ```
 
-Its logical dependency is deliberately only BC + KFL + FixedAmbient. SS and SP are consumed by separate executable corollaries.
+This corrects the earlier boundary where `LicensingRead.requirement` was only an already-resolved adapter field.
 
-The canonical interpretation layer is:
+The canonical read still keeps `requirement` resolved. `RequirementResolution.lean` provides the formal resolution semantics that can populate that field; a total state-to-read assembly theorem is not yet claimed.
+
+### Historical and inference objects
+
+- `HistoricalObjects.lean`: immutable historical warrant representation and canonical-read projection.
+- `InferenceObjects.lean`: rule and inference-specific object vocabulary.
+- `InferenceSemantics.lean`: structural K0 rule typing, guards, parent environment discipline, scope non-widening, escalation-strength discipline, and INFER formation discipline.
+
+## 3. Reachable canonical kernel
+
+- `Reachability.lean`: `CanonicalState`, `KernelEvent`, `Step`, `InitialBoundary`, `Reachable`, `CanonicalStateInvariant`, immutable-history preservation, and the shared evaluation plane.
+- `EvaluationVocabulary.lean`: evaluation keys/status vocabulary and generic qualification metadata.
+
+The state is deliberately factored into immutable history and mutable evaluation state. Reachability starts at an explicit empty boundary and advances only through kernel-owned transition constructors currently modeled in `Step`.
+
+The shared invariant includes, among other obligations:
 
 ```text
-                 LicensingRead
-                /      |       \
-               /       |        \
-        toAmbient     toEnv     toFloorEnv
-                        |           |
-                     toOracle    floorView
-                         \         /
-                      Projection Coherence
+canonical binding/profile/context referents
+canonical historical warrant referents
+canonical parent and lineage referents
+ROOT historical shape
+INFER historical well-formedness
+coherent evaluation profile/context referents
+paired evaluation axes
+profile/use binding backing for populated evaluation keys
 ```
 
-Atomic satisfaction is read from one canonical warrant:
+`reachable_invariant` is the primary preservation theorem. Constructor-specific preservation theorems are supporting lemmas, not separate invariants.
+
+### Current transition surface
+
+The reachable model includes the transition families needed for the current first-paper argument:
 
 ```text
-C.warrant w = some cw
-C.usable w = true
-cw.formationContext = C.contextId
-cw.formationProfileDigest = C.profileDigest
-cw.claim = a.claim
-cw.role = a.role
-C.semantics.scopeLE a.scope cw.scope = true
+registerContext
+registerProfile
+bindProfile
+bootstrapContext
+root
+admitRoot
+infer
+qualifyInfer
 ```
 
-and `canonicalAtomTest_true_iff` proves the executable Boolean test agrees with that proposition. Therefore the executable chain at the shared-read boundary is:
+The model does not currently include a TRANSPORT lifecycle, license issuance lifecycle, challenge/revision/revalidation transitions, or a formal Python operational semantics.
+
+## 4. Grounded adopted-context currentness
+
+- `ContextCurrentness.lean`: `ActivationRead`, inductive `Grounded`, bootstrap-rooted activation chains, invalidation monotonicity, semantic refresh idempotence, and the grounded ambient bridge.
+- `CurrentnessConformance.lean`: proof-carrying finite certificates used by the selected executable currentness conformance fixtures.
+
+Currentness is read as a least grounded relation. An adopted context requires a base-current activation license whose issuing context is itself grounded. Therefore a cycle cannot justify itself without a finite path to an explicit bootstrap activation boundary.
+
+`ActivationRead.baseCurrent` remains an external factor containing activation-license currentness obligations other than issuing-context activity. The mechanization does not claim that Python's refresh loop is formally refined by `Grounded`; selected dynamic fixtures are conformance-tested separately.
+
+## 5. ROOT lifecycle
+
+- `RootFormation.lean`: ROOT historical formation facts and history/evaluation separation.
+- `EvaluationQualification.lean`: shared evaluation predicates/setter laws and ROOT admission.
+
+ROOT formation writes immutable historical state and does not create a current evaluation position. Under the reachable invariant, a fresh formed ROOT warrant is non-usable at every evaluation key for that warrant ID.
+
+Explicit admission writes the exact selected evaluation key to `LIVE/PLACED` and therefore establishes usability. Admission intentionally has no evaluation-freshness premise, so repeated qualification/requalification remains representable.
+
+This gives the first lifecycle boundary:
 
 ```text
-LicensingRead
-→ toOracle
-→ satisfy
-→ SS
-→ Derives (toEnv C)
+ROOT formation
+    → historical warrant exists
+    → not usable
+    → explicit admission
+    → usable
 ```
 
-The partial-to-total floor boundary is discharged by:
+## 6. INFER lifecycle and current-parent responsibility
+
+- `InferFormation.lean`: exact ordinary-INFER historical formation theorems.
+- `InferQualification.lean`: current-parent qualification and the composed lifecycle theorem.
+
+Historical INFER formation consumes historical parent objects and immutable formation discipline. It does **not** consume current parent usability.
+
+Qualification is deliberately narrower. `Step.qualifyInfer` requires:
 
 ```text
-Derives (toEnv C) β R
-→ every w ∈ β.support is Canonical C w
-→ FloorEqOn (toFloorEnv C d₁) (toFloorEnv C d₂) β
-→ floorView (toFloorEnv C d₁) β = floorView (toFloorEnv C d₂) β
+canonical binding
+canonical historical derived warrant
+constructor = infer
+exact formation context
+exact formation profile
+all historical parents Usable in the pre-state
+  at the same (profileDigest, contextId, use)
 ```
 
-Projection Coherence is:
+It does not replay:
 
 ```text
-Derives (toEnv C) β R
-→ BranchProjectionCoherent C β
+rule lookup
+WellTypedRule
+kernel guard checks
+context acceptance
+scope checks
+escalation-strength checks
+context activity
+binding activity
+evaluation freshness
 ```
 
-The leaf case records one and the same canonical warrant `cw` for both the satisfaction conditions and the floor projection `(claim, role, scope)`.
+Those historical formation obligations are carried by immutable reachable history.
 
-Logical dependency shape:
+The current-parent condition is explicitly pre-state responsibility:
 
 ```text
-PR #5 — Abstract Entitlement Calculus
-
-BC ──────────────┐
-                 ├── RBC
-KFL ─────────────┘
-        +
-   FixedAmbient
-
-SS ──────────────► executable entitlement soundness
-SP ──► SS ───────► support-only entitlement replay
-
-PR #6 — Shared Canonical Read + Projection Coherence
-
-LicensingRead ──► toAmbient
-      │
-      ├─────────► toEnv ──► toOracle
-      │             │
-      │             ├──► support canonical / well-formed support
-      │             └──► BranchProjectionCoherent
-      │
-      └─────────► toFloorEnv
-                     ▲
-                     └── fallback irrelevant on derived support
+HistoricalDerived
++ CurrentUsableParents(pre)
++ ExplicitQualification
+    → CurrentDerivedUsable(post)
 ```
 
-## PR #7 — Python V0.1.2.2 reference-semantics conformance
+The model does **not** assert the reverse as a permanent invariant. Future invalidation semantics may make a parent non-current after the child was qualified.
 
-The conformance layer is deliberately a separate obligation from PR #6. It does not introduce a Lean model that merely resembles Python and then call that a Python proof. Instead, the Python reference implementation is executed, its current canonical licensing read is serialized, and a generated Lean fixture imports the machine-checked PR #6 definitions for the comparison:
+### Non-vacuous current-parent responsibility
+
+`wellTypedRule_inputs_nonempty` and `inferWarrantWellFormed_parents_nonempty` rule out an empty-parent ordinary INFER warrant under the current closed role vocabulary and structural typing rules. Therefore qualification cannot create a new evaluation use through a vacuous `∀ parent ∈ []` condition.
+
+The shared `EvaluationProfileUseBackedByBinding` invariant records only provenance of the `(profileDigest,use)` evaluation environment. It does **not** prove use adequacy.
+
+The composed lifecycle theorem is `inferFormationQualification_boundary`.
+
+## 7. Executable conformance boundary
+
+- `PythonConformance.lean`: executable adapter semantics for selected canonical-read/projection observations.
+- `CurrentnessConformance.lean`: selected grounded-currentness certificate checks.
+- repository-root `v0122_conformance.py` and `v0122_currentness_conformance.py`: Python snapshot/adaptation code.
+
+The intended claim is:
+
+> **Selected Python V0.1.2.2 observations are differentially conformance-tested against the mechanized projection/currentness semantics.**
+
+The intended claim is **not**:
+
+> **Python V0.1.2.2 is verified.**
+
+The adapters execute the Python reference implementation and serialize observations into fixtures consumed by Lean definitions. They are not a formal Python operational semantics and do not establish a source-level refinement theorem.
+
+The current #15-era Python workflow remains a non-regression check for the existing conformance surface; it does not establish exact `qualify_derived()` refinement.
+
+## 8. Current assembly boundary
+
+The repository now has several state-backed bridges:
 
 ```text
-Python V0.1.2.2 canonical state
-        │
-        │ capture_licensing_read
-        ▼
-CanonicalReadSnapshot
-        │
-        │ deterministic wire encoding
-        ▼
-generated Lean fixture data
-        │
-        │ imports PR #6 definitions
-        ▼
-toAmbient / toOracle / satisfy / toFloorEnv / licenseSafe
-        │
-        ▼
-differential conformance result
+HistoricalWarrant
+    → CanonicalRead.CanonicalWarrant
+
+epi + placement
+    → Usable / usableFromState
+
+CanonicalProfile
+    → exact requirement semantics/snapshot
+
+CanonicalState activation projection
+    → ActivationRead
+    → Grounded context activity
 ```
 
-The Python adapter does not contain a second implementation of Lean `satisfy` or `licenseSafe`. The generated Lean module contains fixture data and encoding declarations; satisfaction and floor evaluation are performed by the formal definitions.
+However, there is no current theorem that assembles all of these into one total function/proof of the form:
 
-The PR #7 conformance surfaces are:
+```lean
+CanonicalState → LicensingRead
+```
 
-1. the four Python licensing ambient observations against `toAmbient`;
-2. actual `ProofKernel.satisfy()` against `satisfy (toOracle C)` for canonical candidate lists;
-3. actual `ProofKernel.license_safe()` against `licenseSafe` through `toFloorEnv`;
-4. Python branch constructors against the raw Lean `Branch` encoding;
-5. duplicate candidate IDs with original order and occurrence count preserved;
-6. unknown Python IDs kept as fail-fast / `¬WellFormedCandidates` cases rather than ordinary unsatisfaction;
-7. actual `ProfileSnapshot.requirement_for(τ,m)` used only to populate the already-resolved `LicensingRead.requirement` adapter field;
-8. ACTION authorization, scope coverage, SHARE selection, and revision-depth floor cases;
-9. actual `ProofKernel.license()` negative ambient gates for binding activity, use, context activity, and binding scope.
+with every entitlement-side obligation discharged from reachability alone.
 
-### Encoding boundary
+Therefore the accurate paper claim is:
 
-Python warrant IDs are strings and the current Lean `WarrantId` is `Nat`. The adapter builds a deterministic injective enumeration of the finite canonical warrant universe. Equal Python IDs encode to the same Nat; distinct IDs encode to distinct Nats inside that snapshot. Candidate lists are mapped occurrence-by-occurrence, so duplicates are not collapsed.
+> The reachable kernel establishes historical and current-evaluation facts that are inputs to the separately proved entitlement layer.
 
-Python `Scope` is a `frozenset`; the wire representation is a sorted, duplicate-free `List String`. `pythonScopeLE` interprets the encoded lists with subset semantics. The list is therefore a transport representation, not the semantic identity of a scope:
+Do not currently claim:
+
+> The reachable kernel yields end-to-end entitlement.
+
+If paper writing requires that stronger sentence, the appropriate next formal milestone is a narrow **State-Backed Licensing Read Assembly** result, not a broad extension of constructor semantics.
+
+## Proved / tested / not claimed
+
+| Status | Boundary |
+| --- | --- |
+| **Machine checked in Lean 4** | BC / KFL / RBC; executable satisfaction and support replay; exact requirement resolution; canonical projection coherence; reachable-state invariant preservation; grounded currentness semantics; ROOT formation/admission separation; ordinary INFER formation discipline; INFER current-parent qualification and lifecycle separation. |
+| **Differentially conformance-tested** | Selected Python V0.1.2.2 static projection/floor/satisfaction/ambient observations and selected adopted-context-currentness transitions. |
+| **Not proved** | Python operational refinement; total `CanonicalState → LicensingRead` assembly; TRANSPORT lifecycle; license lifecycle; challenge/revision/revalidation transition semantics; authenticated actors or adequate recorded basis; use adequacy; profile adequacy; kernel-floor adequacy; Q_open; Q_close. |
+
+## Important non-theorems
+
+The formal results concern correct execution and locality inside a finite responsibility regime. They do not establish adequacy of that regime:
 
 ```text
-SemanticObject != WireEncoding
+ProfileExecutionCorrectness
+    ⇏
+ProfileAdequacy
 ```
-
-`FloorSemantics.escalationDepth` remains explicit. For the finite fixture claim universe, the adapter supplies the output of the actual Python `_claim_depth` parser instead of silently duplicating Python integer parsing in Lean.
-
-### PR #7 verified status
-
-The dedicated `Python-Lean Conformance` workflow built the Lean library and ran both the existing V0.1.2.2 Python regression suite and the cross-language fixtures. The PR #7 final-head CI reported:
 
 ```text
-51 passed
+KernelCorrectness
+    ⇏
+KernelFloorAdequacy
 ```
 
-The existing Lean workflow separately continued to build the formal library, reject `sorry` / `admit`, and print the theorem axiom dependencies. `projectedAmbientAdmissible_true_iff` is included in that explicit audit surface.
-
-The precise claim after PR #7 is:
-
-> **Python V0.1.2.2 is conformance-tested against the machine-checked projection model.**
-
-It is not:
-
-> **Python V0.1.2.2 is machine-proved correct.**
-
-The stronger statement would require a formal Python semantics, verified extraction, or migration of the trusted executable implementation into a language/runtime with a verified correspondence path.
-
-## PR #8 — Adopted context currentness / ambient dependency closure
-
-PR #8 closes the semantic `contextActive` responsibility position without importing the full dynamic kernel.
-
-The decomposition is deliberately:
+Likewise, current usability is not entitlement by itself:
 
 ```text
-Current(L, A) := BaseCurrent(L) ∧ Grounded(IssuerContext(L), A)
+Usable(w)
+    ⇏
+Entitled(w, τ, m)
 ```
 
-where `BaseCurrent(L)` is external to this layer. It represents every activation-license currentness condition except currentness of the license's issuing context.
+Entitlement still requires the exact ambient requirement, derivability, and floor-safety obligations of the static calculus.
 
-The core semantic read is:
+## Paper-freeze rule
 
-```text
-ActivationRead
-  seedActive    : ContextKey → Prop
-  activation    : ContextKey → Option Activation
-  issuerContext : ActivationLicenseId → Option ContextKey
-  baseCurrent   : ActivationLicenseId → Prop
+The current first-paper phase uses the following development rule:
+
+> **Do not add core semantics unless writing exposes a theorem gap that cannot be crossed honestly without it.**
+
+TRANSPORT, license issuance, challenge/revision/revalidation, verified execution, Q_open, and Q_close are therefore future work unless a concrete paper claim makes one of them indispensable.
+
+## Build and audit
+
+From this directory:
+
+```bash
+lake build
+lake env lean ResponsibilityTopology/Audit.lean
 ```
 
-and `Grounded R c` is inductively generated only by:
+Repository CI also rejects `sorry` / `admit` placeholders in the formal core and prints explicit axiom dependencies for the audited theorem surface.
 
-```text
-bootstrap:
-  seedActive(c)
-  activation(c) = bootstrap
-  --------------------------------
-  Grounded(c)
+The executable and cross-language regression suite is run from the repository root:
 
-adopt:
-  seedActive(c)
-  activation(c) = adopt(L)
-  BaseCurrent(L)
-  issuerContext(L) = issuer
-  Grounded(issuer)
-  --------------------------------
-  Grounded(c)
+```bash
+python -m pytest -q \
+  test_v0122_kernel.py \
+  test_v0122_currentness.py \
+  test_v0122_conformance.py \
+  test_v0122_currentness_conformance.py
 ```
-
-This is intentionally a grounded / least relation rather than a greatest-fixed-point reading. A cycle cannot manufacture its own currentness. Every `Grounded` derivation is finite and must terminate at an explicit bootstrap activation boundary.
-
-The machine-checked theorem surface is:
-
-```text
-grounded_contractiveness
-  Grounded R c → seedActive c
-
-grounded_fixedPoint_soundness
-  Grounded R c
-  → bootstrap(c)
-    ∨ ∃ L issuer,
-        activation(c)=adopt(L)
-        ∧ BaseCurrent(L)
-        ∧ issuerContext(L)=issuer
-        ∧ Grounded R issuer
-
-grounded_refresh_idempotence
-  Grounded (refreshed R) c ↔ Grounded R c
-
-grounded_invalidation_monotonicity
-  B₂ ⊆ B₁
-  → Grounded (withBaseCurrent R B₂) c
-  → Grounded (withBaseCurrent R B₁) c
-
-grounded_has_bootstrap_chain
-  Grounded R c
-  → ∃ root,
-      CurrentActivationChain R c root
-      ∧ activation(root)=bootstrap
-
-no_grounded_without_bootstrap
-  (∀ c, activation(c) ≠ bootstrap)
-  → ¬ Grounded R c
-
-groundedAmbient_contextActive_iff
-  toGroundedAmbient(D,R,m).contextActive
-  ↔ Grounded R D.contextKey
-```
-
-The dynamic ambient bridge is:
-
-```text
-             LicensingRead
-                  │
-                  │ + bindingId
-                  ▼
-        DynamicLicensingRead       ActivationRead
-                  │                     │
-                  └────────┬────────────┘
-                           ▼
-                  toGroundedAmbient
-                           │
-                           ▼
-              AmbientView.contextActive
-                    = Grounded exact key
-```
-
-`toGroundedAmbient` preserves the existing PR #6 binding/use/scope/requirement projections and replaces only the previously arbitrary `contextActive` proposition with grounded currentness for the exact `(binding, context, use)` key.
-
-### Python provenance hardening
-
-Before freezing this semantic choice, the Python public activation path exposed a real ambiguity: `activate_context_with_adopt_license()` could target an already-ACTIVE context and `_activate_context()` would overwrite that context's recorded activation license. That allowed bootstrap provenance to be silently replaced and made self-supporting Adopt cycles constructible at the state level.
-
-PR #8 hardens that boundary: an already-ACTIVE context cannot be re-activated by another Adopt license, so its active activation provenance is immutable. A PENDING context remains eligible for a later valid Adopt activation; the guard does not make pending state irreversible.
-
-Two adversarial regressions pin the chosen law:
-
-```text
-active context cannot silently replace bootstrap activation provenance
-
-cyclic Adopt dependency cannot become self-supporting
-```
-
-The current combined Python regression/conformance suite, including these two cases, reports:
-
-```text
-53 passed
-```
-
-This hardening is deliberately not presented as a Python/Lean currentness refinement theorem. It removes the concrete provenance-overwrite shortcut so that the executable reference implementation is compatible with the chosen grounded law at the activation boundary.
-
-### PR #8 boundary
-
-PR #8 proves the semantic closure, not the implementation correspondence. In particular it does not claim:
-
-- that Python `_refresh_context_currentness_fixed_point` computes `Grounded`;
-- that full Python `check_license_current` is modeled by `BaseCurrent`;
-- that challenge/revision transitions produce a formally correct new `BaseCurrent` judgment;
-- that the concrete Python History/state transition system refines `ActivationRead`.
-
-The next currentness milestone should therefore remain separate:
-
-```text
-PR #9 — Python V0.1.2.2 Context-Currentness Conformance
-
-actual Python dynamic state / transition
-        │
-        ▼
-canonical dynamic snapshot
-        │
-        ▼
-deterministic fixture
-        │
-        ▼
-PR #8 Grounded semantics
-        │
-        ▼
-differential currentness result
-```
-
-This preserves the same separation established by PR #6/#7: machine-check the semantic object first, then test the executable reference implementation against that object under explicit encoding and well-formedness conditions.
