@@ -68,11 +68,11 @@ def canonicalAtomTest (C : LicensingRead) (w : WarrantId) (a : Atom) : Bool :=
   | none => false
   | some cw =>
       C.usable w &&
-      decide (cw.formationContext = C.contextId) &&
-      decide (cw.formationProfileDigest = C.profileDigest) &&
-      decide (cw.claim = a.claim) &&
-      decide (cw.role = a.role) &&
-      C.semantics.scopeLE a.scope cw.scope
+        (decide (cw.formationContext = C.contextId) &&
+          (decide (cw.formationProfileDigest = C.profileDigest) &&
+            (decide (cw.claim = a.claim) &&
+              (decide (cw.role = a.role) &&
+                C.semantics.scopeLE a.scope cw.scope))))
 
 /-- The executable atomic test is exactly the propositional canonical read. -/
 theorem canonicalAtomTest_true_iff
