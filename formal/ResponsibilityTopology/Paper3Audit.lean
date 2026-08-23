@@ -1,0 +1,22 @@
+import ResponsibilityTopology.ActivationRefresh
+
+/-!
+Proof-audit surface for the Paper 3 revision/revalidation line.
+This file is intentionally separate from the frozen Paper 1/2 audit surface.
+-/
+
+#print axioms ResponsibilityTopology.refreshActiveContexts_active_iff
+#print axioms ResponsibilityTopology.refreshActiveContexts_contracts
+#print axioms ResponsibilityTopology.grounded_adopt_requires_baseCurrent
+#print axioms ResponsibilityTopology.grounded_adopt_issuer_grounded
+#print axioms ResponsibilityTopology.challengeInvalidate_usable_implies_pre
+#print axioms ResponsibilityTopology.challengeStep_baseCurrent_stricter
+#print axioms ResponsibilityTopology.challengeStep_baseCurrentRead_stricter
+#print axioms ResponsibilityTopology.challengeStep_activationRead_eq_withBaseCurrent
+#print axioms ResponsibilityTopology.challengeStep_grounded_post_implies_pre
+#print axioms ResponsibilityTopology.refresh_staleActivation_notActive
+#print axioms ResponsibilityTopology.refresh_activeAdopt_implies_issuerActive
+#print axioms ResponsibilityTopology.refresh_issuerLoss_cascades
+#print axioms ResponsibilityTopology.challengeReachable_to_refreshReachable
+#print axioms ResponsibilityTopology.refreshStep_exact
+#print axioms ResponsibilityTopology.challengeRefresh_retained_implies_preGrounded
