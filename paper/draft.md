@@ -1,48 +1,54 @@
-# Responsibility Topology for Finite Epistemic Kernels: Separating Historical Derivation from Current Usability
+# Separating Canonical History from Current Usability in a Finite Epistemic Kernel
 
-_Status: first paper skeleton; Sections 1 and 3–6 are substantive first drafts. Sections 2 and 7–10 are scoped placeholders._
+_Status: full working draft through the paper-freeze claim/literature pass. The theorem surface is frozen at R1–R9; no new core semantics are assumed by this draft._
 
-## Abstract — working version
+## Abstract — revised working version
 
-Finite epistemic systems often collapse two different questions: whether a judgment has a valid historical derivation and whether that judgment may be used now. This paper develops a small mechanized kernel in which those questions are represented by different state relations. Immutable canonical history records warrant formation, parent structure, rule provenance, and lineage. A separate mutable evaluation plane records current qualification, with usability defined by a pair of evaluation statuses rather than by historical existence. The static entitlement layer then requires, in addition to usability of supporting warrants, exact requirement discharge, ambient admissibility, and kernel-floor safety.
+Finite evidence-processing systems must distinguish at least two questions: whether a warrant has a canonical formation or derivation history, and whether that warrant is currently usable in a particular evaluation environment. We mechanize this distinction in a finite kernel with immutable canonical history and a separate mutable evaluation plane. Historical warrants record formation context, profile, constructor, ordered parents, and role-indexed lineage. Current usability is instead defined by an explicit evaluation key and the conjunction of two mutable statuses. A separate static entitlement calculus then consumes usable canonical warrants together with exact requirement discharge, ambient admissibility, and kernel-floor safety.
 
-We formalize three result families in Lean 4. First, a branch-local entitlement calculus establishes Relative Branch Conservativity, exact full-move requirement resolution, and canonical projection coherence. Second, an explicit transition system generates reachable canonical states while preserving immutable historical identity and shared evaluation invariants; adopted-context currentness is grounded at bootstrap boundaries rather than allowing self-supporting cycles. Third, ROOT and ordinary INFER expose a formation/qualification separation. Fresh formation creates canonical historical warrants without making them usable. ROOT admission establishes current usability explicitly. For INFER, historical formation consumes exact rules and historical parents but not parent usability, whereas later qualification requires those same historical parents to be currently usable in the pre-state before making the child usable in the post-state. Thus historical derivation and current responsibility are distinct relations even when they concern the same warrant graph.
+The Lean 4 development establishes three result families. First, Relative Branch Conservativity, exact full-move requirement resolution, and canonical projection coherence locate entitlement responsibility on finite observation boundaries. Second, an explicit `InitialBoundary / Step / Reachable` system preserves one shared invariant separating immutable historical referents from mutable evaluation records. Grounded adopted-context currentness is treated as an orthogonal semantic component: it rules out purely self-supporting activation cycles, but the current reachable transition surface does not yet contain an Adopt lifecycle. Third, ROOT and ordinary INFER make the historical/current distinction transition-visible. Fresh formation creates canonical history without creating usability. For ordinary INFER, formation consumes an exact rule and ordered historical parents but not their current usability; later qualification does not replay rule, guard, scope, strength, or lineage formation, and instead requires those historical parents to be usable in the pre-state before making the child usable in the post-state.
 
-The mechanization proves correct execution inside a finite responsibility regime. It does not prove profile adequacy, kernel-floor adequacy, source authenticity, Python operational refinement, or an end-to-end theorem from every reachable state directly to entitlement. A Python V0.1.2.2 reference implementation is used only for selected differential conformance tests against the mechanized projection semantics.
+The contribution is not provenance representation, proof-carrying authorization, truth maintenance, or dynamic epistemic update in general. Rather, it is a particular mechanized responsibility decomposition inside one finite reachable kernel: **canonical historical formation and current usability are distinct state relations, and historical derivation and current usable-parent responsibility are distinct relations.** The artifact does not prove profile adequacy, kernel-floor adequacy, source authenticity, Python operational refinement, or an end-to-end theorem from every reachable state directly to entitlement. The Python V0.1.2.2 implementation is used only for selected differential conformance tests against mechanized projection and currentness semantics.
 
 ---
 
 # 1. Introduction
 
-A finite epistemic system must answer at least two questions about any piece of evidence or derived judgment. The first is historical: **how did this object come to exist?** The second is current: **may this object be relied on now, in this context, for this use?** These questions are related, but they are not identical.
+A system that stores evidence or derived judgments eventually faces two different questions about the same object. The historical question is: **under what canonical construction did this object enter the record?** The current question is: **may this object be relied on now, under this profile, context, and use?** The first concerns persistent derivation structure. The second concerns a time-indexed responsibility boundary.
 
-The distinction is easy to state informally and easy to erase in implementation. A database entry may record that a conclusion was once derived from two warrants under a registered rule. If the system later suspends one parent, changes the active context, or otherwise changes the current evaluation state, the historical fact of derivation does not disappear. Conversely, the mere persistence of a historical derivation should not silently preserve current permission to use the conclusion. Systems that encode both facts in one Boolean such as `valid`, `accepted`, or `trusted` make it difficult to identify which responsibility boundary justified a later decision.
+The two questions are related, but they need not have the same answer. A derived object may remain part of an auditable historical graph even when it is no longer eligible for current use. Conversely, a current qualification decision should not silently rewrite the historical reason why the object exists. Collapsing these relations into one field such as `valid`, `trusted`, or `accepted` makes it difficult to tell which responsibility was discharged at which stage.
 
-This paper studies a deliberately finite setting in which the distinction can be made explicit and machine checked. Its central claim is:
-
-\[
-\boxed{
-\text{Historical justification and current epistemic responsibility are distinct state relations.}
-}
-\]
-
-More concretely:
+This paper studies a deliberately finite kernel in which the distinction is explicit and machine checked. The theorem-facing thesis is:
 
 \[
 \boxed{
-\text{A judgment may be canonically derivable in immutable history without being currently usable or entitled.}
+\text{Canonical historical formation and current usability are distinct state relations.}
 }
 \]
 
-The contribution is not a general theory of epistemic adequacy. We do not attempt to prove that a profile contains good rules, that a recorded source is trustworthy, or that a kernel floor captures every normatively necessary condition. Instead, we formalize what correct execution inside a finite responsibility regime can guarantee once the regime has been fixed. This restriction is essential. The work establishes structural non-shortcut properties and explicit state boundaries; it does not turn those boundaries into a universal epistemology.
+For ordinary inference the result is sharper:
 
-## 1.1 From one judgment to several responsibility layers
+\[
+\boxed{
+\text{Historical derivation and current usable-parent responsibility are distinct relations.}
+}
+\]
 
-The mechanized architecture separates four layers that are often conflated.
+These claims are narrower than a thesis about historical *justification* in the epistemological sense. A canonical historical warrant records what the kernel accepted as a well-formed formation event under a fixed finite regime. The mechanization does not prove that an external source was truthful, that a rule was substantively good, or that the profile and kernel floor together capture all conditions that ought to govern epistemic reliance.
 
-First, an **immutable historical layer** stores canonical contexts, profiles, bindings, and warrants. A historical warrant records its claim, role, scope, constructor, ordered parents, formation profile, formation context, external source where applicable, and two distinct lineage relations. Once a warrant identifier refers to such an object, later transitions preserve that exact referent.
+## 1.1 Four responsibility layers
 
-Second, a **mutable evaluation layer** records current status under an explicit evaluation key. Current usability is not a field of the historical warrant. It is defined from two orthogonal evaluation axes: epistemic status and placement. In the current kernel,
+The development separates four layers.
+
+The first is **canonical history**. Contexts, profiles, bindings, and warrants are immutable referents once installed under their identifiers. A historical warrant records claim, role, scope, constructor, ordered parents, formation profile, formation context, source where applicable, and separate root/source lineage relations.
+
+The second is **current evaluation**. Current status is not a field of the historical warrant. It is indexed by
+
+```text
+(profileDigest, contextId, use, warrantId)
+```
+
+and represented on two orthogonal axes. In the current kernel,
 
 \[
 Usable(k)
@@ -52,9 +58,11 @@ Epi(k)=LIVE
 Placement(k)=PLACED.
 \]
 
-Third, a **static entitlement layer** asks whether a concrete branch discharges the exact requirement for a licensing move under an admissible ambient environment and satisfies a kernel floor. Usability is therefore necessary for a canonical warrant to satisfy an atomic branch obligation, but usability is not itself entitlement.
+A historical object can therefore exist with no evaluation record at all, or with a non-usable evaluation state.
 
-Fourth, **adequacy questions** remain outside the theorem regime. A profile can be executed exactly without being a good profile; a floor can be enforced correctly without being an adequate floor. We keep these non-implications explicit:
+The third is **entitlement**. Usability is only one ingredient in canonical atomic satisfaction. The static entitlement judgment additionally requires an exact requirement, an admissible ambient environment, a recorded branch that discharges the requirement, and kernel-floor safety.
+
+The fourth is **adequacy**. The formal model executes a finite regime; it does not prove that the regime is the right one. We keep two non-implications explicit:
 
 \[
 \boxed{
@@ -74,25 +82,19 @@ KernelFloorAdequacy.
 }
 \]
 
-The paper is about the first three layers and the interfaces between them.
+The first paper proves properties of the first three layers and their narrow interfaces. It leaves the fourth outside the theorem regime.
 
-## 1.2 Why reachability matters
+## 1.2 From arbitrary observations to reachable state
 
-A purely static read model can state locality theorems, but it can also hide responsibility in supplied observations. If a theorem assumes an arbitrary Boolean saying that a warrant is usable or that a context is active, the theorem does not yet explain why that Boolean may be trusted. We therefore move from an arbitrary read to an explicit reachable-state model.
+A static theorem can be mathematically correct while hiding responsibility in supplied observations. If `usable(w)` or `contextActive(c)` is simply assumed, the theorem says little about why those observations should hold.
 
-The reachable kernel starts from an `InitialBoundary`, advances by a finite set of kernel-owned `Step` transitions, and preserves one shared `CanonicalStateInvariant`. This invariant separates append-only historical referents from mutable current evaluation. It also ties evaluation positions back to canonical historical warrants and prevents partially created evaluation records.
+We therefore combine the static calculus with an explicit reachable canonical-state model. `Reachable` starts at an `InitialBoundary` and advances only through modeled `Step` constructors. A shared `CanonicalStateInvariant` ties bindings, profiles, contexts, warrants, parents, lineages, and evaluation records together while preserving exact historical referents.
 
-Adopted-context currentness is treated similarly. Instead of accepting an unconstrained currentness flag, the formal model defines a grounded relation in which every retained adopted context has a finite activation chain ending at a bootstrap boundary. A pure cycle cannot manufacture its own currentness.
+This does not make every input endogenous. Grounded adopted-context currentness still factors out `baseCurrent`; the current `Step` surface has no Adopt or license-issuance lifecycle; and no total theorem yet assembles every reachable-state field into a complete `LicensingRead`. The point is not total closure. The point is that the remaining trust boundaries are explicit rather than hidden in unrelated Booleans.
 
-Reachability does not make every observation endogenous. Some boundaries remain explicit, most notably base license currentness inside the grounded-currentness layer and the absence of a total state-backed assembly theorem for the complete licensing read. The difference is that these remaining boundaries are now named rather than silently distributed across the model.
+## 1.3 The main lifecycle distinction
 
-## 1.3 The two lifecycle examples
-
-The paper's main distinguishing argument comes from two lifecycle families.
-
-**ROOT** is the simpler case. Historical formation creates a fresh canonical root warrant. Formation checks canonical binding and context referents plus context signature acceptance, but it does not create an evaluation position. The newly formed warrant is therefore machine-proved non-usable. A later explicit admission transition writes `LIVE/PLACED` at the exact evaluation key and thereby makes the root usable.
-
-The result is the first boundary:
+ROOT gives the simplest lifecycle. Formation creates a fresh historical warrant but does not write evaluation state. Explicit admission later establishes `LIVE/PLACED` at an exact key. Thus:
 
 \[
 \boxed{
@@ -100,21 +102,9 @@ ROOT\ Formation \not\Rightarrow Current\ Usability.
 }
 \]
 
-**INFER** strengthens the argument. Historical INFER consumes an exact immutable rule and ordered historical parents. It checks the rule discipline, same-context and same-profile formation environment, scope non-widening, the relevant lineage guards, and formal escalation-strength constraints. Crucially, it does **not** ask whether the parents are currently usable. The derived historical warrant can therefore exist even when no current responsibility chain licenses its use.
+Ordinary INFER makes the responsibility split more substantive. Historical formation consumes an exact immutable rule and ordered historical parents, checks structural typing and guards, enforces same-context/same-profile formation, scope non-widening, and formal strength constraints, and constructs lineage. It deliberately does **not** consume parent usability.
 
-Later qualification has a different responsibility. It does not replay rule lookup, guard checking, context acceptance, scope checking, or historical lineage construction. Instead, it requires every historical parent to be currently usable in one selected pre-state evaluation environment. Only then does it establish child usability in the post-state.
-
-This yields the stronger distinction:
-
-\[
-\boxed{
-\text{historical parent relation}
-\neq
-\text{current usable-parent responsibility}
-}
-\]
-
-and a machine-checked lifecycle theorem of the form:
+Qualification has a different contract. It starts from the already formed historical child, does not replay the formation proof, and requires every historical parent to be usable in the selected pre-state environment. It then establishes child usability in the post-state:
 
 \[
 \boxed{
@@ -128,59 +118,210 @@ CurrentDerivedUsable_{post}.
 }
 \]
 
-The intermediate state still contains the derived historical object, but the child is not usable there.
+The derived object exists in the intermediate state while remaining non-usable there. This is the paper's central machine-visible boundary.
 
-## 1.4 Contributions
+## 1.4 What is and is not new
 
-The paper makes three contributions.
+Several mature literatures already cover neighboring ideas. Assumption-based truth maintenance preserves justification/assumption structure while supporting context-sensitive reasoning. Database provenance records how results depend on inputs. Justification Logic places justification objects inside the object language. Proof-carrying authentication makes authorization depend on checkable proofs. Stateful and explicit-time authorization logics, including the Proof-Carrying File System, make authorization depend on mutable time and system state. Belief revision and dynamic epistemic logic study transformations of epistemic states.
 
-**(1) Static entitlement locality.** We define a finite branch-based entitlement calculus and prove Relative Branch Conservativity: for a fixed exact requirement and admissible ambient boundary, entitlement is invariant under changes that preserve the branch-local satisfaction and kernel-floor observations. Exact requirement resolution uses full move identity rather than a weakened projection, and missing requirement declarations remain distinct from explicit `top`. A canonical read model also proves that the satisfaction and floor projections of a derived branch refer to the same canonical warrant objects.
+Accordingly, this paper does **not** claim novelty for provenance, proof-relevant evidence, retraction, state-dependent authorization, or epistemic update in general. Its narrower contribution is the combination of three interfaces in one mechanized finite kernel:
 
-**(2) Reachable canonical state.** We define an explicit reachable-state skeleton with immutable context/profile/binding/warrant referents and a separate mutable evaluation plane. Every modeled step preserves one shared canonical-state invariant. Adopted-context currentness is grounded by finite bootstrap-rooted activation chains, ruling out purely self-supporting currentness.
+```text
+immutable canonical formation history
+        ≠
+mutable current qualification
+        ≠
+branch-local entitlement observation
+```
 
-**(3) Historical formation/current qualification separation.** ROOT and INFER instantiate the central thesis in two different ways. ROOT separates historical existence from explicit admission. INFER further separates historical derivability from current-parent responsibility: formation consumes historical parents without consuming their usability, while qualification consumes their current pre-state usability without replaying formation.
+and, specifically for ordinary INFER, a theorem-level split between obligations consumed at formation and obligations consumed later at current qualification.
 
-A Python V0.1.2.2 implementation accompanies the mechanization, but we treat it as an executable reference and conformance target rather than as a fourth theoretical contribution. Selected observations are differentially conformance-tested against mechanized projections. We do **not** claim that the Python kernel is verified.
+## 1.5 Contributions
 
-## 1.5 Scope and paper organization
+The paper has three contribution families.
 
-Section 2 states the no-shortcut and regime-boundary design principles. Section 3 presents the static entitlement calculus, exact requirement resolution, and canonical projection coherence. Section 4 introduces reachable canonical state and grounded context currentness. Section 5 proves that ROOT historical formation does not establish current qualification. Section 6 develops ordinary INFER and the distinction between historical parents and current responsible parents. Section 7 describes the executable reference and conformance boundary. Section 8 collects limits and non-theorems. Section 9 positions the work relative to proof-carrying authorization, provenance, dynamic epistemic systems, and mechanized reference monitors. Section 10 discusses TRANSPORT, revision/revalidation, license lifecycle, and the open problem of regime revision.
+**(1) Static entitlement locality.** We prove Relative Branch Conservativity for a fixed branch and exact ambient requirement, formalize exact full-move requirement resolution, distinguish missing declarations from explicit `top`, and prove that satisfaction and floor projections of a derived branch read the same canonical warrant objects.
 
-One interface remains intentionally incomplete in the current artifact. We have narrow state-backed interpretations for historical warrant projection, usability, profile requirement snapshots, and activation-read structure, but no single total theorem constructing a complete `LicensingRead` from every reachable `CanonicalState`. Accordingly, this paper does not claim that the reachable kernel yields entitlement end-to-end. It claims that the kernel establishes current usability and other canonical observations that the previously proved entitlement layer consumes.
+**(2) Reachable canonical history/evaluation state.** We define an explicit transition-generated state space and prove preservation of a shared canonical invariant that separates immutable historical referents from mutable evaluation. Grounded adopted-context currentness is included as a separate semantic component that rules out purely self-supporting activation cycles, without claiming a completed reachable Adopt lifecycle.
+
+**(3) Historical formation/current qualification separation.** ROOT formation produces history without usability and admission later establishes usability. Ordinary INFER goes further: formation consumes historical parents but not their current usability; qualification later consumes pre-state parent usability without replaying historical formation obligations. The composed lifecycle theorem exposes the intermediate state in which the child is historically present but non-usable.
+
+A Python V0.1.2.2 implementation accompanies the formalization as an executable reference and differential conformance target. It is not a fourth theoretical contribution and is not claimed to be verified.
+
+## 1.6 Organization and current assembly boundary
+
+Section 2 defines the four relations and introduces one running trace. Section 3 presents the static entitlement calculus. Section 4 introduces reachable state and the orthogonal grounded-currentness component. Sections 5 and 6 prove the ROOT and INFER lifecycle results. Section 7 states the executable conformance boundary. Section 8 collects non-theorems. Section 9 positions the contribution against neighboring literatures. Section 10 discusses extensions deliberately frozen during the first-paper window.
+
+The artifact currently has narrow state-backed bridges for historical-warrant projection, usability, requirement snapshots, and activation reads, but no single total theorem
+
+```text
+CanonicalState → LicensingRead → Entitled.
+```
+
+The paper therefore does not claim that reachable state yields entitlement end-to-end. It claims that reachable state establishes historical and current-evaluation observations consumed by the separately proved entitlement layer.
 
 ---
 
-# 2. Problem and Design Principles
+# 2. Problem, Relations, and Running Example
 
-_TODO: full prose after Sections 3–6 stabilize. The section is structurally frozen to the following four principles._
+The formal problem is easiest to state by separating four predicates that a single implementation field could otherwise collapse.
 
-## 2.1 No-shortcut discipline
+## 2.1 Historical existence
 
-A later decision must not silently acquire support from observations outside the recorded responsibility boundary.
+For a state `S`, a historical warrant identifier `w`, and a historical object `W`, write informally
 
-## 2.2 Immutable history versus mutable evaluation
+\[
+Hist_S(w,W)
+\quad\text{for}\quad
+S.warrant(w)=some\;W.
+\]
 
-Historical identity persists; current qualification may change. The model must permit suspension, pending placement, requalification, and future invalidation without rewriting the historical derivation object.
+This is an identity relation, not a current validity flag. The shared immutability theorem says that once a historical identifier denotes `W`, later modeled steps preserve that exact referent.
 
-## 2.3 Exact regime execution versus regime adequacy
+Historical formation therefore answers:
 
-Correct lookup, formation, qualification, and floor enforcement do not imply that the selected regime is adequate.
+> What canonical object was formed, from which rule or source, under which formation context/profile, with which ordered parents and lineage?
 
-## 2.4 Audit metadata versus proof-bearing authority
+It does not answer whether the object is currently usable.
 
-Recorded actor, basis, source, digest, and other identifiers are audit data unless a theorem explicitly gives them stronger semantics.
+## 2.2 Current evaluation and usability
+
+Current evaluation is keyed by
+
+\[
+k=(profileDigest,contextId,use,warrantId).
+\]
+
+`Evaluated(S,k)` means both evaluation axes have records. `Usable(S,k)` is stronger:
+
+\[
+Usable(S,k)
+\iff
+S.epi(k)=LIVE
+\land
+S.placement(k)=PLACED.
+\]
+
+Thus:
+
+\[
+Usable \Rightarrow Evaluated,
+\]
+
+but neither
+
+\[
+Evaluated \Rightarrow Usable
+\]
+
+nor
+
+\[
+HistoricalExistence \Rightarrow Evaluated
+\]
+
+holds in general.
+
+Current qualification answers:
+
+> Under which exact profile/context/use evaluation environment may this historical object be used now?
+
+## 2.3 Entitlement
+
+The static entitlement judgment is a separate relation. In simplified form:
+
+\[
+Entitled
+\equiv
+Admissible(A)
+\land
+Derives(E,\beta,A.requirement)
+\land
+Safe(S,F,\beta,\tau,m).
+\]
+
+Canonical atomic satisfaction requires the selected warrant to be usable, but usability alone is not enough. Exact requirement discharge, ambient admissibility, and floor safety remain independent obligations.
+
+Accordingly:
+
+\[
+\boxed{CurrentUsability \not\Rightarrow Entitlement.}
+\]
+
+## 2.4 Adequacy
+
+Adequacy is intentionally outside the theorem relation. A source string is recorded provenance, not authenticated truth. A rule may be structurally well typed without being a good epistemic rule. A use may have canonical binding backing without being normatively appropriate. An exact profile may execute correctly without being adequate.
+
+This layer separation prevents the formal results from being misread as a universal epistemology.
+
+## 2.5 Running trace
+
+The paper uses one minimal trace throughout Sections 5 and 6.
+
+```text
+S0
+ │ form ROOT p1
+ │ form ROOT p2
+ ▼
+S1    p1,p2 historical; neither usable
+ │ admit p1
+ │ admit p2
+ ▼
+S2    p1,p2 usable
+ │ INFER d from [p1,p2]
+ ▼
+S3    d historical; d NOT usable
+ │ qualifyInfer d
+ │ requires p1,p2 usable in S3
+ ▼
+S4    d usable
+```
+
+At `S3` the crucial conjunction is:
+
+\[
+\boxed{
+Hist_{S_3}(d,W_d)
+\land
+\neg Usable(S_3,k_d).
+}
+\]
+
+The historical graph and current qualification relation should be read differently:
+
+```text
+persistent historical edges
+
+p1 ─────┐
+        ├──> d
+p2 ─────┘
+
+pre-state qualification condition at S3
+
+Usable(S3,k_p1) ∧ Usable(S3,k_p2)
+```
+
+The edges `p1,p2 → d` are part of immutable history. The usability condition is a predicate of a particular state and evaluation environment.
+
+The chosen trace admits the parents before forming `d` because it is easy to read. That ordering is **not** a formation premise. Ordinary INFER formation has no parent-usability requirement, so a different legal trace can form the historical child while the parents are themselves still unqualified. The later `qualifyInfer` transition is where current parent usability becomes a responsibility obligation.
+
+We intentionally stop the running example at `S4`. A later suspension or invalidation of a parent raises the separate question of dependency invalidation/revalidation, which is not yet part of the first-paper transition surface.
+
+## 2.6 No-shortcut discipline
+
+Across the four layers we use one design rule: a later judgment should not silently acquire support from observations outside its declared responsibility boundary.
+
+In the static calculus this produces branch locality and exact requirement lookup. In historical formation it produces explicit canonical parents, rules, and lineage. In qualification it produces pre-state usable-parent obligations rather than implicit replay of formation. In adequacy it appears negatively: correctness inside the declared regime is not promoted into a claim that the regime is sufficient.
 
 ---
 
 # 3. Static Entitlement Calculus
 
-The dynamic lifecycle results in Sections 5 and 6 explain how warrants become currently usable. They do not by themselves define entitlement. Entitlement belongs to a smaller static calculus that isolates exactly which observations a fixed licensing judgment consumes.
-
-This separation serves two purposes. First, it gives a compact theorem surface for locality. Second, it prevents later dynamic-state extensions from silently changing what the entitlement theorem means.
+The dynamic lifecycle results explain how warrants become currently usable. They do not by themselves define entitlement. Entitlement belongs to a smaller static calculus that isolates exactly which observations a fixed licensing judgment consumes.
 
 ## 3.1 Requirements, branches, and derivability
 
-The static calculus distinguishes a requirement from the branch that discharges it. A requirement is a finite obligation expression; a branch is the recorded witness of one concrete discharge path. Declarative derivability has the form
+A requirement is a finite obligation expression. A branch is the recorded witness of one concrete discharge path. Declarative derivability has the form
 
 \[
 E \vdash \beta : R,
@@ -188,23 +329,19 @@ E \vdash \beta : R,
 
 where `E` supplies atomic satisfaction observations, `R` is the exact requirement, and `β` is the recorded branch.
 
-The branch matters because the calculus is intentionally local. For a disjunctive requirement, successful discharge chooses one side; for a conjunction, it records both subbranches. The support of `β` is therefore not an arbitrary candidate set but the concrete evidence responsibility actually used by that derivation.
+Branch Conservativity says that if two environments agree on the atomic observations read by a fixed branch, derivability of that branch is invariant. The theorem is branch-relative: it does not say that every alternative candidate set or every possible branch is preserved.
 
-Branch Conservativity states that if two environments agree on the atomic observations read by a fixed branch, then derivability of that branch is invariant between them. The theorem does not say that all candidate lists or all possible alternative branches are invariant. It says that once the system records `β` as the justification path, facts outside the observation footprint of `β` cannot retroactively become hidden reasons why `β` works.
-
-This is the first locality boundary.
+The audit interpretation is important. Once `β` is the recorded discharge path, facts outside the observation footprint of `β` cannot become hidden reasons why that same branch succeeds.
 
 ## 3.2 Kernel-floor locality
 
-Derivability alone is insufficient. Some moves are forbidden unless the selected branch satisfies a kernel floor that cannot be weakened by profile requirements. The floor reads a deliberately small projection of each supporting warrant and a deliberately small projection of the move.
+A separate kernel floor protects conditions that profiles cannot remove. The floor reads only a narrow projection of supporting warrants and a narrow `FloorMove` projection.
 
-Kernel-Floor Locality states that safety of a fixed branch and move is invariant whenever the floor views agree on that branch. Importantly, the floor move is narrower than the full move identity used by requirement resolution. The formal model preserves that firewall: adding ordered move arguments for exact requirement lookup does not enlarge the observation surface of the floor theorem.
+Kernel-Floor Locality says safety of a fixed branch and move is invariant when floor observations agree on that branch. Full move arguments introduced later for exact requirement identity do not enlarge this floor interface.
 
-This produces a second locality boundary independent of declarative satisfaction.
+## 3.3 Relative Branch Conservativity — R1
 
-## 3.3 Relative Branch Conservativity
-
-The abstract entitlement judgment combines three components:
+The abstract entitlement judgment combines ambient admissibility, exact requirement discharge, and floor safety:
 
 \[
 Entitled(S,A,E,F,\beta,\tau,m)
@@ -216,32 +353,24 @@ Derives(E,\beta,A.requirement)
 Safe(S,F,\beta,\tau,m).
 \]
 
-Here `A` contains the ambient observations required by the current abstract layer, including whether the binding and context are active, whether the use matches, whether the move is within binding scope, and the already resolved exact requirement.
+Relative Branch Conservativity composes Branch Conservativity and Kernel-Floor Locality under a fixed exact ambient requirement. If two admissible views resolve to the same requirement and agree on the branch-local satisfaction and floor observations, entitlement of that recorded branch is equivalent between them.
 
-Relative Branch Conservativity (R1) composes the two locality results. For fixed branch, license type, move, floor semantics, and exact requirement `R`, if both ambient views are admissible and resolve to `R`, and if their branch-local satisfaction and floor observations agree, then entitlement is equivalent in the two worlds.
+The theorem is deliberately relative. It does not establish that the exact requirement is adequate or that the ambient regime contains every condition that ought to matter.
 
-The theorem is deliberately **relative**. It does not establish that `R` is a good requirement or that the ambient regime is normatively sufficient. Its statement is closer to an audit property:
+## 3.4 Exact requirement resolution — R2
 
-> given this fixed admissible regime and this recorded branch, observations outside the branch-local satisfaction and floor boundary cannot be the hidden reason the entitlement judgment succeeds.
-
-That distinction is important for the later reachable-state model. Dynamic semantics may explain where some ambient observations come from, but R1 remains a theorem about a fixed invocation boundary.
-
-## 3.4 Exact requirement resolution
-
-The early abstract calculus treated `AmbientView.requirement` as already resolved. The mechanization now includes the exact static resolution layer that can supply that field.
-
-A full canonical move contains a move kind, ordered argument list, scope, and revision depth. Ordered arguments are semantic identity:
+The formal model no longer treats requirement lookup as an unspecified external function. A full canonical move contains kind, ordered arguments, scope, and revision depth. Ordered arguments are semantic identity:
 
 ```text
 ["a", "b"] ≠ ["b", "a"]
 ["a"]      ≠ ["a", "a"]
 ```
 
-Scope is different. Its list representation is a transport encoding of a finite set, so scope identity is extensional and ignores ordering and duplicate transport artifacts.
+Scope identity is extensional because its list is only a finite-set transport representation.
 
-A requirement key combines license type with this full move identity. A finite immutable snapshot contains unique keys. Lookup is exact: no subsumption, near-match, or priority fallback is available. Soundness and completeness connect executable lookup to the propositional key relation, determinism rules out ambiguous exact keys, and permutation invariance shows that table order cannot become a hidden policy priority.
+A requirement key combines license type with full move identity. Unique exact keys make table order semantically irrelevant. Successful lookup is sound and complete for the exact key relation; no subsumption or fuzzy fallback exists.
 
-The most important anti-shortcut result is not merely uniqueness but the treatment of absence:
+The main anti-shortcut boundary is:
 
 \[
 \boxed{
@@ -251,78 +380,70 @@ lookup(k)=some\;top.
 }
 \]
 
-An undeclared move is not silently interpreted as an explicit no-obligation move. This matters because otherwise a missing policy entry could be converted into permissiveness by an implementation convention rather than by a declared responsibility rule.
+An undeclared move does not become an explicit no-obligation move by implementation convention.
 
-## 3.5 Canonical projection coherence
+## 3.5 Canonical projection coherence — R3
 
-A second early abstraction separated the satisfaction environment from the floor environment. That is convenient for the two locality theorems, but a concrete licensing interpretation should not allow them to disagree about what warrant an identifier denotes.
+`LicensingRead` supplies one shared partial warrant lookup and projects it into the satisfaction environment, executable oracle, ambient view, and floor environment.
 
-`LicensingRead` provides one shared partial canonical warrant lookup and projects it into the declarative environment, executable satisfaction oracle, ambient view, and floor environment. A canonical warrant contains the claim, role, scope, formation profile digest, and formation context needed by the static projections.
+`derives_projection_coherent` proves that every leaf selected by a derivation over the canonical environment reads satisfaction-relevant fields and the floor leaf from the same canonical warrant object. The theorem prevents internal drift in which one identifier could silently denote one object for requirement discharge and another for floor safety.
 
-The principal coherence result (R3) states that every leaf selected by a derivation over the canonical environment is projection-coherent: the satisfaction fields and the floor leaf come from the same looked-up canonical warrant. This is a modest theorem, but it fixes an important interface responsibility. The static proof does not rely on one object for satisfaction and a different object with the same identifier for floor safety.
+## 3.6 Static/dynamic assembly boundary
 
-## 3.6 What the static layer does not yet assemble
+The reachable model already supplies several narrow bridges:
 
-The current artifact has several bridges from reachable state toward this canonical read. A historical warrant has a narrow projection to the read-level canonical warrant. The evaluation plane has a Boolean `usableFromState` interpretation. A canonical profile projects to an exact requirement snapshot. Grounded currentness supplies a non-arbitrary interpretation of context activity for a dynamic read.
+```text
+HistoricalWarrant → CanonicalRead.CanonicalWarrant
+epi + placement  → usableFromState
+CanonicalProfile → RequirementSnapshot
+```
 
-What is missing is one total assembly theorem that chooses a binding/context/use/move in a reachable state, resolves every field of `LicensingRead`, and then invokes the entitlement layer. We therefore keep the paper's wording asymmetric:
+Grounded currentness also has a structural state projection. These pieces are enough to state Sections 5 and 6 precisely, but the artifact does not contain one total state-backed `LicensingRead` assembly theorem.
 
-> the dynamic kernel establishes current usability and canonical historical observations used by the entitlement layer;
-
-not:
-
-> every reachable kernel state yields an entitlement judgment end-to-end.
-
-This boundary will be revisited only if the exposition cannot remain precise without a narrow assembly result.
+No step in the present argument requires the stronger claim. We therefore leave the boundary explicit instead of adding a theorem merely for architectural completeness.
 
 ---
 
 # 4. Reachable Canonical Kernel
 
-The static results of Section 3 are deliberately insensitive to how their observations were produced. That is appropriate for locality, but insufficient for the paper's main dynamic claim. To distinguish historical existence from current usability, we need states and transitions that make the two relations separately visible.
+The static calculus accepts a licensing read. The dynamic layer asks which historical and evaluation observations can arise from an explicit kernel transition system.
 
-## 4.1 Canonical state
+## 4.1 State factorization
 
-`CanonicalState` contains two planes.
+`CanonicalState` contains immutable lookup families for contexts, profiles, bindings, historical warrants, and represented licenses, plus mutable evaluation/currentness structures. Historical warrants and current evaluation records are separate fields.
 
-The **historical plane** stores partial immutable lookups for canonical contexts, profiles, bindings, warrants, and activation licenses. These are identity-bearing referents. In particular, a warrant identifier maps to an optional `HistoricalWarrant`, not merely to a presence predicate.
+This factorization is the semantic basis for the paper's main distinction: historical identity can persist while evaluation changes.
 
-The **evaluation plane** stores active-context facts, activation provenance, review-required facts, and two warrant-evaluation maps:
+## 4.2 Reachability — R4
+
+The system begins at an explicit empty `InitialBoundary`. `Reachable` is inductively generated by modeled `Step` transitions.
+
+The first-paper transition surface is:
 
 ```text
-epi       : EvalKey → Option EpiStatus
-placement : EvalKey → Option Placement
+registerContext
+registerProfile
+bindProfile
+bootstrapContext
+root
+admitRoot
+infer
+qualifyInfer
 ```
 
-An evaluation key contains profile digest, context identifier, use, and warrant identifier. The two axes remain independent because they represent different responsibilities. `LIVE/PENDING` and `SUSPENDED/PLACED` are conceptually different failure modes even if both are currently unusable.
+There is currently no reachable Adopt, license issuance, TRANSPORT, challenge, revision, or revalidation transition.
 
-Current usability is defined by the conjunction:
+`CanonicalStateInvariant` is shared across constructors. It covers canonical referents for bindings, contexts, profiles, warrants, parents, and lineages; ROOT and INFER historical well-formedness; evaluation referent coherence; paired evaluation axes; and profile/use binding backing for populated evaluation positions.
+
+The principal theorem is:
 
 \[
-Usable(S,k)
-\iff
-S.epi(k)=LIVE
-\land
-S.placement(k)=PLACED.
+Reachable(S) \Rightarrow CanonicalStateInvariant(S).
 \]
 
-Missing evaluation records are therefore unusable by construction.
+## 4.3 Historical identity
 
-## 4.2 Initial boundary, steps, and reachability
-
-The trusted starting point is explicit: every canonical lookup is empty and every evaluation fact is absent. `Reachable` is the inductive closure of this boundary under modeled `Step` transitions.
-
-The current first-paper transition surface includes registration of contexts and profiles, profile binding, bootstrap context activation, ROOT formation and admission, and ordinary INFER formation and qualification. It does not include TRANSPORT, license issuance, challenge/revision/revalidation, or a full operational semantics for the Python implementation.
-
-The point of this finite transition surface is not completeness. It is to ensure that the two lifecycle families used in the paper are generated by an explicit state machine rather than assumed as arbitrary snapshots.
-
-## 4.3 Shared canonical-state invariant
-
-Every reachable state satisfies one shared invariant (R4). The invariant includes referent coherence for bindings, active contexts, historical warrants, parents, and root lineage; exact shape conditions for ROOT history; well-formedness conditions for INFER history; evaluation referent coherence; paired evaluation-axis coherence; and profile/use binding backing for populated evaluation positions.
-
-The invariant is intentionally shared rather than constructor-specific. ROOT and INFER preservation lemmas are proof tools, but the paper-facing claim is that reachability establishes one state contract that later sections may rely on without replaying the transition history.
-
-The historical plane also satisfies an exact referent-preservation law. If a warrant identifier denotes historical object `W` before a modeled transition, it denotes exactly `W` afterwards:
+Historical lookup immutability has object-level content. For a warrant:
 
 \[
 S.warrant(w)=some\;W
@@ -332,447 +453,450 @@ Step(S,e,S')
 S'.warrant(w)=some\;W.
 \]
 
-This law is stronger than monotone presence. It makes historical identity stable enough for parent references, lineage, challenge targets, future descendant closure, and branch support to use warrant identifiers as persistent names.
-
-By contrast, evaluation maps are deliberately mutable. Qualification uses an overwrite setter rather than an append-only insertion operation. This permits first qualification, repeated qualification, and future requalification after suspension or pending placement without rewriting the historical object.
+The same style of preservation applies to other immutable history-plane referents. This law is what makes later branch support, lineage, and challenge targets meaningful: an identifier does not change historical referent between states.
 
 ## 4.4 Evaluation coherence
 
-Two invariant clauses matter particularly for Sections 5 and 6.
+Evaluation positions must point to canonical historical warrants with matching formation profile/context. The two evaluation axes are paired rather than half-created. Populated `(profile,use)` evaluation environments must also have canonical binding backing.
 
-`EvaluationReferentsCanonical` requires any populated evaluation position to point to an existing canonical historical warrant, with evaluation profile/context equal to the warrant's formation profile/context. Thus a reachable state cannot contain `LIVE` for an unknown warrant or for the right warrant under the wrong formation identity.
+These invariants are structural provenance properties. They do not prove that the use is normatively adequate.
 
-`EvaluationPairCoherent` rules out half-created evaluation records: epistemic status is absent exactly when placement is absent. This matches the modeled setter discipline, where qualification writes both axes together.
+## 4.5 Grounded currentness — R5 as an orthogonal semantic component
 
-A further invariant, `EvaluationProfileUseBackedByBinding`, requires every populated `(profile,use)` evaluation environment to have canonical binding backing. This is a provenance result, not a use-adequacy result. It says that qualification cannot invent an evaluation use with no binding history somewhere in the state; it does not say that the use is normatively correct.
+Adopted-context currentness is formalized separately through `ActivationRead` and an inductive `Grounded` relation. A grounded adopted context requires a base-current activation license whose issuing context is itself grounded. Every grounding derivation therefore terminates at an explicit bootstrap activation.
 
-These invariants allow fresh historical formation to imply non-qualification without storing a special “unqualified” flag. If a warrant identifier is fresh in a reachable pre-state, evaluation referent coherence implies that no evaluation record for that identifier can already exist under any profile/context/use key.
-
-## 4.5 Grounded adopted-context currentness
-
-Context activity is another potential source of hidden responsibility. An adopted context may depend on the currentness of an activation license, whose issuing context may itself depend on another activation license. Treating the resulting dependency relation coinductively would permit a cycle to justify itself.
-
-The formal model instead defines `Grounded` inductively. A context is grounded either because it is seed-active with explicit bootstrap provenance, or because it is seed-active with Adopt provenance whose activation license is base-current, whose issuing context is known, and whose issuing context is itself grounded.
-
-The principal theorem (R5) shows that every grounded context has a finite current activation chain ending at an explicit bootstrap activation. Therefore a world with no bootstrap boundary cannot derive any grounded current context:
+The key result is:
 
 \[
-\boxed{
-\text{pure activation self-support does not create currentness.}
-}
+Grounded(c)
+\Rightarrow
+\text{finite activation chain from }c\text{ to bootstrap}.
 \]
 
-The model deliberately leaves `baseCurrent` external. It packages all license-currentness conditions other than issuing-context activity. This prevents the grounded theorem from overclaiming a complete license lifecycle while still closing the recursion responsible for self-support.
+Consequently, a world containing only cyclic Adopt dependencies and no bootstrap boundary cannot derive grounded currentness.
 
-## 4.6 From arbitrary worlds to reachable responsibility
-
-The effect of Section 4 is not that every static observation is now derived from state. Rather, the world in which the lifecycle theorems run is no longer arbitrary. Historical identity, evaluation coherence, profile/use backing, and part of context currentness are justified by reachability and groundedness.
-
-This is enough for the central distinction. We can now ask whether a newly formed historical object has any current evaluation position, and the answer is constrained by the state invariant rather than supplied as a Boolean assumption.
+R5 should not be confused with the ROOT/INFER lifecycle results. The current reachable `Step` relation contains bootstrap activation but not Adopt or license issuance. The bridge from reachable state to `ActivationRead` is structural, and `baseCurrent` remains an external factor. R5 is therefore a semantic closure result connected to the kernel, not a completed reachable Adopt lifecycle.
 
 ---
 
 # 5. Historical Formation Is Not Current Qualification
 
-ROOT provides the simplest lifecycle in which historical existence and current usability diverge.
+ROOT provides the minimal witness that historical existence and current usability are separate state relations.
 
-## 5.1 Historical ROOT objects
+## 5.1 Canonical ROOT formation
 
-A historical root warrant records a claim, role, scope, root constructor, empty ordered parent list, formation profile digest, formation context, external source identity, and two separate role-indexed lineage relations.
+A ROOT formation step requires a fresh warrant identifier, a canonical binding, a canonical context, and context acceptance of the input claim. It creates one `HistoricalWarrant` with exact formation profile/context, root constructor, empty parents, external source, and distinct root/source lineage initialization.
 
-The lineage distinction is intentional. Root lineage records historical root-warrant identifiers; source lineage records external source identifiers. For a newly formed ROOT of role `r`, root lineage at `r` contains the new warrant itself while source lineage at `r` contains the external source. Other role buckets are empty.
+The transition deliberately does not require active context, evaluation-active binding, or a scope-within-binding check because those are not part of the represented ROOT formation boundary.
 
-These relations are extensional sets rather than serialized Python container layouts. The distinction later becomes machine-relevant because ordinary INFER supports different kernel guards over distinct content roots and distinct content sources.
+## 5.2 Formation preserves evaluation
 
-## 5.2 Formation responsibility
+ROOT formation writes the historical warrant lookup and leaves the represented evaluation/currentness topology unchanged.
 
-A ROOT formation step has a narrow historical responsibility. It requires a fresh warrant identifier, a canonical binding, a canonical context, and acceptance of the input claim by that context's signature. It then inserts the exact historical root object.
-
-Formation deliberately does not require context activity, evaluation-active binding status, or a scope-within-binding condition that the executable ROOT path does not impose. It also does not read or write warrant evaluation state.
-
-The exact-object theorem records these premises and the resulting immutable warrant. Separate preservation results show that all previously existing historical referents remain unchanged and that the evaluation/currentness topology is untouched.
-
-The important point is not merely “ROOT does not call the qualification setter.” In a reachable state, freshness plus evaluation referent coherence yields a stronger theorem: the new warrant identifier has **no evaluation record under any profile/context/use key** in the post-state.
-
-Therefore:
+Combined with the reachable invariant and warrant-ID freshness, this yields a stronger result than mere field non-update: no pre-existing evaluation record can refer to the fresh warrant identifier. Therefore after formation:
 
 \[
-\boxed{
-ROOT\ Formation \not\Rightarrow Usable.
-}
+\forall p,c,u,
+\quad
+Epi(p,c,u,w)=none
+\land
+Placement(p,c,u,w)=none.
 \]
 
-The conclusion is semantic, not a documentation convention. A newly formed root warrant exists canonically and is machine-proved non-usable.
+Hence R6 contains the explicit negative theorem:
+
+\[
+\boxed{ROOT\ Formation \not\Rightarrow Usable.}
+\]
+
+In the running example, this is the state of `p1` and `p2` at `S1`.
 
 ## 5.3 Explicit admission
 
-ROOT admission is a distinct transition. It requires canonical binding, context, and warrant lookup; the warrant must be a root; its formation context must match the requested context; its formation profile must match the binding profile; and the binding use must match the requested use. The transition then writes `LIVE/PLACED` at the exact evaluation key.
+ROOT admission is a separate evaluation transition. It checks the canonical binding/context/warrant relation, ROOT constructor, exact formation context/profile, and requested use agreement. It does not replay context signature acceptance from formation.
 
-Admission does **not** repeat the formation-time context-signature acceptance check. That responsibility is already carried by the immutable historical object plus reachability invariant. Replaying the check would blur the distinction between formation validity and current admission.
-
-Admission also has no evaluation freshness premise. The shared setter overwrites an existing position. This leaves room for first admission, repeated admission, and future re-admission after evaluation changes.
-
-The resulting theorem is:
+The post-state has
 
 \[
-\boxed{
-Valid\ RootAdmission
-\Rightarrow
-LIVE \land PLACED
-\Rightarrow
-Usable.
-}
+Epi(k)=LIVE
+\land
+Placement(k)=PLACED,
 \]
 
-Historical referents remain immutable across this transition.
+so the admitted root is usable at the exact evaluation key.
 
-## 5.4 Recorded metadata is not adequate authority
+Admission has no evaluation freshness premise. Re-admission and overwrite semantics remain representable.
 
-Admission records actor and basis metadata. The mechanization intentionally gives these strings no authentication or adequacy theorem. They are audit fields.
+## 5.4 Audit metadata is not adequacy
 
-Accordingly:
+Admission records actor and basis strings. The kernel does not prove that the actor is authenticated or that the basis is sufficient. Thus:
 
 \[
-RecordedActor
-\not\Rightarrow
-AuthenticatedPrincipal
+RecordedActor \not\Rightarrow AuthenticatedPrincipal
 \]
 
 and
 
 \[
-RecordedBasis
-\not\Rightarrow
-AdequateBasis.
+RecordedBasis \not\Rightarrow AdequateBasis.
 \]
 
-The lifecycle theorem family therefore proves a declared responsibility boundary: an explicit event changed current qualification. It does not prove that an external normative system was right to authorize that event.
-
-## 5.5 ROOT as the minimal separation theorem
-
-ROOT yields a simple three-state story:
-
-```text
-before formation
-    warrant absent
-
-        ↓ ROOT formation
-
-after formation
-    historical warrant present
-    no evaluation record
-    not usable
-
-        ↓ explicit admission
-
-after admission
-    historical warrant unchanged
-    LIVE + PLACED
-    usable
-```
-
-This already refutes a common collapse:
-
-\[
-HistoricalExistence
-\Rightarrow
-CurrentUsability.
-\]
-
-But ROOT does not yet distinguish historical dependencies from current dependencies, because a root has no parents. Ordinary INFER provides that stronger result.
+This is another instance of the paper's discipline: record what the transition actually establishes, and do not silently promote audit metadata into stronger authority.
 
 ---
 
 # 6. Current-Parent Responsibility
 
-INFER is the central lifecycle of the paper because it separates two relations over the same derivation graph: historical parenthood and current usable-parent responsibility.
+INFER separates historical derivation from current responsibility more sharply than ROOT because the same parent graph participates in two different relations.
 
-## 6.1 Canonical profiles and exact rule lookup
+## 6.1 Exact historical rule discipline — R7
 
-A binding points to an immutable canonical profile by digest. The profile contains both a rule snapshot and the requirement entries used by Section 3. This unifies two previously separate responsibilities under one canonical profile referent:
+A canonical profile contains an immutable rule table. Ordinary INFER resolves the exact profile selected by the binding and then performs exact `ruleId` lookup. Rule-table order is not a priority mechanism.
 
-```text
-binding
-  ↓ profile digest
-CanonicalProfile
-  ├── exact rule lookup       → historical INFER
-  └── requirement projection  → exact licensing requirement
-```
+Formation resolves parent identifiers in list order and preserves duplicates. This is important because the rule input roles are compared to the ordered parent-role list. Parent identity is therefore not the same semantic object as lineage: parent lists are ordered derivational input; lineage is extensional ancestry.
 
-Rule lookup is exact by rule identifier and unique within the snapshot. A missing rule identifier cannot fall back to another rule.
-
-The rule discipline is structural rather than adequacy-bearing. `WellTypedRule` constrains the finite role vocabulary and recognizes only known kernel guards. Protected output roles cannot be generated without the corresponding input responsibility, CONTENT output requires CONTENT input, SELECTION requires nonempty input, and the special audited `CONTENT^n → PROVENANCE` case requires at least two content inputs plus an approved distinctness guard.
-
-These checks justify the statement that the rule follows the current K0 structural discipline. They do not establish `RuleAdequacy`.
-
-## 6.2 Ordered parents versus extensional lineage
-
-Historical parent lists preserve both order and duplicate occurrences. This is necessary because rule application checks the exact ordered sequence of parent roles. Thus
+The formation discipline requires, among other things:
 
 ```text
-[parentA, parentB] ≠ [parentB, parentA]
+exact bound rule
+ordered parent roles = rule input roles
+same formation context
+same formation profile snapshot
+output accepted by context
+scope non-widening
+known structural guard
+protected-role discipline
+formal escalation non-amplification
 ```
 
-as an application input, and duplicate identifiers are not silently deduplicated.
+The result creates the exact historical derived object and role-wise unions both root and source lineage from all parents.
 
-Lineage has different semantics. Root lineage and source lineage are role-indexed extensional relations. The output INFER warrant obtains each lineage by role-wise union of all parent lineage buckets. The construction does not filter lineage by the output role.
+## 6.2 Why two lineage relations matter
 
-The distinction is therefore:
+The model keeps root lineage and source lineage distinct. This is not decorative provenance metadata. Different kernel guards inspect the two relations: `distinct_content_roots` reasons about root ancestry, while `distinct_content_sources` reasons about external-source ancestry.
 
-```text
-parents  = ordered derivational input
-lineage  = extensional historical ancestry
-```
+The INFER formation theorem shows that both are preserved by independent role-wise union rather than collapsed into one generic provenance set.
 
-This makes the two distinctness guards meaningful. `distinct_content_roots` consumes content root lineage; `distinct_content_sources` consumes content source lineage. The fact that #12 represented these as separate relations is therefore not provenance bookkeeping: the two relations are inputs to different kernel guards.
+## 6.3 Formation does not consume parent usability
 
-## 6.3 Historical formation discipline
+The ordinary INFER constructor has no `Usable` premise for parents. Formation consumes canonical historical parent objects.
 
-An ordinary INFER formation step requires a fresh child identifier, canonical binding and profile, exact rule lookup, canonical context, ordered canonical parent resolution, and the `InferFormationDiscipline`.
-
-The discipline establishes that every parent was formed under the same context and the same profile snapshot as the child. Parent roles match the rule's ordered input roles exactly. The output claim and role are fixed by the rule. The context accepts the output claim. The output scope cannot widen any parent scope. The kernel guard is satisfied. If the output carries a formally interpreted escalation depth, the step cannot amplify it beyond the available parent escalation strength.
-
-Thus ordinary INFER is machine-fixed as both intra-context and intra-profile-snapshot:
+This yields:
 
 \[
 \boxed{
-INFER\ is\ intra\text{-}context
+HistoricalParentExistence
+\text{ may support formation without }
+CurrentParentUsability.
 }
 \]
 
-and
+In the main running trace the parents happen to be usable at `S2` before `d` is formed. That is not required by R7. The steps can be reordered so that `d` is historically formed before either root is admitted, provided the historical formation premises hold.
+
+This is the first half of the distinction:
+
+```text
+historical derivation relation
+    ≠
+current usable-parent responsibility
+```
+
+## 6.4 Fresh INFER history is non-usable
+
+Like ROOT formation, INFER formation changes historical state but leaves evaluation unchanged. Freshness plus evaluation referent coherence proves that the new child has no evaluation position under any profile/context/use key.
+
+Thus:
 
 \[
-\boxed{
-INFER\ is\ intra\text{-}profile\text{-}snapshot.
-}
+\boxed{INFER\ Formation \not\Rightarrow Current\ Usability.}
 \]
 
-This matters for future TRANSPORT. Cross-context movement will require a different constructor family rather than being an accidental relaxation of INFER.
-
-The formal escalation interpretation currently covers a small canonical spelling of depths rather than proving correspondence with every Python integer-parsing behavior. The theorem should therefore be read as no amplification under the formal canonical depth interpretation, not as a complete Python refinement result.
-
-## 6.4 Formation does not consume parent usability
-
-The most important omission from `InferFormationDiscipline` is deliberate: it contains no current-parent usability premise.
-
-Historical INFER asks whether the parent identifiers resolve canonically, whether they belong to the right formation environment, and whether the rule-governed historical step is structurally valid. It does not inspect the evaluation plane.
-
-Consequently, current parent status cannot prevent the historical fact of derivation from being recorded. A system may have historical parents that are suspended, pending, or never admitted; if the historical formation premises hold, INFER may still create the derived historical warrant.
-
-As with ROOT, formation leaves the evaluation topology unchanged. In a reachable pre-state, freshness implies that the child has no evaluation record anywhere after formation. Therefore:
+In the running trace this is the defining fact of `S3`:
 
 \[
-\boxed{
-INFER\ Formation
+Hist_{S_3}(d,W_d)
+\land
+\neg Usable(S_3,k_d).
+\]
+
+## 6.5 Qualification consumes a different responsibility — R8
+
+`qualifyInfer` starts from an already existing historical derived warrant. It requires:
+
+```text
+canonical binding
+canonical historical child
+constructor = infer
+exact formation context
+exact formation profile
+all historical parents usable in the pre-state
+  at the same (profile, context, use)
+```
+
+It deliberately does **not** replay:
+
+```text
+rule lookup
+structural typing
+kernel guards
+context acceptance
+scope checks
+strength checks
+lineage construction
+```
+
+Those obligations were discharged when immutable history was formed and are recoverable from the reachable historical invariant.
+
+Qualification's new responsibility is current parent usability.
+
+## 6.6 Pre-state, not permanent, responsibility
+
+The parent-usability obligation is explicitly indexed by the qualification pre-state:
+
+\[
+ParentsUsable(S_{pre})
++
+QualifyInfer(S_{pre},S_{post})
+\Rightarrow
+ChildUsable(S_{post}).
+\]
+
+The current model does not assert the converse as a permanent invariant. A future revision/invalidation transition may change a parent's current status after the child was qualified. How such dependency invalidation should propagate is deliberately left to later work.
+
+## 6.7 Qualification does not invent an unbacked use
+
+The executable `qualify_derived()` boundary does not repeat the ROOT-style check `binding.use = use`. The formalization does not silently add one.
+
+Instead, two facts close the structural gap. First, a well-typed ordinary INFER rule has nonempty inputs, so a well-formed INFER warrant has at least one parent. Second, every usable parent evaluation position has profile/use binding backing by the shared reachable invariant. Since qualification uses the same `(profile,use)` environment for child and parents, the child cannot originate a wholly unbacked use.
+
+This is only a provenance result:
+
+\[
+EvaluationProfileUseBackedByBinding
 \not\Rightarrow
-Current\ Usability.
-}
+UseAdequacy.
 \]
 
-This is already stronger than the ROOT result. The historical object can encode a nontrivial derivation graph while remaining outside current responsibility.
+## 6.8 Lifecycle separation — R9
 
-## 6.5 Qualification consumes current parents, not formation again
+The composed theorem takes a reachable pre-state, one INFER formation step, and one later INFER qualification step. It exposes in one statement:
 
-INFER qualification is a separate transition over an already formed historical child. It requires a canonical binding and child warrant, verifies that the child constructor is `infer`, and checks exact formation context/profile agreement with the selected environment.
+- the historical child exists in the intermediate state;
+- the qualification step requires current usable parents in that intermediate state;
+- the child is **not** usable there;
+- the child **is** usable in the post-state.
 
-It then imposes its new responsibility:
-
-\[
-InferParentsUsable(S,p,c,u,w)
-\equiv
-\forall parentId\in w.parents,
-Usable(S,\langle p,c,u,parentId\rangle).
-\]
-
-This predicate is explicitly indexed by the **pre-state**.
-
-Qualification does not re-run exact rule lookup, rule typing, kernel guards, context acceptance, scope non-widening, lineage construction, or escalation-strength checks. Those are historical formation responsibilities already carried by the immutable warrant and the shared reachable invariant.
-
-This is a deliberate anti-replay principle:
+In paper form:
 
 \[
 \boxed{
-HistoricalFormationValidity
-\text{ is carried by immutable history, not re-proved at every qualification.}
-}
-\]
-
-After the parent-usability obligation is met, the shared qualification setter writes `LIVE/PLACED` at the exact child evaluation key, so the child becomes usable in the post-state.
-
-The direction is temporal:
-
-\[
-\boxed{
-ParentsUsable_{pre}
+HistoricalDerived
++
+CurrentUsableParents_{pre}
 +
 ExplicitQualification
 \Rightarrow
-ChildUsable_{post}.
+CurrentDerivedUsable_{post}
 }
 \]
 
-We do not assert the converse invariant that every currently usable child must have currently usable parents in all future states. Later challenge, revision, and invalidation transitions may change currentness. Synchronizing those changes is a future lifecycle problem, not part of the formation/qualification theorem.
-
-## 6.6 Nonempty current-parent responsibility
-
-A universal parent-usability condition would be vacuous for an empty parent list. The formal rule discipline closes this hole.
-
-Every well-typed rule in the current finite role vocabulary has a nonempty input-role list. Combined with exact ordered parent-role agreement in reachable INFER history, any well-formed INFER warrant has nonempty parents.
-
-This result also explains an asymmetry in the executable qualification API. ROOT admission explicitly checks `binding.use = use`; derived qualification currently does not repeat that check. The formal model does not silently add it.
-
-Instead, the shared invariant requires every populated evaluation `(profile,use)` to have canonical binding backing. Because a well-formed INFER has at least one parent, and qualification requires every parent to be usable in the exact selected `(profile,context,use)` environment, at least one pre-existing usable parent carries binding-backed profile/use provenance. The child inherits the same `(profile,use)` evaluation environment.
-
-Hence the formal model proves the structural property:
+with the intermediate negative fact:
 
 \[
-\boxed{
-\text{INFER qualification does not originate an unbacked use.}
-}
+\boxed{HistoricalDerived \not\Rightarrow CurrentUsability.}
 \]
 
-This is not equivalent to requiring that the binding argument supplied to qualification itself has matching use, and it is not a use-adequacy theorem. The result identifies where the responsibility actually comes from: the current predecessor chain.
+The machine-checked distinction is therefore not merely that history and status are stored in different fields. The formation and qualification transitions consume different premises over the same historical graph.
 
-## 6.7 Lifecycle separation theorem
+## 6.9 Stopping before entitlement
 
-The two milestones compose into one paper-facing lifecycle theorem (R9). Suppose a reachable state `S_0` takes a historical INFER formation step to `S_1`, then an explicit INFER qualification step to `S_2`. The theorem recovers a canonical derived warrant in `S_1`, establishes that its historical parents are currently usable in the qualification environment of `S_1`, proves that the child is **not** usable in `S_1`, and proves that it **is** usable at the exact child key in `S_2`.
+At `S4`, the running example establishes that `d` is usable. It does not establish that any particular licensing move is entitled.
 
-The state trace is therefore:
-
-```text
-historical parent warrants
-        │
-        │ rule-governed INFER formation
-        │ does not consume parent usability
-        ▼
-derived historical warrant
-        │
-        ├── historical object exists
-        └── child not usable
-                  │
-                  │ explicit qualification
-                  │ consumes parent usability NOW
-                  ▼
-             child usable
-```
-
-The conceptual result is not merely that the implementation has two functions. It is that the model supports two formally distinct relations over one history graph:
-
-\[
-\boxed{
-\text{historical derivation relation}
-\neq
-\text{current responsibility chain}.
-}
-\]
-
-Historical parenthood answers where the child came from. Current usable-parent responsibility answers whether the system may presently qualify that child in a particular evaluation environment. The former is immutable history; the latter is a pre-state condition that may change.
-
-## 6.8 Usability still is not entitlement
-
-After qualification, the child is usable. Nothing in R8 or R9 implies that a licensing move is entitled.
-
-The static entitlement layer additionally requires an admissible ambient environment, exact requirement discharge by a branch, and kernel-floor safety. A usable child may fail to match the required claim or role, may be outside the relevant branch scope, may exist under a context that is not currently grounded-active, or may be insufficient for the exact move requirement.
-
-Therefore:
-
-\[
-\boxed{
-CurrentDerivedUsable
-\not\Rightarrow
-Entitled.
-}
-\]
-
-This boundary is also the point at which the present artifact stops short of an end-to-end reachable-state entitlement theorem. Sections 3–6 together establish the semantic separation needed by such a theorem, but they do not yet assemble every `LicensingRead` field directly from reachable state.
+The static layer still requires exact requirement resolution, branch discharge, ambient admissibility, and floor safety. This is why the paper's title stops at current usability rather than claiming a complete transition from historical formation to entitlement.
 
 ---
 
 # 7. Executable Reference and Conformance
 
-_TODO: write after Sections 1 and 3–6 stabilize._
+The repository includes a Python V0.1.2.2 reference implementation and cross-language adapters. Their purpose is to test selected executable observations against the mechanized projection semantics, not to serve as a formal operational semantics for Python.
 
-Frozen scope:
+## 7.1 What is compared
 
-- describe Python V0.1.2.2 as an executable reference kernel;
-- explain the canonical-read fixture adapter and grounded-currentness fixtures;
-- report selected differential conformance results;
-- distinguish pre-refresh seed/provenance observations from post-transition `BaseCurrent` and active-context observations;
-- state prominently that 63 passing tests are conformance evidence and non-regression, not Python operational refinement;
-- do not claim ROOT/INFER transition refinement unless a new explicit conformance milestone is added.
+The static conformance path executes the Python kernel, extracts canonical snapshots, encodes them deterministically, and generates Lean-consumable fixtures. Lean then evaluates the already mechanized projection functions for ambient observations, atomic satisfaction, floor observations, and related static behavior.
 
-Preferred wording:
+The currentness conformance path preserves a pre-refresh active/provenance boundary and compares selected post-transition Python activity against proof-carrying grounded/ungrounded certificates. It does not use post-refresh activity as its own seed.
 
-> Selected executable observations are differentially conformance-tested against the mechanized projection semantics.
+## 7.2 What is deliberately not duplicated
 
-Forbidden wording:
+The Python adapters do not implement a second copy of Lean's branch satisfaction or floor semantics merely to make two hand-written models agree. Similarly, the Lean side does not pretend to reproduce Python's general integer parser for escalation-depth strings.
 
-> The Python kernel is verified.
+This design keeps the adapter boundary visible: executable parsing, transition execution, and snapshot extraction remain Python responsibilities; finite semantic checking remains on the mechanized side where modeled.
+
+## 7.3 Current empirical boundary
+
+At the present artifact revision, repository CI runs the existing Python regression/conformance surface as 63 tests alongside the Lean build and theorem audit. This count is an artifact metric, not a theorem count and not a coverage proof.
+
+The defensible implementation claim is:
+
+> **Selected Python V0.1.2.2 observations are differentially conformance-tested against the mechanized projection/currentness semantics.**
+
+The following claim is not supported:
+
+> **Python V0.1.2.2 is verified.**
+
+No source-level refinement theorem shows that arbitrary Python runtime states correspond to `CanonicalState`, that every Python operation refines `Step`, or that `root()`, `infer()`, `admit_root()`, or `qualify_derived()` exactly implement the Lean transitions for all inputs.
+
+## 7.4 Why the conformance section is secondary
+
+The first paper's theoretical contribution is the responsibility decomposition and its metatheory. The executable reference matters because it shows that selected implementation observations can be aligned with the formal projections and because previous adapter work exposed real state-boundary issues. But conformance testing remains evaluation evidence, not a fourth proof contribution.
 
 ---
 
 # 8. Limits and Non-Theorems
 
-_TODO: expand into prose; keep the list stable._
+The artifact is intentionally explicit about what its names do not entail.
 
-The current paper does not prove:
+| Boundary | What is proved/tested | What is not proved |
+| --- | --- | --- |
+| Historical warrant | Canonical formation shape, referent immutability, ROOT/INFER parent and lineage discipline | Source authenticity, truth of claim, epistemic adequacy |
+| Rule/profile | Exact immutable lookup and structural rule discipline | Rule adequacy, profile adequacy, completeness of policy |
+| Evaluation | `LIVE/PLACED` usability, referent coherence, binding backing | Normative adequacy of use or admission basis |
+| INFER qualification | Pre-state usable parents imply post-state child usability under explicit qualification | Permanent child dependency invariant; later invalidation propagation |
+| Grounded currentness | Bootstrap-rooted semantic grounding, no pure self-support | Reachable Adopt lifecycle; adequacy of `baseCurrent`; full Python refresh refinement |
+| Entitlement | BC/KFL/RBC and canonical projection coherence for a supplied/resolved licensing read | Total `CanonicalState → LicensingRead → Entitled` assembly |
+| Python | Selected differential conformance fixtures | Verified implementation or general operational refinement |
+| Regime | Correct execution of modeled finite rules | `ProfileExecutionCorrectness → ProfileAdequacy`; `KernelCorrectness → KernelFloorAdequacy` |
 
-```text
-ProfileAdequacy
-KernelFloorAdequacy
-RuleAdequacy
-RootAdmissionAdequacy
-UseAdequacy
-source authenticity
-actor authentication
-Python operational refinement
-TRANSPORT lifecycle
-license issuance lifecycle
-challenge/revision/revalidation
-complete BaseCurrent adequacy
-CanonicalState → LicensingRead → Entitled end-to-end assembly
-Q_open
-Q_close
-```
+Several non-implications should remain visible:
 
-These boundaries should be framed as theorem-regime delimiters, not buried as implementation caveats.
+\[
+HistoricalExistence \not\Rightarrow CurrentUsability,
+\]
+
+\[
+CurrentUsability \not\Rightarrow Entitlement,
+\]
+
+\[
+RecordedBasis \not\Rightarrow AdequateBasis,
+\]
+
+\[
+RecordedActor \not\Rightarrow AuthenticatedPrincipal,
+\]
+
+\[
+ProfileExecutionCorrectness \not\Rightarrow ProfileAdequacy,
+\]
+
+\[
+KernelCorrectness \not\Rightarrow KernelFloorAdequacy.
+\]
+
+These are not caveats appended after the fact. They define the theorem regime.
 
 ---
 
 # 9. Related Work
 
-_TODO: literature pass required before prose._
+The closest neighboring areas already provide substantial parts of the conceptual landscape. Our positioning therefore depends on a narrow comparison, not on a claim that previous systems fail to distinguish history from change in general.
 
-Comparison axes to develop:
+## 9.1 Truth maintenance
 
-```text
-proof-carrying authorization / trust management
-reference-monitor and security-kernel verification
-provenance and lineage systems
-truth-maintenance / belief-revision systems
-dynamic epistemic logic and justification logic
-dataflow / dependency invalidation
-proof-relevant semantics and audit logs
-capability systems and policy snapshots
-```
+Assumption-Based Truth Maintenance Systems (ATMS) preserve explicit assumption environments and justification structure while supporting inconsistent information, context switching, and reasoning without destructive retraction of all alternatives [de Kleer 1986]. This is an important predecessor for any architecture that distinguishes stored reasons from currently supported contexts.
 
-The distinctive comparison question is whether a system explicitly separates immutable derivational existence from mutable current qualification and then connects both to a finite entitlement boundary.
+Our result is not that such a distinction had never been represented. The narrower difference is the object and transition boundary: a `HistoricalWarrant` is an immutable canonical referent, current usability is a separate evaluation relation keyed by profile/context/use, and R9 proves a concrete two-step lifecycle in which ordinary INFER formation omits current parent usability while qualification later requires it as a pre-state obligation.
+
+## 9.2 Database provenance
+
+Database provenance, especially provenance semirings, provides a systematic algebraic account of how query outputs depend on inputs [Green, Karvounarakis, Tannen 2007]. That literature makes it untenable to present “recording derivation provenance” as the novelty of this work.
+
+Our historical parents and lineage play a provenance-like role, but the central theorem concerns a second relation not supplied by provenance alone: whether an already formed historical object is currently qualified for use. The paper's contribution is the explicit separation and transition contract between these relations, not the existence of provenance annotations.
+
+## 9.3 Justification Logic
+
+Justification Logic internalizes proof/evidence objects through assertions such as `t : F`, read as “t is a justification for F” [Artemov 2008]. It therefore provides a mature proof-relevant epistemic framework.
+
+Our warrants should not be presented as the first explicit justification objects. They are operationally different: the first-paper kernel records finite canonical formation objects and maintains a mutable evaluation plane outside the historical object. The main result concerns how formation and later qualification consume different state predicates, not a new object language for epistemic justification.
+
+## 9.4 Proof-carrying and stateful authorization
+
+Proof-Carrying Authentication requires clients to submit checkable proofs with requests [Appel & Felten 1999]. Later authorization work moves even closer to our current-state boundary. Explicit-time authorization logic reasons about time and mutable state [DeYoung, Garg, Pfenning 2008]. The Proof-Carrying File System supports policies whose consequences depend on time and system state and separates proof/certificate verification from later checks of extracted time/state conditions through conditional capabilities [Garg & Pfenning 2010]. Stateful Authorization Logic gives a proof-theoretic treatment of policies depending on externally verified state predicates [Garg & Pfenning 2012].
+
+These systems are the strongest reason not to claim that our work is the first to separate proof construction from current-state authorization checks. PCFS in particular explicitly verifies proof structure off-line and checks state/time conditions at access time.
+
+Our narrower result differs in emphasis and formal object. The reachable kernel preserves one immutable warrant graph while maintaining a separate evaluation relation. ROOT and INFER are historical formation constructors; admission/qualification are explicit evaluation transitions. For ordinary INFER, the formal theorem identifies exactly which obligations remain historical—rule lookup, typing, guards, context acceptance, scope/strength, lineage—and exactly which new obligation is consumed later—pre-state usability of every historical parent. Qualification therefore does not simply “check current state”; it checks a different responsibility predicate over a persistent historical parent relation while relying on immutable history to carry formation validity.
+
+## 9.5 Belief revision and dynamic epistemic logic
+
+AGM belief revision studies rational transformations of belief sets under contraction, expansion, and revision [Alchourrón, Gärdenfors, Makinson 1985]. Classical belief-set presentations often abstract away explicit derivational reasons, although foundational approaches and truth-maintenance traditions retain richer support structure. Dynamic Epistemic Logic studies model-transforming epistemic actions and broader belief change [van Ditmarsch, van der Hoek, Kooi 2007].
+
+Our problem is complementary. The first-paper kernel does not yet model general revision of the historical/evaluation graph. Instead it deliberately keeps canonical formation history immutable and asks which current evaluation transition may qualify an already formed object. Challenge/revision/revalidation will eventually connect the work more directly to belief-change semantics, but those transitions are outside the present theorem surface.
+
+## 9.6 Positioning summary
+
+The novelty claim should therefore be phrased positively and narrowly:
+
+> **We mechanize a finite reachable kernel in which canonical formation history, current qualification, and branch-local entitlement observations are separate interfaces. ROOT and INFER make the split transition-visible. Ordinary INFER formation consumes exact historical rule/parent obligations without consuming parent usability; later qualification consumes pre-state current usability of those same historical parents without replaying formation.**
+
+This is not a priority claim over provenance, truth maintenance, justification logic, proof-carrying authorization, or belief dynamics. It is a specific machine-checked decomposition of responsibilities inside one finite kernel.
+
+### Bibliographic anchors for this draft
+
+- Johan de Kleer. “An assumption-based TMS.” *Artificial Intelligence* 28(2):127–162, 1986. DOI `10.1016/0004-3702(86)90080-9`.
+- Todd J. Green, Grigoris Karvounarakis, Val Tannen. “Provenance Semirings.” *PODS 2007*, 31–40. DOI `10.1145/1265530.1265535`.
+- Sergei Artemov. “The Logic of Justification.” *The Review of Symbolic Logic* 1(4):477–513, 2008. DOI `10.1017/S1755020308090060`.
+- Andrew W. Appel, Edward W. Felten. “Proof-Carrying Authentication.” *CCS 1999*, 52–62. DOI `10.1145/319709.319718`.
+- Henry DeYoung, Deepak Garg, Frank Pfenning. “An Authorization Logic with Explicit Time.” *CSF 2008*. DOI `10.1109/CSF.2008.15`.
+- Deepak Garg, Frank Pfenning. “A Proof-Carrying File System.” *IEEE Symposium on Security and Privacy 2010*, 349–364. DOI `10.1109/SP.2010.28`.
+- Deepak Garg, Frank Pfenning. “Stateful Authorization Logic—Proof Theory and a Case Study.” *Journal of Computer Security* 20(4):353–391, 2012.
+- Carlos E. Alchourrón, Peter Gärdenfors, David Makinson. “On the Logic of Theory Change: Partial Meet Contraction and Revision Functions.” *Journal of Symbolic Logic* 50(2):510–530, 1985. DOI `10.2307/2274239`.
+- Hans van Ditmarsch, Wiebe van der Hoek, Barteld Kooi. *Dynamic Epistemic Logic*. Springer, 2007. DOI `10.1007/978-1-4020-5839-4`.
+
+The submission bibliography should expand descendant work where needed; the current matrix is a positioning baseline, not an exhaustive literature survey.
 
 ---
 
 # 10. Discussion and Future Work
 
-_TODO: prose after theorem-gap review._
+The first-paper freeze changes the default burden of proof for new semantics. A new constructor is not justified because it would make the kernel feel more complete; it must close a concrete gap in the paper's argument.
 
-Priority order during the paper freeze:
+## 10.1 State-backed licensing-read assembly
 
-1. add no new core semantics unless Sections 3–6 expose a theorem gap that cannot be stated honestly;
-2. if needed, prefer a narrow **State-Backed Licensing Read Assembly** theorem over constructor expansion;
-3. treat TRANSPORT as a cross-context strengthening result;
-4. later add challenge/revision/revalidation and license lifecycle;
-5. keep Q_open and Q_close as separate theoretical programs.
+The current draft does not require a total `CanonicalState → LicensingRead` theorem. If a later abstract, reviewer request, or stronger end-to-end claim requires one, the appropriate milestone is a narrow assembly result that combines historical-warrant projection, state-backed usability, exact requirement resolution, selected binding/context/use observations, and grounded currentness into the existing canonical read.
 
-The main conceptual future boundary is regime revision. The present work proves correct execution inside a finite responsibility regime. It does not prove when the regime itself should be reopened or revised.
+Until such a claim is necessary, the gap should remain explicit.
 
-A future Q_open result should therefore be anti-circular rather than universal: changes to the regime that defines sufficiency should require responsibility not reducible to the very regime under challenge. That question is intentionally outside the first paper.
+## 10.2 TRANSPORT
+
+TRANSPORT is the natural next constructor family for cross-context responsibility. Ordinary INFER is already machine-fixed as intra-context and intra-profile-snapshot. A future TRANSPORT lifecycle could therefore make the cross-context boundary theorem-visible rather than treating transport as a convenience operation.
+
+It is strengthening material, not a prerequisite for the first paper's core argument.
+
+## 10.3 Challenge, revision, and revalidation
+
+The present lifecycle theorems stop once an object becomes usable. They do not specify what should happen when a parent later becomes suspended or pending, when a context loses currentness, or when a challenge targets a historical descendant.
+
+This is where the distinction between persistent historical edges and time-indexed current responsibility becomes operationally consequential. Future work should model dependency invalidation and explicit revalidation without rewriting historical formation.
+
+## 10.4 License lifecycle and verified execution
+
+The reachable transition system does not yet model license issuance, Adopt activation, or full operational refinement of the Python kernel. These are engineering/formalization extensions rather than hidden assumptions of the current lifecycle theorem.
+
+A verified execution path would require a source or operational semantics for the executable kernel and a refinement relation to the canonical state/step model. Differential conformance tests do not substitute for that proof.
+
+## 10.5 Regime reopening: Q_open and Q_close
+
+The current paper studies correct execution inside a fixed finite regime. It does not answer when the system may revise the regime that defines sufficiency, nor how heterogeneous systems jointly establish or discharge a shared regime.
+
+Those questions—informally Q_open and Q_close—belong to a broader Responsibility Topology research program. They should not become a second main line of the first paper. Their role here is to mark the boundary:
+
+\[
+\boxed{
+CorrectExecutionInsideRegime
+\not\Rightarrow
+AdequacyOfRegime.
+}
+\]
+
+That non-theorem is not a weakness to erase. It is the reason the paper can make a precise finite claim without pretending to solve general epistemology.
