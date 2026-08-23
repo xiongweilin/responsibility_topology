@@ -350,17 +350,18 @@ theorem contextRevalidation_survives_refresh
   subst A₂
   exact (repairActionStep_context_makes_grounded hRepair).2
 
-/-- Full adjacent Paper 3 lifecycle theorem.
+/-- Conditional adjacent Paper 3 restoration theorem.
 
-The first challenge and refresh witness loss; an ordered execution of the
-selected repair set reaches `S₃`; a `RepairRealization` certifies that this
-concrete execution discharges the abstract hypergraph obligations; and the final
-refresh preserves the restored target obligation.
+The challenge, first refresh, and ordered trace witness the intended lifecycle;
+`RepairSet` plus a sound `RepairRealization` provide the restoration argument,
+and the final refresh preserves the restored target obligation.  This theorem
+itself does not assert that the states are reachable from the formal initial
+boundary.
 
   S₀ --challenge--> S₁ --refresh--> S₂
      --revalidate(actions)--> S₃ --refresh--> S₄
 -/
-theorem reachable_revalidation_lifecycle_restores
+theorem revalidation_lifecycle_restores
     {S₀ S₁ S₂ S₃ S₄ : AdoptState}
     {bindingId contextId use : String}
     {challengerId bridgeId targetId : WarrantId}
@@ -377,5 +378,38 @@ theorem reachable_revalidation_lifecycle_restores
   have hEq := refreshStep_exact hFinalRefresh
   subst S₄
   exact repairSet_sufficient_after_refresh hRepairSet hRealization
+
+/-- Reachability-strengthened lifecycle corollary.
+
+If the pre-challenge state is reachable, the challenge, first refresh, ordered
+repair trace, and final refresh all remain inside `RevalidationReachable`; the
+same lifecycle also restores the target obligation. -/
+theorem reachable_revalidation_lifecycle_restores
+    {S₀ S₁ S₂ S₃ S₄ : AdoptState}
+    {bindingId contextId use : String}
+    {challengerId bridgeId targetId : WarrantId}
+    {actions : List RepairAction}
+    {problem : RepairProblem S₂}
+    (hReachable : RevalidationReachable S₀)
+    (hChallenge : ChallengeStep S₀
+      (.challenge bindingId contextId use challengerId bridgeId targetId) S₁)
+    (hFirstRefresh : RefreshStep S₁ .refresh S₂)
+    (hTrace : RevalidationTrace S₂ actions S₃)
+    (hRepairSet : RepairSet problem (TraceActionSet actions))
+    (hRealization : RepairRealization problem (TraceActionSet actions) S₃)
+    (hFinalRefresh : RefreshStep S₃ .refresh S₄) :
+    RevalidationReachable S₄ ∧ problem.target.Holds S₄ := by
+  have hS₁ : RevalidationReachable S₁ :=
+    RevalidationReachable.step hReachable
+      (RevalidationStep.prior (RefreshStep.prior hChallenge))
+  have hS₂ : RevalidationReachable S₂ :=
+    RevalidationReachable.step hS₁ (RevalidationStep.prior hFirstRefresh)
+  have hS₃ : RevalidationReachable S₃ :=
+    revalidationTrace_preserves_reachability hS₂ hTrace
+  have hS₄ : RevalidationReachable S₄ :=
+    RevalidationReachable.step hS₃ (RevalidationStep.prior hFinalRefresh)
+  exact ⟨hS₄,
+    revalidation_lifecycle_restores hChallenge hFirstRefresh hTrace
+      hRepairSet hRealization hFinalRefresh⟩
 
 end ResponsibilityTopology
