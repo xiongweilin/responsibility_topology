@@ -155,7 +155,26 @@ theorem transportRootLineageTwoHop_bridge_exact
       original.rootLineage .bridge rootId ∨
         (∃ role, witness₁.rootLineage role rootId) ∨
         (∃ role, witness₂.rootLineage role rootId) := by
-  simp [transportRootLineageTwoHop, transportRootLineage]
+  change
+    ((original.rootLineage .bridge rootId ∨
+        ∃ role, witness₁.rootLineage role rootId) ∨
+      ∃ role, witness₂.rootLineage role rootId) ↔
+      original.rootLineage .bridge rootId ∨
+        (∃ role, witness₁.rootLineage role rootId) ∨
+        (∃ role, witness₂.rootLineage role rootId)
+  constructor
+  · intro h
+    rcases h with hFirst | hThird
+    · rcases hFirst with hOriginal | hWitness₁
+      · exact Or.inl hOriginal
+      · exact Or.inr (Or.inl hWitness₁)
+    · exact Or.inr (Or.inr hThird)
+  · intro h
+    rcases h with hOriginal | hRest
+    · exact Or.inl (Or.inl hOriginal)
+    · rcases hRest with hWitness₁ | hWitness₂
+      · exact Or.inl (Or.inr hWitness₁)
+      · exact Or.inr hWitness₂
 
 /-- T4a BRIDGE source lineage has the corresponding exact accumulation law. -/
 theorem transportSourceLineageTwoHop_bridge_exact
@@ -165,6 +184,25 @@ theorem transportSourceLineageTwoHop_bridge_exact
       original.sourceLineage .bridge sourceId ∨
         (∃ role, witness₁.sourceLineage role sourceId) ∨
         (∃ role, witness₂.sourceLineage role sourceId) := by
-  simp [transportSourceLineageTwoHop, transportSourceLineage]
+  change
+    ((original.sourceLineage .bridge sourceId ∨
+        ∃ role, witness₁.sourceLineage role sourceId) ∨
+      ∃ role, witness₂.sourceLineage role sourceId) ↔
+      original.sourceLineage .bridge sourceId ∨
+        (∃ role, witness₁.sourceLineage role sourceId) ∨
+        (∃ role, witness₂.sourceLineage role sourceId)
+  constructor
+  · intro h
+    rcases h with hFirst | hThird
+    · rcases hFirst with hOriginal | hWitness₁
+      · exact Or.inl hOriginal
+      · exact Or.inr (Or.inl hWitness₁)
+    · exact Or.inr (Or.inr hThird)
+  · intro h
+    rcases h with hOriginal | hRest
+    · exact Or.inl (Or.inl hOriginal)
+    · rcases hRest with hWitness₁ | hWitness₂
+      · exact Or.inl (Or.inr hWitness₁)
+      · exact Or.inr hWitness₂
 
 end ResponsibilityTopology
