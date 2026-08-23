@@ -232,8 +232,8 @@ theorem repairActionStep_license_makes_baseCurrent
       A'.adoptLicense licenseId = some L ∧
       AdoptLicenseBaseCurrent A'.core licenseId L := by
   cases hStep with
-  | @license _ _ L licenseCanonical ready =>
-      exact ⟨L, licenseCanonical,
+  | license licenseCanonical ready =>
+      exact ⟨_, licenseCanonical,
         revalidateLicenseState_makes_baseCurrent ready⟩
 
 /-- Context repair restores both seed activity and a Grounded currentness
@@ -245,8 +245,8 @@ theorem repairActionStep_context_makes_grounded
     A'.core.activeContext key ∧
       Grounded A'.toLicenseRead.toActivationRead key := by
   cases hStep with
-  | @context _ _ licenseId L inactive activation licenseCanonical targetExact
-      baseCurrent issuerGrounded =>
+  | context inactive activation licenseCanonical targetExact baseCurrent
+      issuerGrounded =>
       constructor
       · exact Or.inl rfl
       · exact revalidateContextState_makes_grounded
@@ -366,10 +366,10 @@ theorem reachable_revalidation_lifecycle_restores
     {challengerId bridgeId targetId : WarrantId}
     {actions : List RepairAction}
     {problem : RepairProblem S₂}
-    (hChallenge : ChallengeStep S₀
+    (_hChallenge : ChallengeStep S₀
       (.challenge bindingId contextId use challengerId bridgeId targetId) S₁)
-    (hFirstRefresh : RefreshStep S₁ .refresh S₂)
-    (hTrace : RevalidationTrace S₂ actions S₃)
+    (_hFirstRefresh : RefreshStep S₁ .refresh S₂)
+    (_hTrace : RevalidationTrace S₂ actions S₃)
     (hRepairSet : RepairSet problem (TraceActionSet actions))
     (hRealization : RepairRealization problem (TraceActionSet actions) S₃)
     (hFinalRefresh : RefreshStep S₃ .refresh S₄) :
