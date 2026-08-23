@@ -17,6 +17,7 @@ import ResponsibilityTopology.EvaluationVocabulary
 import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.AdoptLicenseCurrentness
 import ResponsibilityTopology.AdoptReachability
+import ResponsibilityTopology.AdoptActivation
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
@@ -139,6 +140,13 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.adoptInitialBoundary_invariant
 #print axioms ResponsibilityTopology.adoptReachable_invariant
 #print axioms ResponsibilityTopology.reachable_adoptLicensesWellFormed
+#print axioms ResponsibilityTopology.adoptReachable_to_activationReachable
+#print axioms ResponsibilityTopology.adoptContext_requires_currentLicense
+#print axioms ResponsibilityTopology.adoptContext_activation_exact
+#print axioms ResponsibilityTopology.adoptContext_historyReferentsImmutable
+#print axioms ResponsibilityTopology.adoptContext_evaluationTopology_unchanged
+#print axioms ResponsibilityTopology.adoptActivationStep_preserves_invariant
+#print axioms ResponsibilityTopology.adoptActivationReachable_invariant
 #print axioms ResponsibilityTopology.rootStep_newWarrant_exact
 #print axioms ResponsibilityTopology.rootStep_oldWarrants_immutable
 #print axioms ResponsibilityTopology.rootStep_historyReferentsImmutable

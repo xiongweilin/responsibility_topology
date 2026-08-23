@@ -20,6 +20,7 @@ import ResponsibilityTopology.EvaluationVocabulary
 import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.AdoptLicenseCurrentness
 import ResponsibilityTopology.AdoptReachability
+import ResponsibilityTopology.AdoptActivation
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
