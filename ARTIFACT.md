@@ -4,25 +4,25 @@ This document freezes the first-paper artifact boundary after the submission-arc
 
 ## 1. Locked research artifact
 
-The paper-facing research artifact is locked to commit:
+The paper-facing semantic artifact is locked to commit:
 
 ```text
 d0074353176fc74c11bc33adab2feae448f56bd8
 ```
 
-This commit contains the submission-facing architecture and the frozen novelty boundary while retaining the same formal/Python theorem and executable surfaces used by the first paper. PR #24 adds only reproducibility documentation and a pinned test dependency; it does not redefine the locked semantic baseline.
+This commit contains the submission-facing architecture and the frozen novelty boundary while retaining the formal/Python theorem and executable surfaces used by the first paper. PR #24 adds only reproducibility documentation and a pinned convenience dependency file; it does not redefine the locked semantic baseline.
 
 When reproducing a paper claim, check out the exact commit above rather than an arbitrary later `main`.
 
 ## 2. Reproduction environment
 
-The repository pins the Lean toolchain in `formal/lean-toolchain`:
+The locked commit pins the Lean toolchain in `formal/lean-toolchain`:
 
 ```text
 leanprover/lean4:v4.19.0
 ```
 
-The pre-freeze GitHub Actions run used:
+The final pre-freeze GitHub Actions run over the same formal/Python semantic tree used:
 
 ```text
 Ubuntu 24.04
@@ -32,13 +32,7 @@ Lake 5.0.0
 pytest 9.1.1
 ```
 
-For a clean Python environment, PR #24 supplies:
-
-```text
-artifact-requirements.txt
-```
-
-containing the tested pytest version. The executable kernel itself uses the Python standard library; pytest is the test dependency.
+PR #24 additionally supplies `artifact-requirements.txt` as a convenience for later checkouts. Because that file is packaging added after the locked semantic commit, exact reproduction of `d0074353…` should install the tested dependency directly as shown below.
 
 ## 3. Reproduce the Lean build and theorem audit
 
@@ -90,12 +84,12 @@ The full audit, not this summary table, is authoritative if a declaration change
 
 ## 4. Reproduce the Python and cross-language tests
 
-From the repository root, with Python 3.12:
+From the repository root of the exact locked commit, with Python 3.12:
 
 ```bash
 python -m venv .venv
 . .venv/bin/activate
-python -m pip install -r artifact-requirements.txt
+python -m pip install pytest==9.1.1
 python -m pytest -q \
   test_v0122_kernel.py \
   test_v0122_currentness.py \
@@ -103,7 +97,7 @@ python -m pytest -q \
   test_v0122_currentness_conformance.py
 ```
 
-On Windows, activate the virtual environment using the platform-appropriate command before installing the dependency.
+On Windows, activate the virtual environment using the platform-appropriate command before installing the dependency. On a later checkout containing PR #24 packaging, `python -m pip install -r artifact-requirements.txt` is equivalent for this test dependency.
 
 The final pre-freeze CI run over the same formal/Python semantic tree reported:
 
