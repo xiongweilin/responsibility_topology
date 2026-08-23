@@ -8,7 +8,9 @@ import ResponsibilityTopology.RequirementResolution
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
+import ResponsibilityTopology.HistoricalObjects
 import ResponsibilityTopology.Reachability
+import ResponsibilityTopology.RootFormation
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -85,6 +87,7 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.groundedAmbient_contextActive_iff
 #print axioms ResponsibilityTopology.groundedCertificate_sound
 #print axioms ResponsibilityTopology.ungroundedCertificate_sound
+#print axioms ResponsibilityTopology.historicalWarrant_readProjection
 #print axioms ResponsibilityTopology.canonicalIdsUnique
 #print axioms ResponsibilityTopology.step_historyReferentsImmutable
 #print axioms ResponsibilityTopology.step_preserves_invariant
@@ -93,3 +96,14 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.reachable_activeContextHasActivationProvenance
 #print axioms ResponsibilityTopology.reachable_adoptedActiveContextHasCanonicalLicense
 #print axioms ResponsibilityTopology.reachable_toActivationRead_wellFormed
+#print axioms ResponsibilityTopology.rootStep_newWarrant_exact
+#print axioms ResponsibilityTopology.rootStep_oldWarrants_immutable
+#print axioms ResponsibilityTopology.rootStep_historyReferentsImmutable
+#print axioms ResponsibilityTopology.rootStep_evaluationTopology_unchanged
+#print axioms ResponsibilityTopology.rootStep_preserves_warrantReferentsCanonical
+#print axioms ResponsibilityTopology.rootStep_preserves_warrantParentsCanonical
+#print axioms ResponsibilityTopology.rootStep_preserves_rootWarrantWellFormed
+#print axioms ResponsibilityTopology.reachable_warrantReferentsCanonical
+#print axioms ResponsibilityTopology.reachable_warrantParentsCanonical
+#print axioms ResponsibilityTopology.reachable_rootWarrantsWellFormed
+#print axioms ResponsibilityTopology.reachable_warrantRootLineageCanonical
