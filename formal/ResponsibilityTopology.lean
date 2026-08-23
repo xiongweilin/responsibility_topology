@@ -14,6 +14,7 @@ import ResponsibilityTopology.CurrentnessConformance
 import ResponsibilityTopology.HistoricalObjects
 import ResponsibilityTopology.InferenceObjects
 import ResponsibilityTopology.InferenceSemantics
+import ResponsibilityTopology.TransportSemantics
 import ResponsibilityTopology.EvaluationVocabulary
 import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
