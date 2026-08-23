@@ -134,6 +134,65 @@ theorem adoptContext_evaluationTopology_unchanged
       inactive freshActivation =>
       exact ⟨rfl, rfl⟩
 
+/-- Adopt leaves the enriched immutable license lookup unchanged. -/
+theorem adoptContext_enrichedLicenses_unchanged
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {target : ContextKey}
+    (hStep : AdoptActivationStep A (.adoptContext licenseId target) A') :
+    A'.adoptLicense = A.adoptLicense := by
+  cases hStep with
+  | adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
+      inactive freshActivation =>
+      rfl
+
+/-- Every context active before an Adopt step remains active afterwards. -/
+theorem adoptContext_active_monotone
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {target key : ContextKey}
+    (hStep : AdoptActivationStep A (.adoptContext licenseId target) A')
+    (hActive : A.core.activeContext key) :
+    A'.core.activeContext key := by
+  cases hStep with
+  | adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
+      inactive freshActivation =>
+      exact Or.inr hActive
+
+/-- Adopt does not rewrite activation provenance of any previously active
+context; freshness/inactivity isolates the newly activated target. -/
+theorem adoptContext_oldActivation_unchanged
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {target key : ContextKey}
+    (hStep : AdoptActivationStep A (.adoptContext licenseId target) A')
+    (hActive : A.core.activeContext key) :
+    A'.core.activationProvenance key = A.core.activationProvenance key := by
+  cases hStep with
+  | adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
+      inactive freshActivation =>
+      have hNe : key ≠ target := by
+        intro hEq
+        subst key
+        exact inactive hActive
+      simp [activateWithAdopt, putCanonical, hNe]
+
+/-- Adopt changes only activity/provenance, neither of which occurs in the
+non-recursive license-currentness predicate. -/
+theorem adoptContext_preserves_baseCurrent
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {target : ContextKey}
+    (hStep : AdoptActivationStep A (.adoptContext licenseId target) A')
+    {observedId : ActivationLicenseId}
+    {observed : CanonicalAdoptLicense}
+    (hCurrent : AdoptLicenseBaseCurrent A.core observedId observed) :
+    AdoptLicenseBaseCurrent A'.core observedId observed := by
+  cases hStep with
+  | adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
+      inactive freshActivation =>
+      simpa [activateWithAdopt, AdoptLicenseBaseCurrent] using hCurrent
+
 private theorem contextKeyCanonical_of_recordDiscipline_issuer
     {S : CanonicalState}
     {L : CanonicalAdoptLicense}

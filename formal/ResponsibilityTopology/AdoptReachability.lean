@@ -182,6 +182,37 @@ theorem recordAdoptLicense_historyReferentsImmutable
       · intro id license h
         exact putCanonical_preserves_some_local freshProjection h
 
+/-- Recording one fresh license preserves every pre-existing enriched license
+referent exactly. -/
+theorem recordAdoptLicense_oldRecords_immutable
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {L : CanonicalAdoptLicense}
+    (hStep : AdoptRecordStep A (.recordAdoptLicense licenseId L) A')
+    {oldId : ActivationLicenseId}
+    {oldLicense : CanonicalAdoptLicense}
+    (hOld : A.adoptLicense oldId = some oldLicense) :
+    A'.adoptLicense oldId = some oldLicense := by
+  cases hStep with
+  | recordAdoptLicense freshEnriched freshProjection discipline =>
+      exact putCanonical_preserves_some_local freshEnriched hOld
+
+/-- License recording changes none of the state observations consumed by
+`AdoptLicenseBaseCurrent`; hence every previously base-current record remains so. -/
+theorem recordAdoptLicense_preserves_baseCurrent
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {L : CanonicalAdoptLicense}
+    (hStep : AdoptRecordStep A (.recordAdoptLicense licenseId L) A')
+    {oldId : ActivationLicenseId}
+    {oldLicense : CanonicalAdoptLicense}
+    (hCurrent : AdoptLicenseBaseCurrent A.core oldId oldLicense) :
+    AdoptLicenseBaseCurrent A'.core oldId oldLicense := by
+  cases hStep with
+  | recordAdoptLicense freshEnriched freshProjection discipline =>
+      simpa [putAdoptLicense, putActivationLicenseProjection,
+        AdoptLicenseBaseCurrent] using hCurrent
+
 private theorem putActivationLicenseProjection_preserves_invariant
     {S : CanonicalState}
     {licenseId : ActivationLicenseId}
