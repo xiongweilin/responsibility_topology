@@ -2,9 +2,13 @@
 
 This repository studies a narrow formal distinction:
 
-> **Historical justification and current epistemic responsibility are distinct state relations.**
+> **Canonical historical formation and current usability are distinct state relations.**
 
-A judgment can exist as a canonical object of immutable derivation history without thereby being currently usable or entitled. The project makes that distinction explicit in a finite kernel, mechanizes the relevant metatheory in Lean 4, and differentially tests selected executable observations against the mechanized projection semantics.
+For ordinary INFER, the stronger machine-facing distinction is:
+
+> **Historical derivation and current usable-parent responsibility are distinct relations.**
+
+A warrant can exist as a canonical object of immutable formation/derivation history without thereby being currently usable or entitled. `Responsibility Topology` is the broader interpretive framework for locating those responsibility boundaries; the theorem-facing claims remain narrower than claims of epistemic adequacy.
 
 The current research phase is a **paper-freeze window**. The default task is now to compress and explain the proved argument, not to expand the kernel surface.
 
@@ -25,7 +29,6 @@ Exact profile semantics
         │ exact move identity, requirement and rule resolution
         ▼
 Reachable canonical kernel
-        ├── grounded context currentness
         ├── ROOT formation / admission lifecycle
         └── INFER formation / qualification lifecycle
         │
@@ -33,7 +36,12 @@ Reachable canonical kernel
 Executable conformance boundary
         │
         └── selected Python V0.1.2.2 observations
+
+Orthogonal semantic currentness component:
+  grounded adopted-context currentness
 ```
+
+Grounded currentness is connected structurally to reachable canonical state, but the current `Step` surface does not contain license issuance or Adopt transitions. It is therefore a semantic currentness component, not a completed reachable Adopt lifecycle.
 
 The central dynamic separation is:
 
@@ -56,7 +64,7 @@ usable warrant
 entitlement
 ```
 
-The last arrow is an abstract entitlement layer, not yet a single end-to-end theorem from `CanonicalState` to `LicensingRead` and `Entitled`. That boundary is intentionally stated precisely below.
+The last arrow is an abstract entitlement layer, not yet a single end-to-end theorem from `CanonicalState` to `LicensingRead` and `Entitled`.
 
 ## Three paper-facing contributions
 
@@ -78,13 +86,13 @@ lookup(k) = some Top
 
 The point is not merely that several locality lemmas hold. It is that the evidence responsibility for an entitlement judgment can be located on an explicit finite observation boundary.
 
-### 2. Reachable canonical kernel
+### 2. Reachable canonical state
 
-The dynamic layer starts from an explicit `InitialBoundary`, applies kernel-owned `Step` transitions, and defines `Reachable` states. A shared `CanonicalStateInvariant` separates immutable canonical history from mutable evaluation state.
+The dynamic layer starts from an explicit `InitialBoundary`, applies kernel-owned `Step` transitions, and defines `Reachable` states. A shared `CanonicalStateInvariant` separates immutable canonical history from mutable evaluation state and preserves exact historical referent identity.
 
-Adopted-context currentness is interpreted by a grounded, bootstrap-rooted relation. Cyclic activation dependencies cannot manufacture their own currentness; every grounded activation derivation terminates at an explicit bootstrap boundary.
+The first-paper reachable transition surface is deliberately small: context/profile registration, binding, bootstrap activation, ROOT formation/admission, and INFER formation/qualification.
 
-This changes the semantic setting from an arbitrary supplied world to a reachable one.
+Grounded adopted-context currentness is an orthogonal semantic closure. It defines bootstrap-rooted currentness and rules out purely self-supporting activation cycles, while `baseCurrent` remains an explicit external factor and Adopt itself is not yet a reachable transition family.
 
 ### 3. Historical formation versus current qualification
 
@@ -96,7 +104,7 @@ For ROOT:
 Formation ⇏ Usability
 ```
 
-Historical formation creates a canonical warrant but does not silently create a current evaluation position. Explicit admission establishes usability.
+Canonical ROOT formation creates a historical warrant but does not silently create a current evaluation position. Explicit admission establishes usability.
 
 For INFER, historical and current parent responsibility are different:
 
@@ -123,20 +131,20 @@ The corresponding lifecycle theorem makes the intermediate non-usable state mach
 | --- | --- |
 | **Machine checked in Lean 4** | Branch Conservativity; Kernel-Floor Locality; Relative Branch Conservativity; exact requirement resolution; canonical projection coherence; reachable canonical-state invariance; grounded currentness semantics; ROOT formation/admission separation; INFER historical formation; INFER current-parent qualification; INFER lifecycle separation. |
 | **Differentially conformance-tested** | Selected Python V0.1.2.2 projection, floor, satisfaction, ambient, and adopted-context-currentness observations against the mechanized projection/currentness surfaces. |
-| **Not proved** | Full Python operational refinement; a total `CanonicalState → LicensingRead` assembly theorem; TRANSPORT lifecycle; license lifecycle; challenge/revision/revalidation transition semantics; profile adequacy; kernel-floor adequacy; use/admission adequacy; Q_open; Q_close. |
+| **Not proved** | Full Python operational refinement; a total `CanonicalState → LicensingRead` assembly theorem; reachable Adopt lifecycle; TRANSPORT lifecycle; license lifecycle; challenge/revision/revalidation transition semantics; profile adequacy; kernel-floor adequacy; use/admission adequacy; Q_open; Q_close. |
 
 The executable reference must therefore be described as **conformance-tested on selected observations**, not as a verified Python kernel.
 
 ## Paper-facing theorem map
 
-The first paper should expose a small result surface rather than mirror the source tree:
+The first paper exposes a small result surface rather than mirroring the source tree:
 
 ```text
 R1  Relative Branch Conservativity
 R2  Exact Requirement Resolution
 R3  Canonical Projection Coherence
 R4  Reachable Canonical-State Invariance
-R5  Grounded Currentness / No Self-Support
+R5  Grounded Currentness / No Self-Support      [semantic component]
 R6  ROOT Formation–Qualification Separation
 R7  INFER Historical Formation Correctness
 R8  INFER Current-Parent Qualification
@@ -173,7 +181,7 @@ Entitled
 
 without the separate requirement, ambient, derivability, and floor-safety obligations of the entitlement layer.
 
-These boundaries are deliberate. The project does not claim a universal epistemology or a theorem that its finite policy regime is substantively adequate.
+These boundaries are deliberate. The project does not claim source authenticity, rule adequacy, profile adequacy, admission adequacy, or a universal epistemology.
 
 ## Current assembly boundary
 
@@ -211,10 +219,11 @@ During the current first-paper window:
 
 > **Do not add core semantics unless writing exposes a theorem gap that cannot be crossed honestly without it.**
 
-TRANSPORT, license issuance, challenge/revision/revalidation, and broader regime-reopening theory are therefore future work unless they become necessary to support a concrete paper claim.
+TRANSPORT, license issuance, Adopt lifecycle, challenge/revision/revalidation, and broader regime-reopening theory are therefore future work unless they become necessary to support a concrete paper claim.
 
 ## Repository layout
 
+- `paper/`: first-paper workspace, theorem map, running argument, and related-work positioning.
 - `formal/`: Lean 4 mechanization and theorem audit surface. See [`formal/README.md`](formal/README.md) for the technical architecture and result map.
 - `proof_kernel_v0_1_2_2.py`: executable V0.1.2.2 reference kernel.
 - `test_v0122_*.py`: executable regression and cross-language conformance tests.
