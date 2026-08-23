@@ -4,6 +4,7 @@ import ResponsibilityTopology.Replay
 import ResponsibilityTopology.KernelFloor
 import ResponsibilityTopology.Entitlement
 import ResponsibilityTopology.CanonicalRead
+import ResponsibilityTopology.PythonConformance
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -59,3 +60,4 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.floorView_fallback_irrelevant
 #print axioms ResponsibilityTopology.derives_projection_coherent
 #print axioms ResponsibilityTopology.projectedEntitled_fallback_irrelevant
+#print axioms ResponsibilityTopology.projectedAmbientAdmissible_true_iff

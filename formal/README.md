@@ -14,7 +14,8 @@ Current contents:
 - `KernelFloor.lean`: abstract branch-local floor observation, the exact current V0.1.2.2 floor clauses, and Kernel-Floor Locality (KFL);
 - `Entitlement.lean`: minimal ambient projection, the abstract entitlement judgment, Relative Branch Conservativity (RBC), executable entitlement soundness, and support-only entitlement replay;
 - `CanonicalRead.lean`: shared canonical licensing read model, derived ambient/satisfaction/floor projections, derived `SatOracle`, partial-lookup hygiene, fallback irrelevance, and branch-level Projection Coherence;
-- `Audit.lean`: `#print axioms` audit surface for the current formal theorems;
+- `PythonConformance.lean`: conformance-only executable adapter semantics for Python `Scope` subset behavior and the decidable canonical ambient projection; it does not add a Python operational semantics or a new entitlement theorem;
+- `Audit.lean`: `#print axioms` audit surface for the current formal theorems and conformance bridge;
 - `lake-manifest.json`: committed Lake workspace manifest used by CI.
 
 Standing theorem boundary:
@@ -35,13 +36,14 @@ Standing theorem boundary:
 - `Entitled` is the abstract judgment `Admissible ∧ Derives ∧ Safe`;
 - RBC remains the abstract composition theorem and still depends only on BC + KFL + `FixedAmbient`; SS and SP remain executable entitlement bridges rather than RBC premises;
 - `LicensingRead` is the first shared canonical interpretation source for `AmbientView`, `Env`, `FloorEnv`, and `SatOracle`;
-- `LicensingRead.requirement` is still an already-resolved exact requirement. `ProfileSnapshot.requirement_for` or any equivalent requirement-lookup implementation remains outside this milestone;
+- `LicensingRead.requirement` is still an already-resolved exact requirement. `ProfileSnapshot.requirement_for` or any equivalent requirement-lookup implementation remains outside the theorem model;
 - canonical warrant lookup is partial (`WarrantId → Option CanonicalWarrant`), while abstract `Env` and `FloorEnv` remain total. `Canonical` and `WellFormedCandidates` therefore mark the concrete/refinement hygiene boundary without changing abstract NW;
-- the derived canonical `SatOracle` totalizes unknown IDs to ordinary `false`. Python fail-fast behavior for unknown candidate IDs is not identified with that abstract behavior; later Python conformance must be guarded by `WellFormedCandidates`;
+- the derived canonical `SatOracle` totalizes unknown IDs to ordinary `false`. Python fail-fast behavior for unknown candidate IDs is not identified with that abstract behavior; Python conformance is compared only on canonical encoded candidates, while explicit tests preserve unknown-ID fail-fast as a `¬WF` case;
 - `toFloorEnv` needs a fallback only because `FloorEnv.lookup` is total. `Derives (toEnv C) β R` proves every support ID is canonical, which makes the fallback unobservable on the derived branch and on projected entitlement;
 - ambient binding-scope checks and atomic requirement-scope checks use `C.semantics.scopeLE`; `ProjectedEntitled` evaluates the floor with that same `C.semantics`, preventing scope-semantics drift in the canonical interpretation;
 - `BranchProjectionCoherent C β` states branch-by-branch that satisfaction-relevant observations and floor observations arise from the same canonical warrant objects;
-- provenance ancestry, parent lineage, concrete Binding/Profile/Context state machines, requirement lookup, context-currentness transitions, move args, warrant formation, `INFER`, `TRANSPORT`, challenge/revision transitions, Python source semantics, Python conformance, Q_open, and Q_close remain outside this layer.
+- `PythonConformance.lean` supplies `pythonScopeLE` for the deterministic list encoding of Python `frozenset` scopes and proves `projectedAmbientAdmissible_true_iff`; this is an executable conformance bridge, not a proof that Python source execution refines Lean;
+- provenance ancestry, parent lineage, concrete Binding/Profile/Context state machines, a theorem for requirement lookup, context-currentness transitions, move args, warrant formation, `INFER`, `TRANSPORT`, challenge/revision transitions, formal Python operational semantics, verified extraction, Q_open, and Q_close remain outside this layer.
 
 The replay projection is
 
@@ -143,7 +145,7 @@ Derives (toEnv C) β R
 → BranchProjectionCoherent C β
 ```
 
-The leaf case records one and the same canonical warrant `cw` for both the satisfaction conditions and the floor projection `(claim, role,scope)`.
+The leaf case records one and the same canonical warrant `cw` for both the satisfaction conditions and the floor projection `(claim, role, scope)`.
 
 Logical dependency shape:
 
@@ -173,4 +175,71 @@ LicensingRead ──► toAmbient
                      └── fallback irrelevant on derived support
 ```
 
-This Projection Coherence milestone does not claim that Python V0.1.2.2 has been machine-proved correct. A later conformance layer should compare the Python reference implementation with this machine-checked projection model under explicit encoding and well-formedness conditions. The intended next claim is **Python V0.1.2.2 is conformance-tested against the machine-checked projection model**, not **Python V0.1.2.2 is machine-proved correct**.
+## PR #7 — Python V0.1.2.2 reference-semantics conformance
+
+The conformance layer is deliberately a separate obligation from PR #6. It does not introduce a Lean model that merely resembles Python and then call that a Python proof. Instead, the Python reference implementation is executed, its current canonical licensing read is serialized, and a generated Lean fixture imports the machine-checked PR #6 definitions for the comparison:
+
+```text
+Python V0.1.2.2 canonical state
+        │
+        │ capture_licensing_read
+        ▼
+CanonicalReadSnapshot
+        │
+        │ deterministic wire encoding
+        ▼
+generated Lean fixture data
+        │
+        │ imports PR #6 definitions
+        ▼
+toAmbient / toOracle / satisfy / toFloorEnv / licenseSafe
+        │
+        ▼
+differential conformance result
+```
+
+The Python adapter does not contain a second implementation of Lean `satisfy` or `licenseSafe`. The generated Lean module contains fixture data and encoding declarations; satisfaction and floor evaluation are performed by the formal definitions.
+
+The current conformance surfaces are:
+
+1. the four Python licensing ambient observations against `toAmbient`;
+2. actual `ProofKernel.satisfy()` against `satisfy (toOracle C)` for canonical candidate lists;
+3. actual `ProofKernel.license_safe()` against `licenseSafe` through `toFloorEnv`;
+4. Python branch constructors against the raw Lean `Branch` encoding;
+5. duplicate candidate IDs with original order and occurrence count preserved;
+6. unknown Python IDs kept as fail-fast / `¬WellFormedCandidates` cases rather than ordinary unsatisfaction;
+7. actual `ProfileSnapshot.requirement_for(τ,m)` used only to populate the already-resolved `LicensingRead.requirement` adapter field;
+8. ACTION authorization, scope coverage, SHARE selection, and revision-depth floor cases;
+9. actual `ProofKernel.license()` negative ambient gates for binding activity, use, context activity, and binding scope.
+
+### Encoding boundary
+
+Python warrant IDs are strings and the current Lean `WarrantId` is `Nat`. The adapter builds a deterministic injective enumeration of the finite canonical warrant universe. Equal Python IDs encode to the same Nat; distinct IDs encode to distinct Nats inside that snapshot. Candidate lists are mapped occurrence-by-occurrence, so duplicates are not collapsed.
+
+Python `Scope` is a `frozenset`; the wire representation is a sorted, duplicate-free `List String`. `pythonScopeLE` interprets the encoded lists with subset semantics. The list is therefore a transport representation, not the semantic identity of a scope:
+
+```text
+SemanticObject != WireEncoding
+```
+
+`FloorSemantics.escalationDepth` remains explicit. For the finite fixture claim universe, the adapter supplies the output of the actual Python `_claim_depth` parser instead of silently duplicating Python integer parsing in Lean.
+
+### Verified status
+
+The dedicated `Python-Lean Conformance` workflow builds the Lean library and runs both the existing V0.1.2.2 Python regression suite and the cross-language fixtures. The current successful CI run reports:
+
+```text
+51 passed
+```
+
+The existing Lean workflow separately continues to build the formal library, reject `sorry` / `admit`, and print the theorem axiom dependencies. `projectedAmbientAdmissible_true_iff` is included in that explicit audit surface.
+
+The precise claim after this milestone is:
+
+> **Python V0.1.2.2 is conformance-tested against the machine-checked projection model.**
+
+It is not:
+
+> **Python V0.1.2.2 is machine-proved correct.**
+
+The stronger statement would require a formal Python semantics, verified extraction, or migration of the trusted executable implementation into a language/runtime with a verified correspondence path.

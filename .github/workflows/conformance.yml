@@ -1,0 +1,26 @@
+name: Python-Lean Conformance
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: formal
+          build: true
+          test: false
+      - name: Install Python test dependency
+        run: python -m pip install pytest
+      - name: Run Python reference kernel and cross-language conformance
+        run: python -m pytest -q test_v0122_kernel.py test_v0122_conformance.py
