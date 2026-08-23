@@ -2,11 +2,27 @@
 
 This directory contains the current mechanized Responsibility Topology research program. It is **not** limited to the first-paper `Step` surface.
 
-The recurring formal separation is:
+The recurring formal discipline is separation of responsibilities that are easy to collapse into one another. Papers 1–3 specialize this discipline around history/currentness; Level-6 technical consolidation adds two minimal cross-domain calculi and a restricted observational checker without changing the frozen paper semantics.
 
-> **Persistent historical structure and state-indexed current responsibility are distinct relations.**
+## Current status
 
-Different paper stages instantiate that separation along different axes.
+```text
+Papers 1–3:                frozen semantic lines
+Cross-domain strength:      FORMAL SIMILARITY
+Technical consolidation:    FROZEN PASS
+Runtime bridge:             restricted certified observational bridge
+Next theory:                Q_open, not yet formalized
+```
+
+The technical evidence stack frozen by `LEVEL6_TECHNICAL_AUDIT.md` is:
+
+```text
+CrossDomainCore
++
+DomainInstances
++
+CertifiedRuntimeBridge
+```
 
 ## Paper-scale layers
 
@@ -29,7 +45,7 @@ Principal modules include:
 - `InferQualification.lean`
 - static entitlement / canonical-read modules
 
-The first-paper artifact remains separately frozen in repository-root `ARTIFACT.md` and must not be inferred from current `main`.
+The first-paper artifact remains separately frozen in repository-root `ARTIFACT.md`.
 
 ### Paper 2 — Environment
 
@@ -46,19 +62,18 @@ current Adopt/license/context responsibility
 Principal modules include:
 
 - `TransportSemantics.lean`
-- reachable TRANSPORT formation/qualification modules
-- two-hop transport conservation modules
+- TRANSPORT formation/qualification and composition modules
 - `AdoptLicenseCurrentness.lean`
 - `AdoptReachability.lean`
 - `AdoptActivation.lean`
 - `AdoptGroundedness.lean`
 - `ContextCurrentness.lean`
 
-The current Paper 2 formal boundary includes same-profile TRANSPORT plus reachable Adopt/license/grounded currentness. It does **not** establish arbitrary interoperability, entitlement-backed issuance, runtime refinement, or arbitrary temporal persistence.
+The Paper 2 formal boundary does not establish arbitrary interoperability, arbitrary temporal persistence, or runtime refinement.
 
 ### Paper 3 — Change
 
-Core distinction:
+Core distinctions:
 
 ```text
 canonical historical continuity
@@ -66,7 +81,7 @@ canonical historical continuity
 currentness continuity
 ```
 
-and then:
+and:
 
 ```text
 impact detection
@@ -89,11 +104,138 @@ Principal modules:
 - `RevalidationLifecycle.lean`
 - `Paper3Audit.lean`
 
-Paper 3 formal semantics are frozen at PR #48 / merge commit `190e24e404c864ef8f535f8dbd101c319689e4bc` unless the manuscript trigger is explicitly fired.
+Paper 3 formal semantics remain frozen at PR #48 / merge `190e24e404c864ef8f535f8dbd101c319689e4bc` unless an explicit manuscript trigger is fired.
+
+## Cross-domain consolidation surface
+
+Level-6 does **not** replace the paper kernels with a universal `ResponsibilityDomain` typeclass. It deliberately uses two independent small calculi.
+
+### `CrossDomain/ImpactDischargeCore.lean`
+
+This calculus separates:
+
+```text
+impact observation
+obligation / discharge requirement
+selected response
+realization evidence
+discharged judgment
+```
+
+Its positive composition theorem requires explicit coverage and sound realization premises. Its countermodel demonstrates that the bare calculus does not validate the shortcut:
+
+```text
+Affected -> Discharged
+```
+
+### `CrossDomain/EvaluationLayerCore.lean`
+
+This calculus separates:
+
+```text
+LocalConformance evidence
+HigherAccepted judgment
+Purpose
+HigherInput
+```
+
+It deliberately does not define “adequacy”. Countermodels and observational underdetermination demonstrate that local conformance does not by itself determine the higher-order verdict.
+
+### `CrossDomain/CaseModels.lean`
+
+Finite audited case-model encodings instantiate the two calculi for:
+
+```text
+Maintenance
+InstitutionalAuthority
+Measurement
+SoftwareRegression
+```
+
+These are not formalizations of FAA regulation, constitutional/public law, metrology standards, or the Python runtime. They machine-check only that the audited responsibility cut can be represented in the same minimal calculus without importing Paper 1–3 vocabulary.
+
+Therefore the cross-domain claim remains:
+
+```text
+FORMAL SIMILARITY
+```
+
+not mechanism similarity and not universality.
+
+`CrossDomainAudit.lean` and `Level6Audit.lean` audit this surface.
+
+## Restricted certified observational bridge
+
+### Formal checker
+
+`Bridge/CertifiedObservation.lean` defines the first certified `B0` fragment around history-retaining qualification withdrawal.
+
+The checker proves only the abstract certificate presented to it. Its main consequence is:
+
+```text
+checked qualification withdrawal
++
+no accepted discharge/requalification evidence
+->
+certified current-use continuation rejected
+```
+
+### Formal-side witness
+
+`Bridge/FormalWithdrawalBridge.lean` proves that an existing challenge transition can realize the same observational pattern at the challenged target when it was previously usable:
+
+```text
+historical target referent retained
++
+pre-state Usable
++
+post-state not Usable
+```
+
+This theorem does not identify runtime assertion status with formal `Usable`.
+
+### Trust boundary
+
+The current bridge trust boundary is:
+
+```text
+raw runtime state / events
+        |
+        | ordinary Python execution
+        v
+O0 adapter + certificate extraction / serialization
+        |
+        | UNVERIFIED EXTRACTION BOUNDARY
+        v
+QualificationWithdrawalCertificate
+        |
+        | VERIFIED CHECKER STARTS HERE
+        v
+Lean checker
+        |
+        v
+restricted B0 contract
+```
+
+Therefore `BridgeAudit.lean` establishes checker/formal facts only. It does not verify Python extraction or the runtime transition system.
+
+## Known bridge mismatch
+
+Runtime direct typed dependency impact and formal transitive historical challenge impact are intentionally not equated:
+
+```text
+runtime.directTypedImpact
+!=
+formal.transitiveHistoricalImpact
+```
+
+REF-2 classifies this as `SEMANTIC-MISMATCH`, so impact is excluded from the certified `B0` fragment.
+
+Do not add a generic impact-refinement theorem merely to close this mismatch.
 
 ## Current state layers
 
-The source tree now contains several related reachability layers rather than one monolithic transition type:
+The paper kernels still contain several related reachability layers rather than one monolithic transition type:
 
 ```text
 CanonicalState / Step / Reachable
@@ -118,117 +260,70 @@ RevalidationReachable
         +-- ordered RevalidationTrace
 ```
 
-These layers are intentional. Later stages extend earlier stable semantics without retroactively changing a frozen paper's claim surface.
+The cross-domain and bridge namespaces sit beside these layers; they do not retroactively redefine them.
 
 ## Paper 3 theorem hierarchy
 
-For current writing, the formal surface should be read in four result families rather than as a theorem catalog.
-
 ### T1 — History-preserving currentness invalidation
 
-A valid challenge preserves canonical historical referents while mutable current responsibility can weaken. The modeled affected boundary is target plus historical descendants; downstream effects include warrant suspension, license review/currentness loss, refresh removal, and issuer-dependent groundedness cascades.
-
-`Affected = target ∪ descendants` is primarily a **modeled impact boundary**. Its paper value comes from the invalidation/preservation/cascade results built on top of it, not from treating the equivalence itself as deep mathematics.
+A valid challenge preserves canonical historical referents while mutable current responsibility can weaken. `Affected = target ∪ descendants` is the represented warrant-history impact boundary, not a generic runtime dependency rule.
 
 ### T2 — Repair selection + realization implies restoration
 
-`RepairProblem` is a finite directed-hypergraph instance over three currentness obligation kinds:
-
-```text
-warrant Usability
-license BaseCurrent
-context Groundedness
-```
-
-`RepairSet` is a hitting-set condition over represented unresolved cuts. It does **not** establish semantic effectiveness.
-
-Restoration requires:
-
-```text
-RepairSet
-+
-RepairRealization
-=>
-target restoration
-```
-
-including preservation through the final refresh.
+`RepairSet` is a hitting-set condition over represented unresolved cuts. Restoration additionally requires `RepairRealization`; selection alone is not semantic effectiveness.
 
 ### T3 — Inclusion-minimal repair admits private-cut witnesses
 
-`MinimalRepairSet` means inclusion-minimal only. Each selected action in an inclusion-minimal repair set has a private unresolved cut witnessing local non-removability relative to that selected set.
+`MinimalRepairSet` means inclusion-minimal only. Universal semantic necessity requires the explicit `EveryRepairCutNecessary` adequacy premise and still does not establish extraction completeness.
 
-Not proved:
+### T4 — Ordered proof-carrying repair reaches restoration
 
-```text
-minimum cardinality
-minimum cost
-optimality
-uniqueness
-canonical frontier
-```
-
-Universal semantic necessity additionally requires `EveryRepairCutNecessary`; that premise establishes necessity of **represented cuts** for a chosen restoration predicate. It does not prove that no necessary dependency was omitted from the extracted model.
-
-### T4 — Proof-carrying repair can be realized in reachable state
-
-`RevalidationTrace` is ordered even though `RepairSet` is not. Warrant, license, and context repair remain distinct action families. `reachable_revalidation_lifecycle_restores` threads a valid challenge, refresh, ordered repair trace, and final refresh through `RevalidationReachable` and returns target restoration.
-
-This is a realizability/reachability bridge, not a completeness theorem for all abstract repair sets or all action orders.
+`reachable_revalidation_lifecycle_restores` threads challenge, refresh, ordered repair trace, and final refresh through `RevalidationReachable`. It is a realizability/reachability result, not a generic runtime lifecycle refinement.
 
 ## Historical preservation boundary
 
-Challenge, refresh, and repair transitions have stage-local historical/topology preservation results. The current final lifecycle theorem does not syntactically package an end-to-end
-
-```text
-HistoryReferentsImmutable S0.core S4.core
-```
-
-conjunct. Manuscripts should cite stage-local preservation compositionally unless a future indispensable claim specifically requires a packaged theorem.
+Challenge, refresh, and repair transitions have stage-local historical/topology preservation results. The final Paper 3 lifecycle theorem does not syntactically package one end-to-end `HistoryReferentsImmutable S0.core S4.core` conjunct; paper claims should use the stage-local preservation surface compositionally unless a narrow manuscript trigger requires otherwise.
 
 ## Current formal non-claims
 
 Current `main` does **not** prove:
 
 - that `portable-runtime` refines this Lean model or vice versa;
-- a total executable Python operational refinement;
+- that Python certificate extraction/serialization is verified;
+- a total `RuntimeStep -> FormalStep*` simulation;
+- runtime/formal impact equivalence;
 - automatic or complete `Challenge -> RepairProblem` extraction;
 - that every abstract repair set has an executable ordering;
-- that every abstract minimal alternative is reachable;
-- minimum-cost/cardinality repair;
-- a generic all-domain change-impact theory;
-- cross-domain invariance of the responsibility structures;
-- responsibility-vocabulary or cut-model adequacy (`Q_open`);
+- minimum-cost/cardinality repair or unique repair frontier;
+- mechanism similarity or universal invariance across external domains;
+- responsibility-vocabulary/regime adequacy (`Q_open`);
 - distributed responsibility closure (`Q_close`).
 
-## Relation to `portable-runtime`
+## Q_open handoff
 
-The two repositories are conceptually related but semantically non-identical. Framework V1.0 call vocabulary is used to prevent accidental redefinition:
+Level-6 technical consolidation is closed. No additional Lean work is currently authorized by that track.
 
-```text
-reference
-boundary-reference
-specialize
-operationalize
-represent
-handoff
-```
-
-Current formal Paper 3 challenge impact uses transitive warrant-parent descendant closure. The runtime also contains direct typed dependency-impact semantics and explicitly does not reduce every dependency kind to that closure. Therefore there is no current equality or refinement claim between their transition systems.
-
-See repository-root `CROSS_REPO_RELATION.md`.
-
-## Formal reopen rule
-
-Formal work is frozen by default. Reopen only when a central, indispensable manuscript or next-theory statement cannot be honestly supported by the existing surface and cannot be weakened/deleted without breaking the thesis.
-
-The next theory-level trigger is expected to concern regime/model adequacy rather than another lifecycle constructor:
+The next theory starts from the narrower question:
 
 ```text
-Q_open:
-When is a system entitled to conclude that
-its current responsibility vocabulary or cut model is insufficient?
+What evidence has standing to defeat entitlement to closure
+over a bounded scope without already being accepted by
+that challenged regime?
 ```
+
+The next formulation must distinguish at least:
+
+```text
+observation/acquisition failure
+!= representation/correspondence mismatch
+!= implementation/execution nonconformance
+!= object/decision/repair failure inside K
+!= evidence implicating K itself
+```
+
+and must not infer regime inadequacy directly from an `O0` semantic mismatch or a checker rejection.
+
+No `RegimeChallengeCore` or other Q_open calculus exists yet. A Lean phase should begin only after prior-art attack and new-domain falsification earn a minimal formal surface.
 
 ## Build and audit
 
@@ -236,6 +331,9 @@ its current responsibility vocabulary or cut model is insufficient?
 lake build
 lake env lean ResponsibilityTopology/Audit.lean
 lake env lean ResponsibilityTopology/Paper3Audit.lean
+lake env lean ResponsibilityTopology/CrossDomainAudit.lean
+lake env lean ResponsibilityTopology/BridgeAudit.lean
+lake env lean ResponsibilityTopology/Level6Audit.lean
 ```
 
-`Audit.lean` remains the first-paper/shared audit surface; `Paper3Audit.lean` owns Paper 3 theorem auditing. Paper-specific commit identities are recorded in repository-root `PAPER_VERSIONS.md`.
+Repository CI rejects `sorry` / `admit` placeholders in the formal core. A theorem is evidence only for its explicit statement and premises; it is not evidence of external-domain truth, model adequacy, full runtime refinement, or Q_open.
