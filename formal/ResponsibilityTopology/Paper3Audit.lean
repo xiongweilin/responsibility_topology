@@ -54,4 +54,5 @@ This file is intentionally separate from the frozen Paper 1/2 audit surface.
 #print axioms ResponsibilityTopology.refreshReachable_to_revalidationReachable
 #print axioms ResponsibilityTopology.revalidationTrace_preserves_reachability
 #print axioms ResponsibilityTopology.contextRevalidation_survives_refresh
+#print axioms ResponsibilityTopology.revalidation_lifecycle_restores
 #print axioms ResponsibilityTopology.reachable_revalidation_lifecycle_restores
