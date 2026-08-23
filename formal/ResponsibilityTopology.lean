@@ -24,6 +24,7 @@ import ResponsibilityTopology.AdoptActivation
 import ResponsibilityTopology.AdoptGroundedness
 import ResponsibilityTopology.ChallengeImpact
 import ResponsibilityTopology.ChallengeInvalidation
+import ResponsibilityTopology.ChallengeInvalidationInvariant
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
