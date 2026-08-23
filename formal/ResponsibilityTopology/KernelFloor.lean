@@ -227,10 +227,15 @@ theorem action_without_authorization_unsafe
     (m : FloorMove)
     (hAuth : hasRole .authorization (floorView F β) = false) :
     licenseSafe S F β .action m = false := by
-  unfold licenseSafe safeFromView safeNonNorm
-  cases hScope : allScopesCover S m.scope (floorView F β) with
-  | false => rw [hScope]
-  | true => rw [hScope, hAuth]
+  change safeNonNorm S true m (floorView F β) = false
+  unfold safeNonNorm
+  by_cases hScope : allScopesCover S m.scope (floorView F β) = true
+  · have hAuthNot : ¬ hasRole .authorization (floorView F β) = true := by
+      intro h
+      rw [hAuth] at h
+      cases h
+    rw [if_pos hScope, if_pos rfl, if_neg hAuthNot]
+  · rw [if_neg hScope]
 
 theorem share_without_selection_moveFloor
     (S : FloorSemantics)
@@ -248,13 +253,12 @@ theorem revisionFloor_insufficient_depth
     (hDepth : maxEscalationDepth S view < m.revisionDepth) :
     revisionFloor S m view = false := by
   unfold revisionFloor
-  cases hEsc : hasRole .escalation view with
-  | false => rw [hEsc]
-  | true =>
-      rw [hEsc]
-      have hNot : ¬ m.revisionDepth ≤ maxEscalationDepth S view :=
-        Nat.not_le_of_lt hDepth
-      rw [if_neg hNot]
+  by_cases hEsc : hasRole .escalation view = true
+  · rw [if_pos hEsc]
+    have hNot : ¬ m.revisionDepth ≤ maxEscalationDepth S view :=
+      Nat.not_le_of_lt hDepth
+    rw [if_neg hNot]
+  · rw [if_neg hEsc]
 
 theorem accept_has_no_extra_moveFloor
     (S : FloorSemantics)
