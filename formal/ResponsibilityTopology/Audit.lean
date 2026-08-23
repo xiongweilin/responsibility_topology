@@ -21,6 +21,7 @@ import ResponsibilityTopology.InferFormation
 import ResponsibilityTopology.TransportFormation
 import ResponsibilityTopology.InferQualification
 import ResponsibilityTopology.TransportQualification
+import ResponsibilityTopology.TransportComposition
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -190,3 +191,4 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.qualifyTransport_historyReferentsImmutable
 #print axioms ResponsibilityTopology.qualifyTransport_preserves_evaluationInvariant
 #print axioms ResponsibilityTopology.qualifyTransport_preserves_profileUseBacking
+#print axioms ResponsibilityTopology.twoHopTransportFormationBoundary
