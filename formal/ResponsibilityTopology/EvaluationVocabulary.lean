@@ -27,11 +27,14 @@ inductive Placement where
   | pending
   deriving Repr, DecidableEq
 
-/-- Audit metadata recorded at an explicit admission boundary.  These strings
+/-- Audit metadata recorded at an explicit qualification boundary. These strings
 are recorded claims, not authenticated principals or adequate justifications. -/
-structure AdmissionMetadata where
+structure QualificationMetadata where
   actor : String
   basis : String
   deriving Repr, DecidableEq
+
+/-- Backwards-compatible name for the ROOT-specific qualification boundary. -/
+abbrev AdmissionMetadata := QualificationMetadata
 
 end ResponsibilityTopology

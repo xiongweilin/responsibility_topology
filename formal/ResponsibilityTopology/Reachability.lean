@@ -5,11 +5,11 @@ import ResponsibilityTopology.EvaluationVocabulary
 namespace ResponsibilityTopology
 
 /-!
-Reachable canonical-state model through #14.
+Reachable canonical-state model through #15.
 
 The state keeps immutable canonical history distinct from mutable evaluation
 qualification. ROOT and INFER formation write only historical warrants. ROOT
-admission writes only evaluation qualification. INFER qualification, TRANSPORT,
+admission and INFER qualification write only evaluation qualification. TRANSPORT,
 license issuance, revalidation, and challenge/revision remain outside this
 milestone.
 -/
@@ -37,6 +37,22 @@ structure CanonicalState where
   epi : EvalKey → Option EpiStatus
   placement : EvalKey → Option Placement
 
+/-- Current usability is exactly LIVE together with PLACED. Missing records and
+all other represented status combinations are unusable. -/
+def Usable (S : CanonicalState) (key : EvalKey) : Prop :=
+  S.epi key = some .live ∧
+    S.placement key = some .placed
+
+/-- Current-parent responsibility consumed by ordinary INFER qualification.
+The predicate is explicitly pre-state indexed. -/
+def InferParentsUsable
+    (S : CanonicalState)
+    (profileDigest contextId use : String)
+    (warrant : HistoricalWarrant) : Prop :=
+  ∀ parentId,
+    parentId ∈ warrant.parents →
+    Usable S ⟨profileDigest, contextId, use, parentId⟩
+
 private def addFact {α : Type} (P : α → Prop) (x : α) : α → Prop :=
   fun y => y = x ∨ P y
 
@@ -58,18 +74,32 @@ private theorem putCanonical_preserves_some
   · simpa [putCanonical, hEq] using hOld
 
 /-- Mutable evaluation setter. Unlike `putCanonical`, this intentionally has no
-freshness premise: explicit re-admission may overwrite an existing evaluation
+freshness premise: explicit qualification may overwrite an existing evaluation
 position. -/
 def setOptionAt {α β : Type} [DecidableEq α]
     (M : α → Option β) (key : α) (value : β) : α → Option β :=
   fun x => if x = key then some value else M x
 
-/-- Shared evaluation qualification update. Later derived qualification reuses
-this state mechanism rather than creating constructor-specific status stores. -/
+/-- Shared evaluation qualification update. -/
 def qualifyEvaluation (S : CanonicalState) (key : EvalKey) : CanonicalState :=
   { S with
     epi := setOptionAt S.epi key .live
     placement := setOptionAt S.placement key .placed }
+
+/-- Qualification writes exactly LIVE/PLACED at its selected key. -/
+theorem qualifyEvaluation_exact
+    (S : CanonicalState) (key : EvalKey) :
+    (qualifyEvaluation S key).epi key = some .live ∧
+      (qualifyEvaluation S key).placement key = some .placed := by
+  simp [qualifyEvaluation, setOptionAt]
+
+/-- Qualification is local: every other evaluation key is unchanged. -/
+theorem qualifyEvaluation_otherKey_unchanged
+    (S : CanonicalState) {key other : EvalKey}
+    (hNe : other ≠ key) :
+    (qualifyEvaluation S key).epi other = S.epi other ∧
+      (qualifyEvaluation S key).placement other = S.placement other := by
+  simp [qualifyEvaluation, setOptionAt, hNe]
 
 /-- Ordered, duplicate-preserving resolution of historical parent IDs. -/
 inductive ResolvesParents
@@ -131,6 +161,18 @@ theorem preserved
   | cons hLookup hTail ih =>
       exact .cons (hPreserve hLookup) ih
 
+/-- A nonempty resolved parent-object list implies a nonempty ordered ID list. -/
+theorem ids_nonempty_of_parents_nonempty
+    {S : CanonicalState} {ids : List WarrantId}
+    {parents : List HistoricalWarrant}
+    (hResolve : ResolvesParents S ids parents)
+    (hParents : parents ≠ []) :
+    ids ≠ [] := by
+  intro hIds
+  subst ids
+  cases hResolve
+  exact hParents rfl
+
 end ResolvesParents
 
 /-- Empty trusted starting boundary. -/
@@ -161,15 +203,20 @@ inductive KernelEvent where
   | admitRoot
       (warrantId : WarrantId)
       (bindingId contextId use : String)
-      (metadata : AdmissionMetadata)
+      (metadata : QualificationMetadata)
   | infer
       (warrantId : WarrantId)
       (bindingId contextId ruleId : String)
       (parentIds : List WarrantId)
       (outScope : Scope)
+  | qualifyInfer
+      (warrantId : WarrantId)
+      (bindingId contextId use : String)
+      (metadata : QualificationMetadata)
 
-/-- Formation and admission transitions through #14. Ordinary INFER deliberately
-has no parent-usability or evaluation-state premise. -/
+/-- Formation and qualification transitions through #15. Ordinary INFER
+formation deliberately has no parent-usability premise; `qualifyInfer` consumes
+current-parent usability without replaying historical formation. -/
 inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop where
   | registerContext
       {S : CanonicalState} {id : String} {context : CanonicalContext}
@@ -219,7 +266,7 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
       {S : CanonicalState}
       {warrantId : WarrantId}
       {bindingId contextId use : String}
-      {metadata : AdmissionMetadata}
+      {metadata : QualificationMetadata}
       {binding : CanonicalBinding}
       {context : CanonicalContext}
       {warrant : HistoricalWarrant}
@@ -258,6 +305,23 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
           warrant := putCanonical S.warrant warrantId
             (inferHistoricalWarrant
               ruleId binding.profileDigest contextId parentIds parents outScope rule) }
+  | qualifyInfer
+      {S : CanonicalState}
+      {warrantId : WarrantId}
+      {bindingId contextId use : String}
+      {metadata : QualificationMetadata}
+      {binding : CanonicalBinding}
+      {warrant : HistoricalWarrant}
+      (bindingCanonical : S.binding bindingId = some binding)
+      (warrantCanonical : S.warrant warrantId = some warrant)
+      (isInfer : ∃ ruleId, warrant.constructor = .infer ruleId)
+      (formationContext : warrant.formationContext = contextId)
+      (formationProfile : warrant.formationProfileDigest = binding.profileDigest)
+      (parentsUsable : InferParentsUsable
+        S binding.profileDigest contextId use warrant) :
+      Step S (.qualifyInfer warrantId bindingId contextId use metadata)
+        (qualifyEvaluation S
+          ⟨binding.profileDigest, contextId, use, warrantId⟩)
 
 inductive Reachable : CanonicalState → Prop where
   | initial {S : CanonicalState} : InitialBoundary S → Reachable S
@@ -362,6 +426,16 @@ def EvaluationReferentsCanonical (S : CanonicalState) : Prop :=
 def EvaluationPairCoherent (S : CanonicalState) : Prop :=
   ∀ key, S.epi key = none ↔ S.placement key = none
 
+/-- Every populated evaluation profile/use pair is backed by some canonical
+binding. This is provenance of the evaluation environment, not use adequacy. -/
+def EvaluationProfileUseBackedByBinding (S : CanonicalState) : Prop :=
+  ∀ ⦃key⦄,
+    HasEvaluationRecord S key →
+    ∃ bindingId binding,
+      S.binding bindingId = some binding ∧
+      binding.profileDigest = key.profileDigest ∧
+      binding.use = key.use
+
 structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   bindingReferentsCanonical : BindingReferentsCanonical S
   activeContextReferentsCanonical : ActiveContextReferentsCanonical S
@@ -374,6 +448,7 @@ structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   inferWarrantWellFormed : InferWarrantWellFormed S
   evaluationReferentsCanonical : EvaluationReferentsCanonical S
   evaluationPairCoherent : EvaluationPairCoherent S
+  evaluationProfileUseBackedByBinding : EvaluationProfileUseBackedByBinding S
 
 structure CanonicalIdsUnique (S : CanonicalState) : Prop where
   contextUnique : ∀ ⦃id c₁ c₂⦄,
@@ -453,6 +528,7 @@ theorem initialBoundary_invariant
     InferWarrantWellFormed,
     EvaluationReferentsCanonical,
     EvaluationPairCoherent,
+    EvaluationProfileUseBackedByBinding,
     HasEvaluationRecord,
     emptyCanonicalState]
 
@@ -527,6 +603,9 @@ theorem step_historyReferentsImmutable
         exact putCanonical_preserves_some fresh h
       · intro id license h
         exact h
+  | qualifyInfer bindingCanonical warrantCanonical isInfer formationContext
+      formationProfile parentsUsable =>
+      constructor <;> intros <;> assumption
 
 theorem step_preserves_invariant
     {S S' : CanonicalState} {event : KernelEvent}
@@ -566,6 +645,7 @@ theorem step_preserves_invariant
           hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
+      · exact hInv.evaluationProfileUseBackedByBinding
   | @registerProfile digest profile fresh =>
       constructor
       · intro bindingId binding hBinding
@@ -592,6 +672,7 @@ theorem step_preserves_invariant
           hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
+      · exact hInv.evaluationProfileUseBackedByBinding
   | @bindProfile id binding fresh profileCanonical =>
       constructor
       · intro id' binding' hLookup
@@ -629,6 +710,11 @@ theorem step_preserves_invariant
           hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
+      · intro key hRecord
+        rcases hInv.evaluationProfileUseBackedByBinding hRecord with
+          ⟨oldId, oldBinding, hOldBinding, hProfileEq, hUseEq⟩
+        exact ⟨oldId, oldBinding,
+          putCanonical_preserves_some fresh hOldBinding, hProfileEq, hUseEq⟩
   | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
       constructor
       · exact hInv.bindingReferentsCanonical
@@ -675,6 +761,7 @@ theorem step_preserves_invariant
           hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
+      · exact hInv.evaluationProfileUseBackedByBinding
   | @root warrantId bindingId contextId input binding context
       fresh bindingCanonical contextCanonical accepted =>
       have hPreserve : ∀ ⦃id warrant⦄,
@@ -771,9 +858,12 @@ theorem step_preserves_invariant
           ⟨warrant, hWarrant, hProfile, hContext⟩
         exact ⟨warrant, hPreserve hWarrant, hProfile, hContext⟩
       · exact hInv.evaluationPairCoherent
+      · exact hInv.evaluationProfileUseBackedByBinding
   | @admitRoot warrantId bindingId contextId use metadata binding context warrant
       bindingCanonical contextCanonical warrantCanonical isRoot formationContext
       formationProfile useMatches =>
+      let key : EvalKey :=
+        ⟨binding.profileDigest, contextId, use, warrantId⟩
       constructor
       · exact hInv.bindingReferentsCanonical
       · exact hInv.activeContextReferentsCanonical
@@ -791,28 +881,39 @@ theorem step_preserves_invariant
           hParents.preserved (by intro parentId parent hLookup; exact hLookup),
           hDiscipline, hExact⟩
       · intro key' hRecord
-        let key : EvalKey :=
-          ⟨binding.profileDigest, contextId, use, warrantId⟩
         by_cases hEq : key' = key
         · subst key'
           exact ⟨warrant, warrantCanonical, formationProfile, formationContext⟩
         · have hOldRecord : HasEvaluationRecord S key' := by
-            rcases hRecord with hEpi | hPlacement
-            · rcases hEpi with ⟨status, hStatus⟩
-              exact Or.inl ⟨status, by
-                simpa [qualifyEvaluation, setOptionAt, key, hEq] using hStatus⟩
-            · rcases hPlacement with ⟨placement, hPlacement⟩
-              exact Or.inr ⟨placement, by
-                simpa [qualifyEvaluation, setOptionAt, key, hEq] using hPlacement⟩
+            rcases qualifyEvaluation_otherKey_unchanged S hEq with
+              ⟨hEpi, hPlacement⟩
+            rcases hRecord with hStatus | hPlace
+            · rcases hStatus with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, hEpi.symm.trans hStatus⟩
+            · rcases hPlace with ⟨placement, hPlace⟩
+              exact Or.inr ⟨placement, hPlacement.symm.trans hPlace⟩
           exact hInv.evaluationReferentsCanonical hOldRecord
       · intro key'
-        let key : EvalKey :=
-          ⟨binding.profileDigest, contextId, use, warrantId⟩
         by_cases hEq : key' = key
         · subst key'
-          simp [qualifyEvaluation, setOptionAt, key]
-        · simpa [qualifyEvaluation, setOptionAt, key, hEq] using
-            hInv.evaluationPairCoherent key'
+          simp [key, qualifyEvaluation, setOptionAt]
+        · rcases qualifyEvaluation_otherKey_unchanged S hEq with
+            ⟨hEpi, hPlacement⟩
+          rw [hEpi, hPlacement]
+          exact hInv.evaluationPairCoherent key'
+      · intro key' hRecord
+        by_cases hEq : key' = key
+        · subst key'
+          exact ⟨bindingId, binding, bindingCanonical, rfl, useMatches⟩
+        · have hOldRecord : HasEvaluationRecord S key' := by
+            rcases qualifyEvaluation_otherKey_unchanged S hEq with
+              ⟨hEpi, hPlacement⟩
+            rcases hRecord with hStatus | hPlace
+            · rcases hStatus with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, hEpi.symm.trans hStatus⟩
+            · rcases hPlace with ⟨placement, hPlace⟩
+              exact Or.inr ⟨placement, hPlacement.symm.trans hPlace⟩
+          exact hInv.evaluationProfileUseBackedByBinding hOldRecord
   | @infer warrantId bindingId contextId ruleId parentIds outScope
       binding profile context rule parents fresh bindingCanonical profileCanonical
       ruleExact contextCanonical parentsCanonical discipline =>
@@ -907,6 +1008,89 @@ theorem step_preserves_invariant
           ⟨warrant, hWarrant, hProfile, hContext⟩
         exact ⟨warrant, hPreserve hWarrant, hProfile, hContext⟩
       · exact hInv.evaluationPairCoherent
+      · exact hInv.evaluationProfileUseBackedByBinding
+  | @qualifyInfer warrantId bindingId contextId use metadata binding warrant
+      bindingCanonical warrantCanonical isInfer formationContext formationProfile
+      parentsUsable =>
+      let key : EvalKey :=
+        ⟨binding.profileDigest, contextId, use, warrantId⟩
+      constructor
+      · exact hInv.bindingReferentsCanonical
+      · exact hInv.activeContextReferentsCanonical
+      · exact hInv.activeContextHasActivationProvenance
+      · exact hInv.adoptedActiveContextHasCanonicalLicense
+      · exact hInv.warrantReferentsCanonical
+      · exact hInv.warrantParentsCanonical
+      · exact hInv.rootWarrantWellFormed
+      · exact hInv.warrantRootLineageCanonical
+      · intro warrantId' warrant' ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
+      · intro key' hRecord
+        by_cases hEq : key' = key
+        · subst key'
+          exact ⟨warrant, warrantCanonical, formationProfile, formationContext⟩
+        · have hOldRecord : HasEvaluationRecord S key' := by
+            rcases qualifyEvaluation_otherKey_unchanged S hEq with
+              ⟨hEpi, hPlacement⟩
+            rcases hRecord with hStatus | hPlace
+            · rcases hStatus with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, hEpi.symm.trans hStatus⟩
+            · rcases hPlace with ⟨placement, hPlace⟩
+              exact Or.inr ⟨placement, hPlacement.symm.trans hPlace⟩
+          exact hInv.evaluationReferentsCanonical hOldRecord
+      · intro key'
+        by_cases hEq : key' = key
+        · subst key'
+          simp [key, qualifyEvaluation, setOptionAt]
+        · rcases qualifyEvaluation_otherKey_unchanged S hEq with
+            ⟨hEpi, hPlacement⟩
+          rw [hEpi, hPlacement]
+          exact hInv.evaluationPairCoherent key'
+      · intro key' hRecord
+        by_cases hEq : key' = key
+        · subst key'
+          rcases isInfer with ⟨ruleId, hConstructor⟩
+          rcases hInv.inferWarrantWellFormed warrantCanonical hConstructor with
+            ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+              hParents, hDiscipline, hExact⟩
+          have hRuleInputs : rule.inputRoles ≠ [] :=
+            wellTypedRule_inputs_nonempty hDiscipline.wellTyped
+          have hResolvedParentsNonempty : parents ≠ [] := by
+            intro hEmpty
+            have hRoles := hDiscipline.orderedRolesExact
+            rw [hEmpty] at hRoles
+            exact hRuleInputs hRoles.symm
+          have hParentIdsNonempty : warrant.parents ≠ [] :=
+            hParents.ids_nonempty_of_parents_nonempty hResolvedParentsNonempty
+          cases hIds : warrant.parents with
+          | nil =>
+              exact False.elim (hParentIdsNonempty hIds)
+          | cons parentId rest =>
+              have hParentUsable :
+                  Usable S ⟨binding.profileDigest, contextId, use, parentId⟩ :=
+                parentsUsable parentId (by simp [hIds])
+              have hParentRecord :
+                  HasEvaluationRecord S
+                    ⟨binding.profileDigest, contextId, use, parentId⟩ :=
+                Or.inl ⟨.live, hParentUsable.1⟩
+              rcases hInv.evaluationProfileUseBackedByBinding hParentRecord with
+                ⟨backingId, backing, hBacking, hProfileBacking, hUseBacking⟩
+              exact ⟨backingId, backing, hBacking,
+                hProfileBacking, hUseBacking⟩
+        · have hOldRecord : HasEvaluationRecord S key' := by
+            rcases qualifyEvaluation_otherKey_unchanged S hEq with
+              ⟨hEpi, hPlacement⟩
+            rcases hRecord with hStatus | hPlace
+            · rcases hStatus with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, hEpi.symm.trans hStatus⟩
+            · rcases hPlace with ⟨placement, hPlace⟩
+              exact Or.inr ⟨placement, hPlacement.symm.trans hPlace⟩
+          exact hInv.evaluationProfileUseBackedByBinding hOldRecord
 
 theorem reachable_invariant
     {S : CanonicalState}
@@ -941,6 +1125,12 @@ theorem reachable_inferWarrantsWellFormed
     (hReachable : Reachable S) :
     InferWarrantWellFormed S :=
   (reachable_invariant hReachable).inferWarrantWellFormed
+
+theorem reachable_evaluationProfileUseBackedByBinding
+    {S : CanonicalState}
+    (hReachable : Reachable S) :
+    EvaluationProfileUseBackedByBinding S :=
+  (reachable_invariant hReachable).evaluationProfileUseBackedByBinding
 
 theorem reachable_toActivationRead_wellFormed
     {S : CanonicalState}

@@ -16,12 +16,6 @@ def Evaluated (S : CanonicalState) (key : EvalKey) : Prop :=
   (∃ status, S.epi key = some status) ∧
     ∃ placement, S.placement key = some placement
 
-/-- Current usability is exactly LIVE together with PLACED. Missing records and
-all other represented status combinations are unusable. -/
-def Usable (S : CanonicalState) (key : EvalKey) : Prop :=
-  S.epi key = some .live ∧
-    S.placement key = some .placed
-
 /-- Narrow state-backed Boolean observation for the existing canonical-read
 surface. This does not attempt to construct a full `LicensingRead`. -/
 def usableFromState
@@ -94,14 +88,16 @@ theorem admitRoot_evaluation_exact
       S'.placement ⟨binding.profileDigest, contextId, use, warrantId⟩ =
         some .placed := by
   cases hStep with
-  | @admitRoot wid bid cid actualUse md binding context warrant
+  | @admitRoot _ _ _ _ _ binding context warrant
       bindingCanonical contextCanonical warrantCanonical isRoot
       formationContext formationProfile useMatches =>
       refine ⟨binding, context, warrant, bindingCanonical, contextCanonical,
         warrantCanonical, isRoot, formationContext, formationProfile,
         useMatches, ?_, ?_⟩
-      · simp [qualifyEvaluation, setOptionAt]
-      · simp [qualifyEvaluation, setOptionAt]
+      · exact (qualifyEvaluation_exact S
+          ⟨binding.profileDigest, contextId, use, warrantId⟩).1
+      · exact (qualifyEvaluation_exact S
+          ⟨binding.profileDigest, contextId, use, warrantId⟩).2
 
 /-- Valid ROOT admission establishes usability at the exact formation-profile,
 context, and requested-use evaluation key. -/
