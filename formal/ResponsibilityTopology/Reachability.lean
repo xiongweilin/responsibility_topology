@@ -1382,7 +1382,13 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-      · exact hInv.inferWarrantWellFormed
+      · intro warrantId' warrant' ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · intro key' hRecord
         by_cases hEq : key' = key
         · subst key'
