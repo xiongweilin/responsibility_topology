@@ -23,12 +23,19 @@ Standing theorem boundary:
 - SS connects successful executable search to the declarative `Derives` relation;
 - replay additionally needs order preservation. The canonical projection is implemented as a list filter, hence an order-preserving sublist;
 - arbitrary `Γ' <+ Γ` plus mere membership of support IDs is not sufficient for exact replay when duplicate warrant IDs are allowed. Therefore SPR is stated for ID-level filtering that keeps every support ID, which retains every occurrence of those IDs while preserving order;
+- `projectSupport` uses the local pure Boolean predicate `supportHas`; `supportHas_exact` proves `supportHas w xs = true ↔ w ∈ xs`. This avoids importing the proof dependencies of Lean 4.19's generic decidable list-membership instance into the SP proof term;
 - binding, context, profile, use, currentness, `INFER`, `TRANSPORT`, challenge/revision, context activation, kernel-floor checks, and concrete transition semantics remain outside this layer.
 
 The exact projection is
 
 ```text
-projectSupport Γ β = Γ.filter (fun w => decide (w ∈ β.support))
+projectSupport Γ β = Γ.filter (fun w => supportHas w β.support)
+```
+
+with
+
+```text
+supportHas w xs = true ↔ w ∈ xs
 ```
 
 and SP states:
@@ -46,15 +53,16 @@ Logical dependency shape:
              executable satisfy
               /             \
             NW ✓             SS ✓
-             |                \
-             |                 \
-       firstSat_replay          \
-             |                   \
-             +------> SPR --------+
+             |
+       firstSat_replay
+             |
+             +------> SPR
                        |
-             projectSupport
+       satisfy_support_subset
                        |
-                       SP
+              projectSupport
+                       |
+                       SP ✓
 
                       KFL
 
