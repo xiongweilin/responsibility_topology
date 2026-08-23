@@ -11,6 +11,8 @@ import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
 import ResponsibilityTopology.HistoricalObjects
+import ResponsibilityTopology.EvaluationVocabulary
 import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
+import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.Audit
