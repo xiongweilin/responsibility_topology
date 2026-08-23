@@ -76,14 +76,16 @@ theorem qualifyInfer_evaluation_exact
       S'.epi ⟨binding.profileDigest, contextId, use, warrantId⟩ = some .live ∧
       S'.placement ⟨binding.profileDigest, contextId, use, warrantId⟩ =
         some .placed := by
-  rcases qualifyInfer_requires_usableParents hStep with
-    ⟨binding, warrant, ruleId, hBinding, hWarrant, hConstructor,
-      hContext, hProfile, hParents⟩
-  have hExact := qualifyEvaluation_exact S
-    ⟨binding.profileDigest, contextId, use, warrantId⟩
-  cases hStep
-  exact ⟨binding, warrant, ruleId, hBinding, hWarrant, hConstructor,
-    hContext, hProfile, hParents, hExact.1, hExact.2⟩
+  cases hStep with
+  | @qualifyInfer _ _ _ _ _ binding warrant
+      bindingCanonical warrantCanonical isInfer formationContext formationProfile
+      parentsUsable =>
+      rcases isInfer with ⟨ruleId, hConstructor⟩
+      have hExact := qualifyEvaluation_exact S
+        ⟨binding.profileDigest, contextId, use, warrantId⟩
+      exact ⟨binding, warrant, ruleId, bindingCanonical, warrantCanonical,
+        hConstructor, formationContext, formationProfile, parentsUsable,
+        hExact.1, hExact.2⟩
 
 /-- Current usable parents plus the explicit qualification transition establish
 current usability of the derived warrant in the exact selected environment. -/
