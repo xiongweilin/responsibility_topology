@@ -5,14 +5,18 @@ import ResponsibilityTopology.KernelFloor
 import ResponsibilityTopology.Entitlement
 import ResponsibilityTopology.CanonicalRead
 import ResponsibilityTopology.RequirementResolution
+import ResponsibilityTopology.ProfileObjects
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
 import ResponsibilityTopology.HistoricalObjects
+import ResponsibilityTopology.InferenceObjects
+import ResponsibilityTopology.InferenceSemantics
 import ResponsibilityTopology.EvaluationVocabulary
 import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
+import ResponsibilityTopology.InferFormation
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -80,6 +84,15 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.missingRequirement_notTop
 #print axioms ResponsibilityTopology.requirementLookup_permutation
 #print axioms ResponsibilityTopology.resolvedLicensingRead_requirement
+#print axioms ResponsibilityTopology.ruleLookup_sound
+#print axioms ResponsibilityTopology.ruleLookup_complete
+#print axioms ResponsibilityTopology.ruleLookup_deterministic
+#print axioms ResponsibilityTopology.profileRequirementSnapshot_digest
+#print axioms ResponsibilityTopology.wellTypedRule_knownGuard
+#print axioms ResponsibilityTopology.wellTypedRule_special_provenance
+#print axioms ResponsibilityTopology.wellTypedRule_protected_output
+#print axioms ResponsibilityTopology.kernelGuard_distinctContentSources
+#print axioms ResponsibilityTopology.kernelGuard_distinctContentRoots
 #print axioms ResponsibilityTopology.grounded_contractiveness
 #print axioms ResponsibilityTopology.grounded_fixedPoint_soundness
 #print axioms ResponsibilityTopology.grounded_refresh_idempotence
@@ -97,6 +110,7 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.reachable_canonicalIdsUnique
 #print axioms ResponsibilityTopology.reachable_activeContextHasActivationProvenance
 #print axioms ResponsibilityTopology.reachable_adoptedActiveContextHasCanonicalLicense
+#print axioms ResponsibilityTopology.reachable_inferWarrantsWellFormed
 #print axioms ResponsibilityTopology.reachable_toActivationRead_wellFormed
 #print axioms ResponsibilityTopology.rootStep_newWarrant_exact
 #print axioms ResponsibilityTopology.rootStep_oldWarrants_immutable
@@ -117,7 +131,20 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.admitRoot_historyReferentsImmutable
 #print axioms ResponsibilityTopology.admitRoot_preserves_existing_warrant_history
 #print axioms ResponsibilityTopology.admitRoot_preserves_evaluationInvariant
+#print axioms ResponsibilityTopology.freshHistoricalWarrant_noEvaluation
+#print axioms ResponsibilityTopology.noEvaluation_notUsable
 #print axioms ResponsibilityTopology.rootStep_newWarrant_unqualified
 #print axioms ResponsibilityTopology.rootStep_newWarrant_notUsable
 #print axioms ResponsibilityTopology.usable_implies_canonicalHistoricalWarrant
 #print axioms ResponsibilityTopology.reachable_usable_implies_canonical
+#print axioms ResponsibilityTopology.inferStep_newWarrant_exact
+#print axioms ResponsibilityTopology.inferStep_parentEnvironment_exact
+#print axioms ResponsibilityTopology.inferStep_orderedParentRoles_exact
+#print axioms ResponsibilityTopology.inferStep_oldWarrants_immutable
+#print axioms ResponsibilityTopology.inferStep_historyReferentsImmutable
+#print axioms ResponsibilityTopology.inferStep_evaluationTopology_unchanged
+#print axioms ResponsibilityTopology.inferStep_newWarrant_unqualified
+#print axioms ResponsibilityTopology.inferStep_newWarrant_notUsable
+#print axioms ResponsibilityTopology.inferStep_lineage_union
+#print axioms ResponsibilityTopology.inferStep_preserves_inferWarrantWellFormed
+#print axioms ResponsibilityTopology.inferStep_preserves_warrantParentsCanonical
