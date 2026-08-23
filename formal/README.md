@@ -2,9 +2,11 @@
 
 This directory contains the mechanized core of the Responsibility Topology research program for finite epistemic kernels.
 
-The current formal thesis is narrow:
+The current formal state thesis is narrow:
 
-> **Canonical historical formation and current usability are distinct state relations.**
+> **Canonical history and current usability are distinct state relations.**
+
+Historical formation and current qualification are distinct transitions governing those relations.
 
 For ordinary INFER, the stronger lifecycle result is:
 
@@ -12,7 +14,7 @@ For ordinary INFER, the stronger lifecycle result is:
 
 The mechanization therefore separates four things that should not be conflated:
 
-1. canonical historical derivability and warrant formation;
+1. canonical historical existence/derivability and the formation transitions that create it;
 2. current evaluation qualification and usability;
 3. entitlement under exact requirements, ambient conditions, and kernel-floor safety;
 4. adequacy of the profile or kernel regime itself.
@@ -266,7 +268,13 @@ The model does **not** assert the reverse as a permanent invariant. Future inval
 
 The shared `EvaluationProfileUseBackedByBinding` invariant records only provenance of the `(profileDigest,use)` evaluation environment. It does **not** prove use adequacy.
 
-The composed lifecycle theorem is `inferFormationQualification_boundary`.
+The composed lifecycle theorem is `inferFormationQualification_boundary`. Its paper-facing interpretation distinguishes the persistent historical parent relation from the time-indexed pre-state predicate applied to those same parent identities:
+
+```text
+ParentOf(p,d)
+    ≠
+Usable(S_pre,k_p)
+```
 
 ## 7. Executable conformance boundary
 
