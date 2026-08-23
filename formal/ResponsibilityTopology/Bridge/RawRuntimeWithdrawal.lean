@@ -9,11 +9,11 @@ namespace ResponsibilityTopology.Bridge
 Strict-L6 REF-4 checker input.
 
 Unlike the REF-3 `QualificationWithdrawalCertificate`, this structure represents
-selected *raw runtime record fields*.  The Lean projection below computes the B0
+selected *raw runtime record fields*. The Lean projection below computes the B0
 historical-trace and qualification observations itself.
 
 The remaining external trust boundary is raw runtime serialization / I/O
-fidelity.  Python-side B0 extraction is not trusted by this checker.
+fidelity. Python-side B0 extraction is not trusted by this checker.
 -/
 
 structure RawAssertionSnapshotV1 where
@@ -33,7 +33,7 @@ structure RawWithdrawalTransitionV1 where
   deriving Repr, DecidableEq, FromJson
 
 /-- Lean-owned interpretation of the runtime-native assertion status at the B0
-qualification coordinate.  No Python bridge value is consumed here. -/
+qualification coordinate. No Python bridge value is consumed here. -/
 def rawQualificationB0 (snapshot : RawAssertionSnapshotV1) : Option QualificationState :=
   if snapshot.record_type != "Assertion" then
     none
@@ -46,7 +46,7 @@ def rawQualificationB0 (snapshot : RawAssertionSnapshotV1) : Option Qualificatio
     none
 
 /-- Lean-defined projection from selected raw canonical record fields to the
-restricted B0 observation.  Historical trace is present only when the raw
+restricted B0 observation. Historical trace is present only when the raw
 snapshot is the requested nonempty Assertion referent. -/
 def alphaB0Lean
     (subjectRef : String)
@@ -62,24 +62,63 @@ def alphaB0Lean
         }
     | none => none
 
-/-- The semantic contract checked from raw before/after snapshots. -/
+/-- The Prop-level semantic contract checked from raw before/after snapshots. -/
 def RawB0WithdrawalHolds (transition : RawWithdrawalTransitionV1) : Prop :=
   match alphaB0Lean transition.subject_ref transition.before_raw_snapshot,
       alphaB0Lean transition.subject_ref transition.after_raw_snapshot with
   | some before, some after => B0QualificationWithdrawalStep before after
   | _, _ => False
 
-instance (transition : RawWithdrawalTransitionV1) : Decidable (RawB0WithdrawalHolds transition) := by
-  unfold RawB0WithdrawalHolds
-  infer_instance
+/-- Explicit executable checker for the projected B0 pair. Keeping this Boolean
+avoids making the Prop-level contract itself part of the executable trusted
+surface. -/
+def checkProjectedB0Withdrawal
+    (before after : Option B0QualificationObservation) : Bool :=
+  match before, after with
+  | some beforeObs, some afterObs =>
+      match beforeObs.historicalTracePresent,
+          afterObs.historicalTracePresent,
+          beforeObs.qualification,
+          afterObs.qualification with
+      | true, true, .qualified, .withdrawn => true
+      | _, _, _, _ => false
+  | _, _ => false
 
-/-- Executable raw checker.  Schema/event checks are envelope checks; the B0
+/-- Boolean projection success implies the existing Prop-level B0 contract. -/
+theorem checkProjectedB0Withdrawal_sound
+    (before after : Option B0QualificationObservation)
+    (hCheck : checkProjectedB0Withdrawal before after = true) :
+    match before, after with
+    | some beforeObs, some afterObs =>
+        B0QualificationWithdrawalStep beforeObs afterObs
+    | _, _ => False := by
+  cases before with
+  | none =>
+      simp [checkProjectedB0Withdrawal] at hCheck
+  | some beforeObs =>
+      cases after with
+      | none =>
+          simp [checkProjectedB0Withdrawal] at hCheck
+      | some afterObs =>
+          cases beforeObs with
+          | mk beforeTrace beforeQualification =>
+              cases afterObs with
+              | mk afterTrace afterQualification =>
+                  cases beforeTrace <;>
+                  cases afterTrace <;>
+                  cases beforeQualification <;>
+                  cases afterQualification <;>
+                  simp [checkProjectedB0Withdrawal,
+                    B0QualificationWithdrawalStep] at hCheck ⊢
+
+/-- Executable raw checker. Schema/event checks are envelope checks; the B0
 judgment itself is computed solely by the Lean projection above. -/
 def checkRawWithdrawal (transition : RawWithdrawalTransitionV1) : Bool :=
-  decide (
-    transition.schema_version = "raw-withdrawal-transition-v1" ∧
-    transition.event_ref ≠ "" ∧
-    RawB0WithdrawalHolds transition)
+  (transition.schema_version == "raw-withdrawal-transition-v1") &&
+    ((!(transition.event_ref == "")) &&
+      checkProjectedB0Withdrawal
+        (alphaB0Lean transition.subject_ref transition.before_raw_snapshot)
+        (alphaB0Lean transition.subject_ref transition.after_raw_snapshot))
 
 /-- Main REF-4 soundness theorem: checker success on a raw transition implies
 that the Lean-computed before/after observations satisfy the existing B0
@@ -88,15 +127,17 @@ theorem checkRawWithdrawal_sound
     (transition : RawWithdrawalTransitionV1)
     (hCheck : checkRawWithdrawal transition = true) :
     RawB0WithdrawalHolds transition := by
-  have hEnvelope :
-      transition.schema_version = "raw-withdrawal-transition-v1" ∧
-      transition.event_ref ≠ "" ∧
-      RawB0WithdrawalHolds transition := by
-    exact of_decide_eq_true (by simpa [checkRawWithdrawal] using hCheck)
-  exact hEnvelope.2.2
+  unfold checkRawWithdrawal at hCheck
+  have hTop := Bool.and_eq_true.mp hCheck
+  have hRest := Bool.and_eq_true.mp hTop.2
+  unfold RawB0WithdrawalHolds
+  exact checkProjectedB0Withdrawal_sound
+    (alphaB0Lean transition.subject_ref transition.before_raw_snapshot)
+    (alphaB0Lean transition.subject_ref transition.after_raw_snapshot)
+    hRest.2
 
 /-- Concrete selected-field mirror used only to exercise the checker in normal
-Lean compilation.  The cross-repository CI gate separately feeds the actual raw
+Lean compilation. The cross-repository CI gate separately feeds the actual raw
 JSON artifact produced by portable-runtime into the JSON CLI. -/
 def ref4RawSelectedFixture : RawWithdrawalTransitionV1 where
   schema_version := "raw-withdrawal-transition-v1"
@@ -119,7 +160,7 @@ def ref4RawSelectedFixture : RawWithdrawalTransitionV1 where
 
 theorem ref4RawSelectedFixture_checked :
     checkRawWithdrawal ref4RawSelectedFixture = true := by
-  decide
+  rfl
 
 theorem ref4RawSelectedFixture_projects_B0 :
     RawB0WithdrawalHolds ref4RawSelectedFixture := by
