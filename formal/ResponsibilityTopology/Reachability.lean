@@ -20,15 +20,11 @@ structure CanonicalBinding where
   scope : Scope
   deriving Repr, DecidableEq
 
-/-- Minimal immutable header needed by the currentness layer once Adopt
-activation is added by a later transition milestone. -/
 structure CanonicalActivationLicense where
   issuer : ContextKey
   target : ContextKey
   deriving Repr, DecidableEq
 
-/-- Canonical state surface.  Context and warrant identifiers now resolve to
-immutable canonical referents; the evaluation-plane fields remain unchanged. -/
 structure CanonicalState where
   context : String → Option CanonicalContext
   profile : String → Prop
@@ -70,7 +66,6 @@ def emptyCanonicalState : CanonicalState where
   activationProvenance := fun _ => none
   reviewRequired := fun _ => False
 
-/-- The only initial state admitted by the reachability skeleton. -/
 def InitialBoundary (S : CanonicalState) : Prop :=
   S = emptyCanonicalState
 
@@ -85,9 +80,8 @@ inductive KernelEvent where
       (input : RootInput)
   deriving Repr
 
-/-- Transition surface.  ROOT has exactly the history-plane preconditions read
-by Python V0.1.2.2: canonical binding, canonical context, context acceptance,
-and fresh output ID.  It does not read evaluation activity or binding scope. -/
+/-- ROOT has exactly the static history-plane preconditions used by Python
+V0.1.2.2.  No active-context/binding or scope-within-binding premise is added. -/
 inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop where
   | registerContext
       {S : CanonicalState} {id : String} {context : CanonicalContext}
@@ -134,33 +128,25 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
             (rootHistoricalWarrant
               warrantId binding.profileDigest contextId input) }
 
-/-- Reachability is generated only from the explicit initial boundary and
-machine-described steps. -/
 inductive Reachable : CanonicalState → Prop where
   | initial {S : CanonicalState} : InitialBoundary S → Reachable S
   | step {S S' : CanonicalState} {event : KernelEvent} :
       Reachable S → Step S event S' → Reachable S'
 
-/-- A context key is structurally backed by a canonical context and a binding
-whose declared use exactly matches the key. -/
 def ContextKeyCanonical (S : CanonicalState) (key : ContextKey) : Prop :=
   (∃ context, S.context key.context = some context) ∧
     ∃ b, S.binding key.binding = some b ∧ b.use = key.use
 
-/-- Every canonical binding points at a registered profile digest. -/
 def BindingReferentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id b⦄, S.binding id = some b → S.profile b.profileDigest
 
-/-- No active context key may float free of canonical context/binding referents. -/
 def ActiveContextReferentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃key⦄, S.activeContext key → ContextKeyCanonical S key
 
-/-- Every active context carries explicit activation provenance. -/
 def ActiveContextHasActivationProvenance (S : CanonicalState) : Prop :=
   ∀ ⦃key⦄, S.activeContext key →
     ∃ activation, S.activationProvenance key = some activation
 
-/-- Future-stable Adopt invariant. -/
 def AdoptedActiveContextHasCanonicalLicense (S : CanonicalState) : Prop :=
   ∀ ⦃key licenseId⦄,
     S.activeContext key →
@@ -178,8 +164,7 @@ def WarrantReferentsCanonical (S : CanonicalState) : Prop :=
     (∃ context, S.context warrant.formationContext = some context) ∧
       S.profile warrant.formationProfileDigest
 
-/-- Every historical parent identifier resolves to a canonical historical
-warrant in the same state. -/
+/-- Every historical parent identifier resolves canonically. -/
 def WarrantParentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id warrant parentId⦄,
     S.warrant id = some warrant →
@@ -201,16 +186,13 @@ def RootWarrantWellFormed (S : CanonicalState) : Prop :=
           warrant.sourceLineage role sourceId ↔
             role = warrant.role ∧ sourceId = source)
 
-/-- Every warrant identifier mentioned by root lineage resolves canonically.
-For a new ROOT this is a post-state obligation because its lineage contains its
-own newly allocated identifier. -/
+/-- Every root-lineage warrant ID resolves in the same post-state. -/
 def WarrantRootLineageCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id warrant role rootId⦄,
     S.warrant id = some warrant →
     warrant.rootLineage role rootId →
     ∃ root, S.warrant rootId = some root
 
-/-- Shared unary invariant exported to later transition-refinement milestones. -/
 structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   bindingReferentsCanonical : BindingReferentsCanonical S
   activeContextReferentsCanonical : ActiveContextReferentsCanonical S
@@ -221,8 +203,6 @@ structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   rootWarrantWellFormed : RootWarrantWellFormed S
   warrantRootLineageCanonical : WarrantRootLineageCanonical S
 
-/-- Functional canonical lookups cannot bind one identifier to two distinct
-objects.  Context and warrant identity now participate explicitly. -/
 structure CanonicalIdsUnique (S : CanonicalState) : Prop where
   contextUnique : ∀ ⦃id c₁ c₂⦄,
     S.context id = some c₁ → S.context id = some c₂ → c₁ = c₂
@@ -236,8 +216,7 @@ structure CanonicalIdsUnique (S : CanonicalState) : Prop where
     S.activationProvenance key = some a₁ →
     S.activationProvenance key = some a₂ → a₁ = a₂
 
-/-- Binary append-only/history-stability property.  Existing context and warrant
-IDs preserve their exact canonical referents across every step. -/
+/-- Existing canonical history IDs keep their exact referents. -/
 structure HistoryReferentsImmutable (S S' : CanonicalState) : Prop where
   contextImmutable : ∀ ⦃id context⦄,
     S.context id = some context → S'.context id = some context
@@ -249,8 +228,6 @@ structure HistoryReferentsImmutable (S S' : CanonicalState) : Prop where
   licenseImmutable : ∀ ⦃id license⦄,
     S.license id = some license → S'.license id = some license
 
-/-- #8 read projected from one canonical state.  Base-currentness remains an
-external judgment. -/
 def toActivationRead
     (S : CanonicalState)
     (baseCurrent : ActivationLicenseId → Prop) : ActivationRead where
@@ -262,7 +239,6 @@ def toActivationRead
     | some license => some license.issuer
   baseCurrent := baseCurrent
 
-/-- Minimal well-formedness expected by grounded-currentness projection. -/
 def WellFormedActivationRead (R : ActivationRead) : Prop :=
   (∀ ⦃key⦄, R.seedActive key → ∃ a, R.activation key = some a) ∧
   (∀ ⦃key licenseId⦄,
@@ -341,7 +317,17 @@ theorem step_historyReferentsImmutable
       · intro id license h
         exact h
   | bootstrapContext contextCanonical bindingCanonical inactive freshActivation =>
-      constructor <;> intro <;> assumption
+      constructor
+      · intro id context h
+        exact h
+      · intro digest h
+        exact h
+      · intro id binding h
+        exact h
+      · intro id warrant h
+        exact h
+      · intro id license h
+        exact h
   | root fresh bindingCanonical contextCanonical accepted =>
       constructor
       · intro id context h
@@ -361,7 +347,7 @@ theorem step_preserves_invariant
     (hStep : Step S event S') :
     CanonicalStateInvariant S' := by
   cases hStep with
-  | @registerContext _ id context fresh =>
+  | @registerContext id context fresh =>
       constructor
       · exact hInv.bindingReferentsCanonical
       · intro key hActive
@@ -383,7 +369,7 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-  | @registerProfile _ digest fresh =>
+  | @registerProfile digest fresh =>
       constructor
       · intro id binding hBinding
         exact Or.inr (hInv.bindingReferentsCanonical hBinding)
@@ -397,7 +383,7 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-  | @bindProfile _ id binding fresh profileCanonical =>
+  | @bindProfile id binding fresh profileCanonical =>
       constructor
       · intro id' binding' hLookup
         by_cases hEq : id' = id
@@ -425,7 +411,7 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-  | @bootstrapContext _ key contextCanonical bindingCanonical inactive freshActivation =>
+  | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
       constructor
       · exact hInv.bindingReferentsCanonical
       · intro key' hActive
@@ -462,7 +448,7 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-  | @root _ warrantId bindingId contextId input binding context
+  | @root warrantId bindingId contextId input binding context
       fresh bindingCanonical contextCanonical accepted =>
       constructor
       · exact hInv.bindingReferentsCanonical
@@ -530,7 +516,6 @@ theorem step_preserves_invariant
             ⟨root, hRootLookup⟩
           exact ⟨root, putCanonical_preserves_some fresh hRootLookup⟩
 
-/-- Every reachable state shares one invariant package. -/
 theorem reachable_invariant
     {S : CanonicalState}
     (hReachable : Reachable S) :
@@ -559,7 +544,6 @@ theorem reachable_adoptedActiveContextHasCanonicalLicense
     AdoptedActiveContextHasCanonicalLicense S :=
   (reachable_invariant hReachable).adoptedActiveContextHasCanonicalLicense
 
-/-- Reachability closes the structural side of #8's arbitrary ActivationRead. -/
 theorem reachable_toActivationRead_wellFormed
     {S : CanonicalState}
     (hReachable : Reachable S)
