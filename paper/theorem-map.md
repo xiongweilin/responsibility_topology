@@ -2,13 +2,13 @@
 
 This file maps the first paper's claims to a deliberately small set of mechanized result families. It is **not** organized by source-file chronology and it is **not** an exhaustive theorem index. `formal/ResponsibilityTopology/Audit.lean` remains authoritative for axiom dependencies.
 
-The theorem-facing paper thesis is deliberately narrow:
+The theorem-facing state thesis is deliberately narrow:
 
 ```text
-canonical historical formation ≠ current usability
+canonical historical existence ≠ current usability
 ```
 
-and, for ordinary INFER:
+Historical formation and current qualification are distinct transitions governing those relations. For ordinary INFER, the stronger relation-level thesis is:
 
 ```text
 historical derivation relation ≠ current usable-parent responsibility
@@ -334,13 +334,15 @@ HistoricalDerived \not\Rightarrow CurrentUsability.
 }
 \]
 
-This is the paper's most important lifecycle result because it distinguishes two relations over the same warrant graph:
+This is the paper's most important lifecycle result because it distinguishes two relations over the same parent identities:
 
-```text
-persistent historical derivation relation
-        ≠
-time-indexed current usable-parent responsibility
-```
+\[
+\underbrace{ParentOf(p,d)}_{\text{persistent historical relation}}
+\qquad\text{versus}\qquad
+\underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
+\]
+
+Formation carries the already-discharged rule/guard/context/scope/strength/lineage obligations in immutable history; qualification later evaluates current usability over those same historical parents rather than replaying formation.
 
 **Do not claim:** `DerivedUsable → Entitled`. Entitlement additionally requires ambient admissibility, exact requirement discharge, and kernel-floor safety.
 
