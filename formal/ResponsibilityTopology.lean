@@ -9,4 +9,5 @@ import ResponsibilityTopology.CanonicalRead
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
+import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.Audit
