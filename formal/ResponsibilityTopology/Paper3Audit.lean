@@ -1,4 +1,4 @@
-import ResponsibilityTopology.ActivationRefresh
+import ResponsibilityTopology.RepairSemantics
 
 /-!
 Proof-audit surface for the Paper 3 revision/revalidation line.
@@ -20,3 +20,12 @@ This file is intentionally separate from the frozen Paper 1/2 audit surface.
 #print axioms ResponsibilityTopology.challengeReachable_to_refreshReachable
 #print axioms ResponsibilityTopology.refreshStep_exact
 #print axioms ResponsibilityTopology.challengeRefresh_retained_implies_preGrounded
+#print axioms ResponsibilityTopology.staleDependency_warrant_iff
+#print axioms ResponsibilityTopology.staleDependency_license_iff
+#print axioms ResponsibilityTopology.staleDependency_context_iff
+#print axioms ResponsibilityTopology.repairSet_hits_edge
+#print axioms ResponsibilityTopology.repairSet_monotone
+#print axioms ResponsibilityTopology.repairProblem_edge_is_stale
+#print axioms ResponsibilityTopology.repairProblem_stale_has_edge
+#print axioms ResponsibilityTopology.minimalRepairSet_is_repairSet
+#print axioms ResponsibilityTopology.historicalWellFormedness_separate_from_staleness
