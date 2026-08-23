@@ -114,23 +114,19 @@ selected Python observations are differentially conformance-tested
 against the mechanized projection/currentness semantics
 ```
 
-not:
+The artifact does not claim:
 
 ```text
 Python is verified
 ```
 
-Formally:
+In artifact terminology, these are intentionally different evidence levels:
 
-\[
-\boxed{
-\text{Python conformance-tested}
-\neq
-\text{Python verified}.
-}
-\]
+```text
+Python conformance-tested ≠ Python verified
+```
 
-No source-level refinement theorem proves arbitrary Python states correspond to `CanonicalState` or that every Python operation refines `Step`.
+This line is a claim-classification boundary, not a Lean theorem. No source-level refinement theorem proves arbitrary Python states correspond to `CanonicalState` or that every Python operation refines `Step`.
 
 ## 5. Paper result → Lean declaration → source module
 
@@ -155,19 +151,15 @@ No source-level refinement theorem proves arbitrary Python states correspond to 
 | **Machine checked in Lean 4** | branch/floor locality and R1; exact requirement semantics; canonical projection coherence; reachable-state invariant; grounded currentness semantics; ROOT formation/admission separation; ordinary INFER historical formation; current-parent qualification; adjacent lifecycle separation |
 | **Differentially conformance-tested** | selected Python V0.1.2.2 static projection, satisfaction, floor, ambient, and adopted-context-currentness observations |
 | **Definitional/model boundary** | exact `Usable = LIVE ∧ PLACED`; immutable historical lookup plane versus mutable evaluation plane; current `Step` constructor surface |
-| **Not proved** | full Python operational refinement; total state-backed licensing-read assembly; reachable Adopt/license lifecycle; TRANSPORT; challenge/revision/revalidation transitions; arbitrary temporal persistence/closure; profile adequacy; kernel-floor adequacy; source authenticity; use/admission adequacy; Q_open; Q_close |
+| **Not proved / not claimed** | full Python operational refinement; total state-backed licensing-read assembly; reachable Adopt/license lifecycle; TRANSPORT; challenge/revision/revalidation transitions; arbitrary temporal persistence/closure; profile adequacy; kernel-floor adequacy; source authenticity; use/admission adequacy; Q_open; Q_close |
 
-The following non-implications are part of the artifact boundary:
+Claim-classification boundaries should be read as prose, not as additional mechanized non-implication theorems:
 
-```text
-HistoricalWarrant      ⇏ historical truth / justification
-CurrentUsability       ⇏ Entitlement
-FormationDiscipline    ⇏ adequacy
-RecordedActor          ⇏ authenticated principal
-RecordedBasis          ⇏ adequate basis
-ProfileExecutionCorrectness ⇏ ProfileAdequacy
-KernelCorrectness      ⇏ KernelFloorAdequacy
-```
+- a `HistoricalWarrant` records modeled formation/provenance; the paper does not identify it with historical truth or epistemological justification;
+- current usability supplies one input to the entitlement layer; entitlement additionally requires ambient admissibility, exact requirement derivability, and floor safety;
+- `InferFormationDiscipline` checks the modeled structural formation conditions; it does not establish substantive adequacy of the rule/profile regime;
+- recorded actor/basis metadata is not claimed to authenticate a principal or establish adequacy of the basis;
+- profile/kernel execution results are not promoted into profile or kernel-floor adequacy claims.
 
 ## 7. Explicitly frozen non-theorems
 
@@ -195,7 +187,7 @@ A third-party evaluator should be able to establish all of the following without
 - the four Python/conformance test files run in a clean Python environment;
 - the expected locked-baseline test count is stated as an artifact metric;
 - every paper result R1–R9 has an artifact locator;
-- the distinction between theorem-backed, conformance-tested, definitional, and not-claimed surfaces is explicit;
+- the distinction between theorem-backed, conformance-tested, definitional, interpretive, and not-claimed surfaces is explicit;
 - no reader needs to infer that Python conformance means verification or that R9 means temporal persistence.
 
 If a future commit changes formal or executable semantics, this document must not be silently reused as its artifact lock; a new lock commit and audit are required.
