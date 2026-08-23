@@ -7,6 +7,7 @@ import ResponsibilityTopology.CanonicalRead
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
+import ResponsibilityTopology.Reachability
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -72,3 +73,11 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.groundedAmbient_contextActive_iff
 #print axioms ResponsibilityTopology.groundedCertificate_sound
 #print axioms ResponsibilityTopology.ungroundedCertificate_sound
+#print axioms ResponsibilityTopology.canonicalIdsUnique
+#print axioms ResponsibilityTopology.step_historyReferentsImmutable
+#print axioms ResponsibilityTopology.step_preserves_invariant
+#print axioms ResponsibilityTopology.reachable_invariant
+#print axioms ResponsibilityTopology.reachable_canonicalIdsUnique
+#print axioms ResponsibilityTopology.reachable_activeContextHasActivationProvenance
+#print axioms ResponsibilityTopology.reachable_adoptedActiveContextHasCanonicalLicense
+#print axioms ResponsibilityTopology.reachable_toActivationRead_wellFormed
