@@ -1,8 +1,18 @@
 # Level-6 Technical Consolidation Audit
 
-Status: integration audit for the technical-consolidation track. This document does not create a new theory axis and does not retroactively expand Paper 1–3 claim surfaces.
+Status: **FROZEN PASS** for the technical-consolidation track at restricted observational-certificate scope. This document does not create a new theory axis and does not retroactively expand Paper 1–3 claim surfaces.
 
-The target evidence stack is:
+Integration freeze:
+
+```text
+responsibility_topology PR #74 merge
+59751542378a61dc33d372dd693ebda8627bab5a
+
+Lean #256:                  PASS
+Python-Lean Conformance #197: PASS
+```
+
+The frozen evidence stack is:
 
 ```text
 CrossDomainCore
@@ -18,7 +28,7 @@ The theory sequence remains:
 Object -> Environment -> Change -> Regime -> Multi-agent regime
 ```
 
-but the execution sequence has deliberately completed technical consolidation before resuming `Q_open` regime theory.
+but the execution sequence deliberately completed technical consolidation before resuming `Q_open` regime theory.
 
 ---
 
@@ -124,6 +134,15 @@ post-state not Usable
 ```
 
 This is observational alignment, not identification of Python assertion status with formal `Usable`.
+
+### Level-6 domain-instance integration
+
+```text
+responsibility_topology PR #74 merge
+59751542378a61dc33d372dd693ebda8627bab5a
+```
+
+The final integration adds finite case-model encodings for D1–D3 and D4 and audits them together with the cross-domain cores and certified bridge.
 
 ---
 
@@ -294,44 +313,62 @@ The parked QO-1 work is not imported into this Level-6 result.
 
 ---
 
-# 6. Integration criteria
+# 6. Integration criteria — final status
 
-Level-6 technical consolidation passes only if all of the following are true:
+All Level-6 technical-consolidation criteria passed:
 
 ```text
-[D4] software regression does not force generic vocabulary leakage
-[XDC] two minimal calculi elaborate and their countermodels are machine checked
-[DomainInstances] D1-D3 and D4 case encodings instantiate those calculi
-[REF-2] executable adapters pass F1-F6
-[REF-2] actual adapter output discovers non-empty B0
-[REF-2] semantic-mismatch coordinates remain excluded
-[REF-3 runtime] actual fixture produces a frozen certificate
-[REF-3 formal] Lean checker proves certificate soundness
-[REF-3 formal] existing formal semantics realizes the selected B0 pattern
-[Trust] extraction remains explicitly outside the verified checker TCB
+[D4] PASS
+software regression does not force generic vocabulary leakage
+
+[XDC] PASS
+two minimal calculi elaborate and their countermodels are machine checked
+
+[DomainInstances] PASS
+D1-D3 and D4 case encodings instantiate those calculi
+
+[REF-2] PASS
+executable adapters pass F1-F6
+
+[REF-2 B0] PASS
+actual adapter output discovers a non-empty B0
+
+[REF-2 mismatch discipline] PASS
+semantic-mismatch coordinates remain excluded
+
+[REF-3 runtime] PASS
+actual runtime fixture produces the frozen certificate
+
+[REF-3 formal checker] PASS
+Lean proves checker soundness
+
+[REF-3 formal witness] PASS
+existing formal challenge semantics realizes the selected B0 pattern
+
+[Trust boundary] PASS
+runtime extraction remains explicitly outside the verified checker TCB
 ```
 
 No criterion requires mechanism similarity, universal cross-domain invariance, full runtime refinement, or Q_open closure.
 
 ---
 
-# 7. Level-6 verdict boundary
-
-If the integration branch elaborates and CI remains green, the appropriate verdict is:
+# 7. Frozen Level-6 verdict
 
 ```text
 TECHNICAL LEVEL 6: PASS
 scope: restricted observational-certificate bridge
 ```
 
-Meaning:
+This means:
 
 1. heterogeneous-domain falsification produced a minimal abstraction that survived software regression;
 2. that abstraction has a machine-checked parametric core and explicit countermodels;
-3. the runtime/formal bridge has an executable neutral observation boundary discovered from fixtures;
-4. a non-empty fragment of that boundary has a verified checker;
-5. an existing formal transition family realizes the same abstract pattern;
-6. all known semantic mismatches and trust boundaries remain visible.
+3. D1–D3 and D4 have audited finite case-model encodings in the same calculi;
+4. the runtime/formal bridge has an executable neutral observation boundary discovered from fixtures;
+5. a non-empty fragment of that boundary has a verified checker;
+6. an existing formal transition family realizes the same abstract pattern;
+7. all known semantic mismatches and trust boundaries remain visible.
 
 It does **not** mean:
 
@@ -343,4 +380,4 @@ full observational refinement proved
 Q_open solved
 ```
 
-After this audit, technical feature expansion should stop by default. The next main research track may return to `Q_open`, now with a cleaner separation between abstraction mismatch, implementation correspondence, and regime inadequacy.
+Technical feature expansion now stops by default. The next main research track may return to `Q_open`, with abstraction mismatch, implementation correspondence, and regime inadequacy kept distinct.
