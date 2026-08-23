@@ -672,7 +672,7 @@ class LicenseError(KernelError):
 
 
 # ============================================================
-# V0.1.2.1 kernel
+# V0.1.2.2 kernel
 # ============================================================
 
 class ProofKernel:
@@ -1521,6 +1521,35 @@ class ProofKernel:
                 return False
         return True
 
+
+    def _refresh_context_currentness_fixed_point(
+        self,
+        history: History,
+        state: EvaluationState,
+    ) -> None:
+        """Enforce K-Law B transitively.
+
+        Any non-bootstrap ACTIVE context must have a currently reusable
+        activation license. If not, the context becomes PENDING. This can
+        invalidate downstream Adopt licenses issued in that context, so the
+        refresh iterates to a fixed point.
+        """
+        changed = True
+        while changed:
+            changed = False
+            active_now = list(state._active_contexts)
+            for key in active_now:
+                activation_license_id = state._context_activation_license.get(key)
+                # Bootstrap contexts have no activation-license dependency.
+                if activation_license_id is None:
+                    continue
+                if not self.check_license_current(
+                    history, state, activation_license_id
+                ):
+                    state._active_contexts.discard(key)
+                    state._pending_contexts.add(key)
+                    changed = True
+
     def activate_context_with_adopt_license(
         self,
         history: History,
@@ -1636,6 +1665,7 @@ class ProofKernel:
             and bool(lic.used_warrants & impacted)
         }
         state._mark_review(affected_licenses)
+        self._refresh_context_currentness_fixed_point(history, state)
         history._add_event({
             "kind": "challenge",
             "target": target_id,
@@ -1717,6 +1747,7 @@ class ProofKernel:
             )
         }
         state._mark_review(affected_licenses)
+        self._refresh_context_currentness_fixed_point(history, state)
         history._add_event({
             "kind": "revision",
             "binding": binding_id,

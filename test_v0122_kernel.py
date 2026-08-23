@@ -1,6 +1,6 @@
 import pytest
 
-from v0121_kernel import (
+from v0122_kernel import (
     Claim, Context, ContextStatus, EpiStatus, EvaluationState,
     FormationError, History, KernelError, LicenseError, LicenseType,
     Move, MoveKind, Placement, Profile, ProofKernel, RevisionDepth,
@@ -1367,3 +1367,86 @@ def test_non_revision_move_cannot_carry_revision_depth():
             B,
             RevisionDepth.ARCHITECTURE,
         )
+
+
+def test_context_currentness_propagates_through_adoption_chain():
+    c0 = base_context("c0")
+    c1 = base_context("c1")
+    c2 = base_context("c2")
+    p = Profile("k", "1")
+
+    adopt1 = Move(
+        MoveKind.ADOPT, (c1.id,), B, RevisionDepth.DISTINCTION
+    )
+    adopt2 = Move(
+        MoveKind.ADOPT, (c2.id,), B, RevisionDepth.DISTINCTION
+    )
+    req1 = conj(
+        atom(
+            Claim("EscalationDepth", (str(int(RevisionDepth.DISTINCTION)),)),
+            Role.ESCALATION, B
+        ),
+        atom(Claim("Selected", (c1.id,)), Role.SELECTION, B),
+    )
+    req2 = conj(
+        atom(
+            Claim("EscalationDepth", (str(int(RevisionDepth.DISTINCTION)),)),
+            Role.ESCALATION, B
+        ),
+        atom(Claim("Selected", (c2.id,)), Role.SELECTION, B),
+    )
+    p.set_requirement(LicenseType.EPISTEMIC, adopt1, req1)
+    p.set_requirement(LicenseType.EPISTEMIC, adopt2, req2)
+
+    k, h, s, bid = make_env(p, c0)
+    k.register_context_candidate(h, c1, source="candidate-1")
+    k.register_context_candidate(h, c2, source="candidate-2")
+
+    # c0 -> c1
+    esc1 = add_admitted_root(
+        k, h, s, bid, c0, "esc1",
+        Claim("EscalationDepth", (str(int(RevisionDepth.DISTINCTION)),)),
+        Role.ESCALATION, "review-1"
+    )
+    sel1 = add_admitted_root(
+        k, h, s, bid, c0, "sel1",
+        Claim("Selected", (c1.id,)), Role.SELECTION, "selector-1"
+    )
+    L1 = k.license(
+        h, s, bid, c0.id, ["i"], "u",
+        LicenseType.EPISTEMIC, adopt1, [esc1, sel1]
+    )
+    k.activate_context_with_adopt_license(h, s, L1.id, c1.id)
+    assert s.context_status(bid, c1.id, "u") == ContextStatus.ACTIVE
+
+    # c1 -> c2
+    esc2 = add_admitted_root(
+        k, h, s, bid, c1, "esc2",
+        Claim("EscalationDepth", (str(int(RevisionDepth.DISTINCTION)),)),
+        Role.ESCALATION, "review-2"
+    )
+    sel2 = add_admitted_root(
+        k, h, s, bid, c1, "sel2",
+        Claim("Selected", (c2.id,)), Role.SELECTION, "selector-2"
+    )
+    L2 = k.license(
+        h, s, bid, c1.id, ["i"], "u",
+        LicenseType.EPISTEMIC, adopt2, [esc2, sel2]
+    )
+    k.activate_context_with_adopt_license(h, s, L2.id, c2.id)
+    assert s.context_status(bid, c2.id, "u") == ContextStatus.ACTIVE
+    assert k.check_license_current(h, s, L2.id)
+
+    # Invalidate L1's support. Fixed-point ambient refresh must pend c1,
+    # which makes L2 non-current, which then pends c2.
+    k.apply_revision(
+        h, s, bid, [esc1],
+        reach=RevisionReach.USE_LOCAL,
+        use="u",
+        reason="upstream adoption basis revised"
+    )
+
+    assert L1.id in s.review_required
+    assert s.context_status(bid, c1.id, "u") == ContextStatus.PENDING
+    assert not k.check_license_current(h, s, L2.id)
+    assert s.context_status(bid, c2.id, "u") == ContextStatus.PENDING
