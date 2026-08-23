@@ -127,14 +127,16 @@ theorem checkRawWithdrawal_sound
     (transition : RawWithdrawalTransitionV1)
     (hCheck : checkRawWithdrawal transition = true) :
     RawB0WithdrawalHolds transition := by
-  unfold checkRawWithdrawal at hCheck
-  have hTop := Bool.and_eq_true.mp hCheck
-  have hRest := Bool.and_eq_true.mp hTop.2
-  unfold RawB0WithdrawalHolds
-  exact checkProjectedB0Withdrawal_sound
-    (alphaB0Lean transition.subject_ref transition.before_raw_snapshot)
-    (alphaB0Lean transition.subject_ref transition.after_raw_snapshot)
-    hRest.2
+  let before := alphaB0Lean transition.subject_ref transition.before_raw_snapshot
+  let after := alphaB0Lean transition.subject_ref transition.after_raw_snapshot
+  cases hProjected : checkProjectedB0Withdrawal before after with
+  | false =>
+      cases hEvent : (!(transition.event_ref == "")) <;>
+      cases hSchema : (transition.schema_version == "raw-withdrawal-transition-v1") <;>
+      simp [checkRawWithdrawal, before, after, hProjected, hEvent, hSchema] at hCheck
+  | true =>
+      unfold RawB0WithdrawalHolds
+      exact checkProjectedB0Withdrawal_sound before after hProjected
 
 /-- Concrete selected-field mirror used only to exercise the checker in normal
 Lean compilation. The cross-repository CI gate separately feeds the actual raw
