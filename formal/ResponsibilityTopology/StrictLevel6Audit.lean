@@ -1,0 +1,29 @@
+import ResponsibilityTopology.CrossDomain.ImpactDischargeCore
+import ResponsibilityTopology.CrossDomain.EvaluationLayerCore
+import ResponsibilityTopology.CrossDomain.Interpretation
+import ResponsibilityTopology.CrossDomain.InterpretedCaseModels
+import ResponsibilityTopology.Bridge.RawRuntimeWithdrawal
+import ResponsibilityTopology.Bridge.FormalWithdrawalBridge
+
+namespace ResponsibilityTopology
+
+/-!
+Strict technical Level-6 audit surface.
+
+This file adds no theory. It exposes the theorem dependencies for the two
+strict-extension gates:
+
+1. explicit domain-semantics interpretations reuse the existing parametric core;
+2. a raw serialized runtime transition is projected and checked by Lean at B0.
+-/
+
+#print axioms CrossDomain.ImpactDischargeCore.requirementsCovered_and_soundRealization_imply_discharged
+#print axioms CrossDomain.ImpactDischargeInterpretation.interpreted_core_discharge_reads_back
+#print axioms CrossDomain.EvaluationInterpretation.domainLocalConformance_to_coreLocalConformance
+#print axioms CrossDomain.InterpretedCaseModels.d1_d4_affected_interpret_through_one_interface
+#print axioms CrossDomain.InterpretedCaseModels.d1_d4_local_conformance_interpret_through_one_interface
+#print axioms Bridge.checkProjectedB0Withdrawal_sound
+#print axioms Bridge.checkRawWithdrawal_sound
+#print axioms Bridge.challenge_target_realizes_formal_withdrawal_pattern
+
+end ResponsibilityTopology
