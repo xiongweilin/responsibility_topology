@@ -5,14 +5,14 @@ namespace ResponsibilityTopology
 /-!
 Adjacent TRANSPORT formation/qualification separation.
 
-The theorem below is deliberately a witnessed two-step boundary.  It does not
+The theorem below is deliberately a witnessed two-step boundary. It does not
 quantify over arbitrary intervening transitions, does not require source or
 target contexts to be active, and does not identify the original, witness, and
 target formation contexts.
 -/
 
 /-- T3: a reachable TRANSPORT formation creates an exact target-context
-historical object without current child usability.  The immediately following
+historical object without current child usability. The immediately following
 qualification requires the stored original and bridge-witness identities to be
 currently usable at their own historical formation contexts, then establishes
 current usability of the transported child at the target-context key. -/
@@ -37,19 +37,16 @@ theorem transportFormationQualification_boundary
           qualificationTargetContextId use metadata)
         S₂) :
     ∃ formationBinding qualificationBinding warrant
+        formationOriginal formationWitness
         originalId witnessId original witness,
       S₀.binding formationBindingId = some formationBinding ∧
+      S₀.warrant formationOriginalId = some formationOriginal ∧
+      S₀.warrant formationWitnessId = some formationWitness ∧
       S₁.binding qualificationBindingId = some qualificationBinding ∧
       S₁.warrant warrantId = some warrant ∧
       warrant = transportHistoricalWarrant
         formationMapId formationBinding.profileDigest formationTargetContextId
-        formationOriginalId formationWitnessId
-        (match S₀.warrant formationOriginalId with
-          | some original => original
-          | none => original)
-        (match S₀.warrant formationWitnessId with
-          | some bridgeWitness => bridgeWitness
-          | none => witness)
+        formationOriginalId formationWitnessId formationOriginal formationWitness
         translatedClaim outScope ∧
       warrant.parents = [originalId, witnessId] ∧
       S₁.warrant originalId = some original ∧
@@ -91,19 +88,20 @@ theorem transportFormationQualification_boundary
   have hPostBindingEq : postBinding = qualificationBinding := by
     exact Option.some.inj (hPostBinding.symm.trans hQualificationBinding)
   subst postBinding
-  refine ⟨formationBinding, qualificationBinding,
+  exact ⟨formationBinding, qualificationBinding,
     transportHistoricalWarrant formationMapId formationBinding.profileDigest
       formationTargetContextId formationOriginalId formationWitnessId
       formationOriginal formationWitness translatedClaim outScope,
+    formationOriginal, formationWitness,
     originalId, witnessId, original, witness,
-    hFormationBinding, hQualificationBinding, hFormationChild, ?_, hParents,
+    hFormationBinding, hFormationOriginal, hFormationWitness,
+    hQualificationBinding, hFormationChild, rfl, hParents,
     hOriginal, hWitness, hProfile, hTargetContext,
     hSourceCurrent.1, hSourceCurrent.2, hNotUsable, hPostUsable⟩
-  simp [hFormationOriginal, hFormationWitness]
 
-/-- The adjacent boundary exposes three independently stored context coordinates:
-the target child context and the two parent formation contexts.  No equality
-between them is required by the theorem. -/
+/-- The qualification boundary exposes three independently stored context
+coordinates: the target child context and the two parent formation contexts. No
+equality between them is required by the theorem. -/
 theorem transportQualification_context_coordinates
     {S S' : CanonicalState}
     {warrantId : WarrantId}
