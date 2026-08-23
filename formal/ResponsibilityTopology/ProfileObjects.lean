@@ -207,4 +207,60 @@ theorem wellTypedRule_protected_output
   · exact False.elim (hNotSpecial hSpecial.1)
   · exact hNormal.2.1 hProtected
 
+/-- Every structurally well-typed ordinary rule consumes at least one input.
+This prevents derived qualification from satisfying its current-parent
+responsibility vacuously. -/
+theorem wellTypedRule_inputs_nonempty
+    {rule : CanonicalRule}
+    (hTyped : WellTypedRule rule) :
+    rule.inputRoles ≠ [] := by
+  rcases hTyped.2 with hSpecial | hNormal
+  · intro hEmpty
+    rw [hEmpty] at hSpecial
+    simp at hSpecial
+  · cases hOutput : rule.outputRole with
+    | content =>
+        have hMem : Role.content ∈ rule.inputRoles := hNormal.2.2.1 hOutput
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+    | selection =>
+        exact hNormal.2.2.2 hOutput
+    | bridge =>
+        have hMem : Role.bridge ∈ rule.inputRoles :=
+          hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+    | provenance =>
+        have hMem : Role.provenance ∈ rule.inputRoles :=
+          hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+    | coverage =>
+        have hMem : Role.coverage ∈ rule.inputRoles :=
+          hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+    | escalation =>
+        have hMem : Role.escalation ∈ rule.inputRoles :=
+          hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+    | authorization =>
+        have hMem : Role.authorization ∈ rule.inputRoles :=
+          hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+    | binding =>
+        have hMem : Role.binding ∈ rule.inputRoles :=
+          hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        intro hEmpty
+        rw [hEmpty] at hMem
+        cases hMem
+
 end ResponsibilityTopology
