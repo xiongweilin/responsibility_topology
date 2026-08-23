@@ -19,6 +19,7 @@ import ResponsibilityTopology.AdoptLicenseCurrentness
 import ResponsibilityTopology.AdoptReachability
 import ResponsibilityTopology.AdoptActivation
 import ResponsibilityTopology.AdoptGroundedness
+import ResponsibilityTopology.ChallengeImpact
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
@@ -165,6 +166,15 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.reachable_activeContext_grounded
 #print axioms ResponsibilityTopology.reachable_activeContext_has_bootstrap_chain
 #print axioms ResponsibilityTopology.reachable_no_active_without_bootstrap
+#print axioms ResponsibilityTopology.directDescendant_implies_descendant
+#print axioms ResponsibilityTopology.descendant_transitive
+#print axioms ResponsibilityTopology.affected_iff_target_or_descendant
+#print axioms ResponsibilityTopology.challengeTarget_affected
+#print axioms ResponsibilityTopology.descendant_affected
+#print axioms ResponsibilityTopology.affected_nonTarget_iff_descendant
+#print axioms ResponsibilityTopology.unrelated_notAffected
+#print axioms ResponsibilityTopology.affected_closed_under_descendants
+#print axioms ResponsibilityTopology.affected_closed_under_directChildren
 #print axioms ResponsibilityTopology.rootStep_newWarrant_exact
 #print axioms ResponsibilityTopology.rootStep_oldWarrants_immutable
 #print axioms ResponsibilityTopology.rootStep_historyReferentsImmutable
