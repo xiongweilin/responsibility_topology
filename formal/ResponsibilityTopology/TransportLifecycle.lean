@@ -109,8 +109,12 @@ theorem transportQualification_context_coordinates
     {metadata : QualificationMetadata}
     (hStep : Step S
       (.qualifyTransport warrantId bindingId targetContextId use metadata) S') :
-    ∃ binding originalId witnessId original witness,
+    ∃ (binding : CanonicalBinding)
+        (originalId witnessId : WarrantId)
+        (original witness : HistoricalWarrant),
       S.binding bindingId = some binding ∧
+      S.warrant originalId = some original ∧
+      S.warrant witnessId = some witness ∧
       Usable S
         ⟨binding.profileDigest, original.formationContext, use, originalId⟩ ∧
       Usable S
@@ -126,6 +130,7 @@ theorem transportQualification_context_coordinates
     exact Option.some.inj (hPostBinding.symm.trans hBinding)
   subst postBinding
   exact ⟨binding, originalId, witnessId, original, witness,
-    hBinding, hOriginalUsable, hWitnessUsable, hChildUsable⟩
+    hBinding, hOriginal, hWitness,
+    hOriginalUsable, hWitnessUsable, hChildUsable⟩
 
 end ResponsibilityTopology
