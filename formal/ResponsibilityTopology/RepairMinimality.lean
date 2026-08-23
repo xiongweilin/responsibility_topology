@@ -84,24 +84,33 @@ theorem minimalRepairSet_has_private_edge
       ∃ edge,
         edge ∈ problem.edges ∧
         ¬ HitsRepairEdge (removeRepairAction X action) edge := by
-    by_contra hNoFailedEdge
-    apply hNotRepair
-    intro edge hEdge
-    by_contra hMiss
-    exact hNoFailedEdge ⟨edge, hEdge, hMiss⟩
+    by_cases hExists :
+        ∃ edge,
+          edge ∈ problem.edges ∧
+          ¬ HitsRepairEdge (removeRepairAction X action) edge
+    · exact hExists
+    · have hRepairRemoved :
+          RepairSet problem (removeRepairAction X action) := by
+        intro edge hEdge
+        by_cases hHit : HitsRepairEdge (removeRepairAction X action) edge
+        · exact hHit
+        · exact False.elim (hExists ⟨edge, hEdge, hHit⟩)
+      exact False.elim (hNotRepair hRepairRemoved)
   rcases hFailedEdge with ⟨edge, hEdge, hMiss⟩
   rcases hMinimal.1 edge hEdge with
     ⟨chosen, hChosenAlternative, hChosenSelected⟩
   have hChosenEq : chosen = action := by
-    by_contra hNe
-    apply hMiss
-    exact ⟨chosen, hChosenAlternative, hChosenSelected, hNe⟩
+    by_cases hEq : chosen = action
+    · exact hEq
+    · exact False.elim
+        (hMiss ⟨chosen, hChosenAlternative, hChosenSelected, hEq⟩)
   subst chosen
   refine ⟨edge, hEdge, hChosenAlternative, ?_⟩
   intro alternative hAlternative hAlternativeSelected
-  by_contra hNe
-  apply hMiss
-  exact ⟨alternative, hAlternative, hAlternativeSelected, hNe⟩
+  by_cases hEq : alternative = action
+  · exact hEq
+  · exact False.elim
+      (hMiss ⟨alternative, hAlternative, hAlternativeSelected, hEq⟩)
 
 /-- Direct corollary in the requested pointwise form: every selected member of a
 minimal repair set is individually necessary for the repair-set property. -/
