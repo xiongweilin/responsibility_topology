@@ -62,12 +62,19 @@ def alphaB0Lean
         }
     | none => none
 
+/-- Named Prop-level contract for one already-projected B0 pair. -/
+def ProjectedB0WithdrawalHolds
+    (before after : Option B0QualificationObservation) : Prop :=
+  match before, after with
+  | some beforeObs, some afterObs =>
+      B0QualificationWithdrawalStep beforeObs afterObs
+  | _, _ => False
+
 /-- The Prop-level semantic contract checked from raw before/after snapshots. -/
 def RawB0WithdrawalHolds (transition : RawWithdrawalTransitionV1) : Prop :=
-  match alphaB0Lean transition.subject_ref transition.before_raw_snapshot,
-      alphaB0Lean transition.subject_ref transition.after_raw_snapshot with
-  | some before, some after => B0QualificationWithdrawalStep before after
-  | _, _ => False
+  ProjectedB0WithdrawalHolds
+    (alphaB0Lean transition.subject_ref transition.before_raw_snapshot)
+    (alphaB0Lean transition.subject_ref transition.after_raw_snapshot)
 
 /-- Explicit executable checker for the projected B0 pair. Keeping this Boolean
 avoids making the Prop-level contract itself part of the executable trusted
@@ -88,17 +95,14 @@ def checkProjectedB0Withdrawal
 theorem checkProjectedB0Withdrawal_sound
     (before after : Option B0QualificationObservation)
     (hCheck : checkProjectedB0Withdrawal before after = true) :
-    match before, after with
-    | some beforeObs, some afterObs =>
-        B0QualificationWithdrawalStep beforeObs afterObs
-    | _, _ => False := by
+    ProjectedB0WithdrawalHolds before after := by
   cases before with
   | none =>
-      simp [checkProjectedB0Withdrawal] at hCheck
+      simp [checkProjectedB0Withdrawal, ProjectedB0WithdrawalHolds] at hCheck
   | some beforeObs =>
       cases after with
       | none =>
-          simp [checkProjectedB0Withdrawal] at hCheck
+          simp [checkProjectedB0Withdrawal, ProjectedB0WithdrawalHolds] at hCheck
       | some afterObs =>
           cases beforeObs with
           | mk beforeTrace beforeQualification =>
@@ -109,6 +113,7 @@ theorem checkProjectedB0Withdrawal_sound
                   cases beforeQualification <;>
                   cases afterQualification <;>
                   simp [checkProjectedB0Withdrawal,
+                    ProjectedB0WithdrawalHolds,
                     B0QualificationWithdrawalStep] at hCheck ⊢
 
 /-- Executable raw checker. Schema/event checks are envelope checks; the B0
@@ -135,8 +140,7 @@ theorem checkRawWithdrawal_sound
       cases hSchema : (transition.schema_version == "raw-withdrawal-transition-v1") <;>
       simp [checkRawWithdrawal, before, after, hProjected, hEvent, hSchema] at hCheck
   | true =>
-      unfold RawB0WithdrawalHolds
-      simpa [before, after] using
+      simpa [RawB0WithdrawalHolds, before, after] using
         (checkProjectedB0Withdrawal_sound before after hProjected)
 
 /-- Concrete selected-field mirror used only to exercise the checker in normal
