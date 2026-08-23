@@ -296,17 +296,85 @@ theorem supportPreservingReplay
               cases hEq
               rw [satisfy, h₁', h₂']
 
+/-- Pure Boolean equality for warrant IDs. Keeping this local avoids importing
+proof dependencies from generic decidable list membership into SP's proof term. -/
+def warrantEq : WarrantId → WarrantId → Bool
+  | 0, 0 => true
+  | 0, Nat.succ _ => false
+  | Nat.succ _, 0 => false
+  | Nat.succ a, Nat.succ b => warrantEq a b
+
+theorem warrantEq_refl : ∀ w : WarrantId, warrantEq w w = true
+  | 0 => rfl
+  | Nat.succ w => warrantEq_refl w
+
+theorem warrantEq_true_eq
+    {a b : WarrantId}
+    (h : warrantEq a b = true) :
+    a = b := by
+  induction a generalizing b with
+  | zero =>
+      cases b with
+      | zero => rfl
+      | succ b =>
+          change false = true at h
+          cases h
+  | succ a ih =>
+      cases b with
+      | zero =>
+          change false = true at h
+          cases h
+      | succ b =>
+          change warrantEq a b = true at h
+          exact congrArg Nat.succ (ih h)
+
+/-- Executable membership in the branch support list, defined without using the
+generic `Decidable (w ∈ support)` instance. -/
+def supportHas (w : WarrantId) : List WarrantId → Bool
+  | [] => false
+  | x :: xs =>
+      if warrantEq w x = true then true else supportHas w xs
+
+theorem supportHas_of_mem
+    {w : WarrantId} {xs : List WarrantId}
+    (hMem : w ∈ xs) :
+    supportHas w xs = true := by
+  induction hMem with
+  | head xs =>
+      rw [supportHas, if_pos (warrantEq_refl w)]
+  | tail x h ih =>
+      by_cases hEq : warrantEq w x = true
+      · rw [supportHas, if_pos hEq]
+      · rw [supportHas, if_neg hEq]
+        exact ih
+
+theorem supportHas_mem
+    {w : WarrantId} {xs : List WarrantId}
+    (hHas : supportHas w xs = true) :
+    w ∈ xs := by
+  induction xs with
+  | nil =>
+      change false = true at hHas
+      cases hHas
+  | cons x xs ih =>
+      by_cases hEq : warrantEq w x = true
+      · have hWX : w = x := warrantEq_true_eq hEq
+        cases hWX
+        exact List.Mem.head xs
+      · rw [supportHas, if_neg hEq] at hHas
+        exact List.Mem.tail x (ih hHas)
+
 /-- Canonical order-preserving projection of a candidate sequence to the warrant
 IDs recorded in a branch support. -/
 def projectSupport (Γ : List WarrantId) (β : Branch) : List WarrantId :=
-  Γ.filter (fun w => decide (w ∈ β.support))
+  Γ.filter (fun w => supportHas w β.support)
 
 /-- The canonical support projection is an order-preserving sublist. -/
 theorem projectSupport_sublist
     {Γ : List WarrantId} {β : Branch} :
     List.Sublist (projectSupport Γ β) Γ := by
-  change List.Sublist (Γ.filter (fun w => decide (w ∈ β.support))) Γ
-  exact filter_sublist_rt (fun w => decide (w ∈ β.support)) Γ
+  change List.Sublist (Γ.filter (fun w => supportHas w β.support)) Γ
+  exact filter_sublist_rt (fun w => supportHas w β.support) Γ
 
 /-- A successful run guarantees that every recorded support ID occurs in its
 canonical support projection. -/
@@ -317,9 +385,15 @@ theorem projectSupport_keeps_support
     ∀ ⦃w⦄, w ∈ β.support → w ∈ projectSupport Γ β := by
   intro w hMem
   have hCandidate : w ∈ Γ := satisfy_support_subset O hRun hMem
-  have hKeep : decide (w ∈ β.support) = true := decide_eq_true hMem
-  change w ∈ Γ.filter (fun x => decide (x ∈ β.support))
+  have hKeep : supportHas w β.support = true := supportHas_of_mem hMem
+  change w ∈ Γ.filter (fun x => supportHas x β.support)
   exact mem_filter_of_mem_of_true_rt hCandidate hKeep
+
+/-- The custom Boolean predicate is extensionally exact on support membership. -/
+theorem supportHas_exact
+    {w : WarrantId} {xs : List WarrantId} :
+    supportHas w xs = true ↔ w ∈ xs :=
+  ⟨supportHas_mem, supportHas_of_mem⟩
 
 /-- SP — support projection / exact replay. -/
 theorem supportProjection
@@ -327,8 +401,8 @@ theorem supportProjection
     {R : Requirement} {Γ : List WarrantId} {β : Branch}
     (hRun : satisfy O R Γ = some β) :
     satisfy O R (projectSupport Γ β) = some β := by
-  apply supportPreservingReplay O (keep := fun w => decide (w ∈ β.support)) hRun
+  apply supportPreservingReplay O (keep := fun w => supportHas w β.support) hRun
   intro w hMem
-  exact decide_eq_true hMem
+  exact supportHas_of_mem hMem
 
 end ResponsibilityTopology
