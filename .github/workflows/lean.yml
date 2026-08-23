@@ -23,3 +23,6 @@ jobs:
             echo 'Proof placeholder found in formal core.'
             exit 1
           fi
+      - name: Print BC axiom dependencies
+        working-directory: formal
+        run: lake env lean ResponsibilityTopology/Audit.lean
