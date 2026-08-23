@@ -12,6 +12,7 @@ Current contents:
 - `ExecutableSatisfaction.lean`: executable `SatOracle`, `firstSat`, left-biased `satisfy`, extensional candidate inclusion, No-New-Witness (NW), and executable Satisfaction Soundness (SS);
 - `Replay.lean`: ordered/filter-preserving replay lemmas, branch-support inclusion, canonical support projection, Support-Preserving Replay (SPR), and exact Support Projection (SP);
 - `KernelFloor.lean`: abstract branch-local floor observation, the exact current V0.1.2.2 floor clauses, and Kernel-Floor Locality (KFL);
+- `Entitlement.lean`: minimal ambient projection, the abstract entitlement judgment, Relative Branch Conservativity (RBC), executable entitlement soundness, and support-only entitlement replay;
 - `Audit.lean`: `#print axioms` audit surface for the current formal theorems;
 - `lake-manifest.json`: committed Lake workspace manifest used by CI.
 
@@ -24,11 +25,15 @@ Standing theorem boundary:
 - SS connects successful executable search to the declarative `Derives` relation;
 - replay additionally needs order preservation. The canonical projection is implemented as a list filter, hence an order-preserving sublist;
 - arbitrary `Γ' <+ Γ` plus mere membership of support IDs is not sufficient for exact replay when duplicate warrant IDs are allowed. Therefore SPR is stated for ID-level filtering that keeps every support ID, which retains every occurrence of those IDs while preserving order;
-- `projectSupport` uses the local pure Boolean predicate `supportHas`; `supportHas_exact` proves `supportHas w xs = true ↔ w ∈ xs`. This avoids importing the proof dependencies of Lean 4.19's generic decidable list-membership instance into the SP proof term;
+- `projectSupport` uses the local pure Boolean predicate `supportHas`; `supportHas_exact` proves `supportHas w xs = true ↔ w ∈ xs`;
 - KFL does not define a full `History` or full `Move`. Its observation surface is exactly `FloorLeaf = (claim, role, scope)`, a fixed `LicenseType`, and `FloorMove = (kind, scope, revisionDepth)`;
 - `FloorSemantics.scopeLE` and `FloorSemantics.escalationDepth` abstract the existing Python scope containment and `EscalationDepth(n)` parsing without pulling finite-set normalization or string parsing into KFL;
-- provenance ancestry, parent lineage, profile/context/currentness, move args, warrant formation, `INFER`, `TRANSPORT`, challenge/revision transitions, context activation, and concrete history refinement remain outside KFL;
-- KFL is a locality theorem about the existing floor. It is explicitly not `KernelFloorAdequacy`.
+- KFL is a locality theorem about the existing floor. It is explicitly not `KernelFloorAdequacy`;
+- `AmbientView` projects only `bindingActive`, `useMatches`, `contextActive`, `moveWithinBindingScope`, and an already-resolved exact `requirement`;
+- `FixedAmbient A A' R` does not formalize profile lookup. It assumes both ambient views are admissible and both exact lookups have already resolved to the same `R`;
+- `Entitled` is the abstract judgment `Admissible ∧ Derives ∧ Safe`;
+- `Env` and `FloorEnv` remain independent abstract projections. The future theorem that both arise coherently from the same concrete canonical warrant/history is called **Projection Coherence** and is not proved here;
+- provenance ancestry, parent lineage, concrete Binding/Profile/Context implementations, requirement lookup, currentness, move args, warrant formation, `INFER`, `TRANSPORT`, challenge/revision transitions, context activation, Python refinement, Q_open, and Q_close remain outside this layer.
 
 The replay projection is
 
@@ -51,22 +56,6 @@ floorView F β = β.support.map F.lookup
 
 where `F.lookup w` exposes only `(claim, role, scope)`.
 
-The abstract current floor preserves the V0.1.2.2 clauses:
-
-```text
-NORMATIVE                         -> false
-all leaves cover move.scope       -> required
-ACTION license or Act move        -> AUTHORIZATION required
-Share                             -> SELECTION required
-Suspect/Reopen/Adopt              -> ESCALATION required
-revision move                     -> max escalation depth >= move depth
-Adopt                             -> SELECTION additionally required
-ResolveStatus                     -> SELECTION or AUTHORIZATION required
-Accept/Review                     -> no additional move-specific floor
-```
-
-There is deliberately no universal `PROVENANCE` floor requirement: provenance guards remain a warrant-formation concern in the current kernel.
-
 `FloorEqOn F F' β` means the two floor environments agree on the warrant IDs in `β.support`. KFL states:
 
 ```text
@@ -74,40 +63,56 @@ FloorEqOn F F' β
 → (Safe S F β τ m ↔ Safe S F' β τ m)
 ```
 
-with `S`, `τ`, `m`, and `β` fixed.
+The entitlement judgment is
+
+```text
+Entitled S A E F β τ m :=
+  Admissible A ∧
+  Derives E β A.requirement ∧
+  Safe S F β τ m
+```
+
+RBC is the composition theorem:
+
+```text
+FixedAmbient A A' R
+SatEqOn E E' β
+FloorEqOn F F' β
+→
+(Entitled S A E F β τ m ↔ Entitled S A' E' F' β τ m)
+```
+
+Its logical dependency is deliberately only BC + KFL + FixedAmbient. SS and SP are consumed by separate executable corollaries:
+
+```text
+satisfy O R Γ = some β
++ Admissible
++ exact requirement identity
++ Safe
+→ Entitled
+```
+
+and
+
+```text
+satisfy O R Γ = some β
+→ satisfy O R (projectSupport Γ β) = some β
+→ Derives E β R
+→ Entitled
+```
 
 Logical dependency shape:
 
 ```text
-                    BC ✓
+BC ──────────────┐
+                 ├── RBC
+KFL ─────────────┘
+        +
+   FixedAmbient
 
-             executable satisfy
-              /             \
-            NW ✓             SS ✓
-             |
-       firstSat_replay
-             |
-             +------> SPR
-                       |
-       satisfy_support_subset
-                       |
-              projectSupport
-                       |
-                       SP ✓
+SS ──────────────► executable entitlement soundness
 
-       FloorLeaf / FloorEnv / FloorMove
-                       |
-                  floorView
-                       |
-                 safeFromView
-                       |
-                  FloorEqOn
-                       |
-                      KFL
-
-BC + SS + SP + KFL + fixed ambient assumptions
-                       |
-                      RBC
+SP ──► SS ───────► support-only entitlement replay
 ```
 
-This KFL milestone does not introduce RBC, concrete-history refinement, profile/context/currentness semantics, `INFER`, `TRANSPORT`, challenge/revision transitions, context activation, or a claim that the present floor is substantively adequate.
+This entitlement/RBC milestone does not introduce concrete `History`, Binding/Profile/Context implementations, requirement lookup, currentness, Projection Coherence, Python refinement, Q_open, or Q_close.
