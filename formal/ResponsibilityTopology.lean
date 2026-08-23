@@ -23,6 +23,7 @@ import ResponsibilityTopology.AdoptReachability
 import ResponsibilityTopology.AdoptActivation
 import ResponsibilityTopology.AdoptGroundedness
 import ResponsibilityTopology.ChallengeImpact
+import ResponsibilityTopology.ChallengeInvalidation
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
