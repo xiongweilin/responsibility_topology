@@ -32,9 +32,21 @@ def pythonConformanceSemantics
   scopeLE := pythonScopeLE
   escalationDepth := depth
 
-/-- Executable spelling of ambient admissibility for a canonical read. This is
-needed only because `AmbientView` intentionally stores abstract `Prop` fields and
-therefore has no global `Decidable (Admissible A)` instance. -/
+/-- The PR #6 ambient view is abstract over `Prop`, but this particular canonical
+projection has a constructive decision procedure because each projected field is
+an equality over executable data. This instance lets generated conformance
+fixtures evaluate `decide (Admissible (toAmbient C m))` directly. -/
+instance canonicalProjectedAdmissibleDecidable
+    (C : LicensingRead) (m : FloorMove) :
+    Decidable (Admissible (toAmbient C m)) := by
+  change Decidable (
+    C.bindingActive = true ∧
+    C.use = C.bindingUse ∧
+    C.contextActive = true ∧
+    C.semantics.scopeLE m.scope C.bindingScope = true)
+  infer_instance
+
+/-- Executable spelling of ambient admissibility for a canonical read. -/
 def projectedAmbientAdmissible
     (C : LicensingRead) (m : FloorMove) : Bool :=
   C.bindingActive &&
