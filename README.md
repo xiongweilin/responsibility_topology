@@ -1,43 +1,73 @@
-# Responsibility Topology — V0.1 proof-kernel prototype
+# Responsibility Topology V0.1.1 — hardened executable proof kernel
 
-This is a deliberately small executable reference model for the V0.1 design discussed in the conversation.
+Core adversarial criterion:
 
-Core invariant:
+> Can a caller construct a license that has no canonical, context-valid,
+> typed responsibility path in append-only history H?
 
-> No judgmental strengthening without an explicit, typed, auditable responsibility path.
+V0.1.1 hardens V0.1 before any metatheorem is attempted.
 
-The implementation separates:
+## Hardening changes
 
-- `History`: append-only warrant and license lineage;
-- `EvaluationState`: mutable `live/suspended/defeated` and `placed/pending/orphaned` status;
-- `Profile`: versionable declared requirements and inference rules;
-- `ProofKernel`: non-profile safety invariants for role, scope, provenance, authorization and revision-strengthening.
+1. **Canonical-reference integrity**
+   - public proof/licensing APIs accept warrant/binding IDs;
+   - every object is reloaded from canonical `History`;
+   - caller-fabricated objects with reused IDs cannot alter role, claim, scope or binding scope.
 
-The external reality/admission boundary is explicit. A `RootToken` can be recorded without being usable. `admit(...)` is a separate audited state event and does **not** assert truth.
+2. **Context is a proof boundary**
+   - root claims must belong to the context signature;
+   - ordinary `INFER` is strictly intra-context;
+   - current usability is indexed by `(profile_digest, context, use, warrant)`;
+   - cross-context movement requires `TRANSPORT`.
 
-The kernel has only three warrant constructors:
+3. **Immutable profile snapshots**
+   - a binding points to `(profile id, version, sha256 digest)`;
+   - mutating the authoring `Profile` after binding does not mutate the active calculus.
 
-1. `root`
-2. `infer`
-3. `transport`
+4. **Dependency-aware revalidation**
+   - `History` stores reverse derivation edges;
+   - challenge of an ancestor suspends descendants/pends their placement;
+   - licenses depending on any impacted descendant enter `review_required`;
+   - no recursive defeat is performed.
 
-`Suspect`, `Reopen`, `Adopt`, `Share`, and status resolution are moves, not warrant constructors.
+5. **Kernel strengthening gates**
+   - `Act` requires authorization;
+   - `Share` requires selection;
+   - `Suspect/Reopen` require escalation;
+   - `Adopt` requires escalation + selection;
+   - normative licensing is deliberately disabled in V0.1.1.
 
-## Run
+6. **Transport target integrity**
+   - bridge witness is bound to `(map, original warrant, target context, exact translated claim)`;
+   - callers cannot use a valid bridge to translate into an arbitrary claim.
+
+## Tests
+
+The current suite has **16 passing tests**: the original four toy models, the eight requested hardening regressions, and additional regressions for canonical-context licensing, use-scoped challenge propagation, malicious action rules, and related boundary checks.
+
+- spoofed warrant id cannot change role;
+- spoofed binding id cannot widen scope;
+- cross-context use requires transport;
+- bound profile is immutable snapshot;
+- ancestor challenge revalidates descendants and licenses;
+- `TOP` cannot license `Adopt`;
+- normative licensing is explicitly disabled;
+- transport witness is bound to target claim/context.
+
+Run:
 
 ```bash
 python -m pytest -q
 ```
 
-The tests include:
+This is still a reference semantics, not a soundness proof. The next formal step should only begin after adversarial hardening stabilizes.
 
-1. persistent residual → `Suspect(O2)` but not `Reopen(O3)` or `Adopt`;
-2. three agreeing warrants with one content root → no independent-provenance closure;
-3. heterogeneous signatures → only explicitly bridgeable content enters a common determination;
-4. a novel-language defeater suspends support for an old closure without rewriting history;
-5. a malicious profile cannot license action from `⊤`;
-6. a malicious profile cannot infer authorization from content alone.
 
-## Deliberate non-goals
+## Deliberate stopping boundaries
 
-This is not yet Lean/Coq and it does not claim the kernel is final. It is a reference operationalization intended to expose hidden judges and make shortcut failures executable.
+V0.1.1 still treats two operations as explicit external boundary events rather than internally self-justifying judgments:
+
+- `admit_root(...)`: admits a sourced root premise into current usability;
+- `bind_profile(...)`: activates an immutable profile snapshot for a scope/use.
+
+Both are recorded and auditable. Neither asserts truth or ultimate legitimacy. A later version may make their challenge/requalification richer, but V0.1.1 does not hide them behind an internal oracle.
