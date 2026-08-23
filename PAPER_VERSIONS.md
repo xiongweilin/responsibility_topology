@@ -39,29 +39,54 @@ Research axis:
 ```text
 cross-context historical responsibility
 !=
-source/target current responsibility
+source/issuer/target current responsibility
 ```
 
 Program-level scope:
 
 ```text
-TRANSPORT
+TRANSPORT historical formation / source-indexed qualification
 +
-Adopt-license BaseCurrent
+Adopt-license record / BaseCurrent
 +
 reachable Adopt activation
 +
 Grounded reachable currentness
 ```
 
+Reader-facing result blocks:
+
+```text
+E1  cross-context historical transport
+    != source-indexed current qualification
+
+E2  recorded activation provenance
+    != license BaseCurrent
+    != context Groundedness
+```
+
 | Identity | Commit | Meaning |
 | --- | --- | --- |
-| TRANSPORT manuscript freeze | `621ff84dbb4e70c95e77cb0608e2b9376f46f214` | PR #37 hostile-review / TRANSPORT manuscript freeze |
-| current Paper 2 formal baseline | `4dfa0c19e6fb40947e3fe5dd5b8600c55e1ad424` | PR #41 merge; reachable Adopt activation connected to `Grounded` currentness |
+| historical TRANSPORT manuscript freeze | `621ff84dbb4e70c95e77cb0608e2b9376f46f214` | PR #37 hostile-review / TRANSPORT-only manuscript freeze; predates final Adopt/License/Grounded formal closure |
+| formal semantic baseline | `4dfa0c19e6fb40947e3fe5dd5b8600c55e1ad424` | PR #41 merge; final Paper 2 formal scope including reachable Adopt activation -> `Grounded` closure |
+| Environment synthesis baseline | `1c755353ecc8bd610a82bb50261de76b45c70f02` | PR #64 merge; reorganizes Paper 2 into E1/E2 without formal changes |
+| Environment hostile/manuscript freeze | `88567a749cfa695c8be393dbe926ae0d4484b0cd` | PR #65 merge; hostile consistency pass, end-to-end TRANSPORT -> Adopt firewall retained, formal trigger not fired |
 
-Important synchronization note: the Paper 2 TRANSPORT manuscript freeze predates the final Adopt/License/Grounded formal closure. Therefore `621ff84d...` is a historical manuscript baseline, not a claim that the manuscript already integrates every result at `4dfa0c19...`.
+Current Paper 2 manuscript identity is `88567a74...` evaluated against formal semantic identity `4dfa0c19...`.
 
-A future Paper 2 submission revision should first synchronize prose/figures with the frozen formal baseline; it should not reopen formal semantics by default.
+The older `621ff84d...` freeze remains historically valid for the TRANSPORT-only subline but is no longer the current whole-paper manuscript identity.
+
+Permanent Paper 2 firewall:
+
+```text
+No theorem currently composes
+TRANSPORT qualification
+into entitlement-backed Adopt license issuance/recording,
+Adopt activation, and Grounded target
+as one end-to-end pipeline.
+```
+
+That missing bridge is not a reason to reopen Paper 2 formal semantics merely for expository symmetry.
 
 ## Paper 3 — Change
 
@@ -142,7 +167,9 @@ The current default is:
 Paper 1 formal: frozen
 Paper 2 formal: frozen
 Paper 3 formal: frozen
-Next formal opening: theory-driven, expected at cross-domain invariance, runtime abstraction/refinement, or Q_open—not another opportunistic lifecycle feature.
+Cross-domain work: falsification/research only, not formal reopening
+Observation bridge: define alpha_0 before any refinement theorem
+Q_open: problem formulation before mechanization
 ```
 
-A paper-only correction never changes the recorded formal semantic baseline.
+A paper-only correction or cross-domain analogy never changes a recorded formal semantic baseline.
