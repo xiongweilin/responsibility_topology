@@ -29,6 +29,7 @@ import ResponsibilityTopology.ActivationRefresh
 import ResponsibilityTopology.RepairSemantics
 import ResponsibilityTopology.RepairSufficiency
 import ResponsibilityTopology.RepairMinimality
+import ResponsibilityTopology.RevalidationLifecycle
 import ResponsibilityTopology.Paper3Audit
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
