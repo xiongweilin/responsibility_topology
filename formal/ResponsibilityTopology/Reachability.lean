@@ -162,18 +162,16 @@ def CanonicalIdsUnique (S : CanonicalState) : Prop :=
       S.activationProvenance key = some a₁ →
       S.activationProvenance key = some a₂ → a₁ = a₂)
 
-/-- Binary append-only/history-stability property.  Existing canonical
-referents are not rebound by a step.  Evaluation facts such as active context
-or review-required are intentionally not classified as immutable history. -/
+/-- Binary append-only/history-stability property.  Existing canonical history
+referents are not rebound by a step.  Evaluation topology/facts such as
+activation provenance, active context, and review-required are intentionally
+not classified as immutable history. -/
 def HistoryReferentsImmutable (S S' : CanonicalState) : Prop :=
   (∀ ⦃id⦄, S.context id → S'.context id) ∧
   (∀ ⦃digest⦄, S.profile digest → S'.profile digest) ∧
   (∀ ⦃id b⦄, S.binding id = some b → S'.binding id = some b) ∧
   (∀ ⦃w⦄, S.warrant w → S'.warrant w) ∧
-  (∀ ⦃id license⦄, S.license id = some license → S'.license id = some license) ∧
-  (∀ ⦃key activation⦄,
-      S.activationProvenance key = some activation →
-      S'.activationProvenance key = some activation)
+  (∀ ⦃id license⦄, S.license id = some license → S'.license id = some license)
 
 /-- #8 read projected from a canonical state.  Base-currentness remains an
 external judgment at #10; the point here is to make seed/provenance/issuer
@@ -229,7 +227,7 @@ theorem step_historyReferentsImmutable
     HistoryReferentsImmutable S S' := by
   cases hStep with
   | registerContext fresh =>
-      refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+      refine ⟨?_, ?_, ?_, ?_, ?_⟩
       · intro id h
         exact Or.inr h
       · intro digest h
@@ -239,11 +237,9 @@ theorem step_historyReferentsImmutable
       · intro w h
         exact h
       · intro id license h
-        exact h
-      · intro key activation h
         exact h
   | registerProfile fresh =>
-      refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+      refine ⟨?_, ?_, ?_, ?_, ?_⟩
       · intro id h
         exact h
       · intro digest h
@@ -254,10 +250,8 @@ theorem step_historyReferentsImmutable
         exact h
       · intro id license h
         exact h
-      · intro key activation h
-        exact h
   | @bindProfile id b fresh profileCanonical =>
-      refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+      refine ⟨?_, ?_, ?_, ?_, ?_⟩
       · intro contextId h
         exact h
       · intro digest h
@@ -271,10 +265,8 @@ theorem step_historyReferentsImmutable
         exact h
       · intro licenseId license h
         exact h
-      · intro key activation h
-        exact h
   | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
-      refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
+      refine ⟨?_, ?_, ?_, ?_, ?_⟩
       · intro contextId h
         exact h
       · intro digest h
@@ -285,11 +277,6 @@ theorem step_historyReferentsImmutable
         exact h
       · intro licenseId license h
         exact h
-      · intro key' activation hLookup
-        by_cases hEq : key' = key
-        · rw [hEq, freshActivation] at hLookup
-          cases hLookup
-        · simpa [putOption, hEq] using hLookup
 
 theorem step_preserves_invariant
     {S S' : CanonicalState} {event : KernelEvent}
