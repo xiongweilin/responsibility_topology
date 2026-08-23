@@ -3,6 +3,7 @@ import ResponsibilityTopology.ExecutableSatisfaction
 import ResponsibilityTopology.Replay
 import ResponsibilityTopology.KernelFloor
 import ResponsibilityTopology.Entitlement
+import ResponsibilityTopology.CanonicalRead
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -48,3 +49,13 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.entitled_of_satisfy
 #print axioms ResponsibilityTopology.entitlementSupportReplay
 #print axioms ResponsibilityTopology.entitled_from_projected_support
+#print axioms ResponsibilityTopology.canonicalAtomTest_true_iff
+#print axioms ResponsibilityTopology.toAmbient_scope_iff
+#print axioms ResponsibilityTopology.toFloorEnv_lookup_canonical
+#print axioms ResponsibilityTopology.derives_support_canonical
+#print axioms ResponsibilityTopology.derives_support_wellFormed
+#print axioms ResponsibilityTopology.satisfy_support_wellFormed
+#print axioms ResponsibilityTopology.floorEqOn_fallback_irrelevant
+#print axioms ResponsibilityTopology.floorView_fallback_irrelevant
+#print axioms ResponsibilityTopology.derives_projection_coherent
+#print axioms ResponsibilityTopology.projectedEntitled_fallback_irrelevant
