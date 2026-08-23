@@ -3,6 +3,79 @@ import ResponsibilityTopology.ExecutableSatisfaction
 
 namespace ResponsibilityTopology
 
+/-- Constructive append-membership helpers kept local to the replay layer so the
+proof audit does not inherit stronger proof dependencies from convenience
+lemmas in the standard library. -/
+theorem mem_append_left_rt
+    {w : WarrantId} {xs : List WarrantId} (ys : List WarrantId)
+    (hMem : w ∈ xs) :
+    w ∈ xs ++ ys := by
+  induction hMem with
+  | head xs =>
+      exact List.Mem.head (xs ++ ys)
+  | tail x h ih =>
+      exact List.Mem.tail x ih
+
+theorem mem_append_right_rt
+    {w : WarrantId} (xs : List WarrantId) {ys : List WarrantId}
+    (hMem : w ∈ ys) :
+    w ∈ xs ++ ys := by
+  induction xs with
+  | nil =>
+      exact hMem
+  | cons x xs ih =>
+      exact List.Mem.tail x ih
+
+theorem mem_append_cases_rt
+    {w : WarrantId} {xs ys : List WarrantId}
+    (hMem : w ∈ xs ++ ys) :
+    w ∈ xs ∨ w ∈ ys := by
+  induction xs with
+  | nil =>
+      exact Or.inr hMem
+  | cons x xs ih =>
+      cases hMem with
+      | head =>
+          exact Or.inl (List.Mem.head xs)
+      | tail _ hTail =>
+          cases ih hTail with
+          | inl h => exact Or.inl (List.Mem.tail x h)
+          | inr h => exact Or.inr h
+
+/-- Constructive proof that Boolean filtering is an order-preserving sublist. -/
+theorem filter_sublist_rt
+    (keep : WarrantId → Bool) :
+    ∀ Γ : List WarrantId, List.Sublist (Γ.filter keep) Γ
+  | [] => List.Sublist.slnil
+  | x :: xs => by
+      cases hK : keep x with
+      | false =>
+          rw [List.filter, hK]
+          exact List.Sublist.cons x (filter_sublist_rt keep xs)
+      | true =>
+          rw [List.filter, hK]
+          exact List.Sublist.cons_cons x (filter_sublist_rt keep xs)
+
+/-- Constructive membership preservation for a Boolean filter. -/
+theorem mem_filter_of_mem_of_true_rt
+    {keep : WarrantId → Bool}
+    {w : WarrantId} {Γ : List WarrantId}
+    (hMem : w ∈ Γ)
+    (hKeep : keep w = true) :
+    w ∈ Γ.filter keep := by
+  induction hMem with
+  | head xs =>
+      rw [List.filter, hKeep]
+      exact List.Mem.head _
+  | tail x h ih =>
+      cases hK : keep x with
+      | false =>
+          rw [List.filter, hK]
+          exact ih
+      | true =>
+          rw [List.filter, hK]
+          exact List.Mem.tail x ih
+
 /-- A successful atomic search returns a candidate from the searched list. -/
 theorem firstSat_mem
     {E : Env} (O : SatOracle E)
@@ -50,14 +123,16 @@ theorem firstSat_replay
       · rw [firstSat, if_pos hTest] at hRun
         have hEq : x = w := Option.some.inj hRun
         subst w
-        simp [List.filter, hKeep, firstSat, hTest]
+        rw [List.filter, hKeep]
+        rw [firstSat, if_pos hTest]
       · rw [firstSat, if_neg hTest] at hRun
         cases hK : keep x with
         | false =>
-            simp [List.filter, hK]
+            rw [List.filter, hK]
             exact ih hRun
         | true =>
-            simp [List.filter, hK, firstSat, hTest]
+            rw [List.filter, hK]
+            rw [firstSat, if_neg hTest]
             exact ih hRun
 
 /-- Every warrant ID recorded in the returned branch support came from the
@@ -104,9 +179,7 @@ theorem satisfy_support_subset
               have hEq : Branch.both β₁ β₂ = β := Option.some.inj hRun
               cases hEq
               intro w hMem
-              have hParts : w ∈ β₁.support ∨ w ∈ β₂.support :=
-                List.mem_append.mp hMem
-              cases hParts with
+              cases mem_append_cases_rt hMem with
               | inl h => exact hLeft h
               | inr h => exact hRight h
   | disj R₁ R₂ ih₁ ih₂ =>
@@ -180,12 +253,12 @@ theorem supportPreservingReplay
                 intro w hMem
                 apply hKeep
                 rw [← hEq]
-                exact List.mem_append_left β₂.support hMem
+                exact mem_append_left_rt β₂.support hMem
               have hKeep₂ : ∀ ⦃w⦄, w ∈ β₂.support → keep w = true := by
                 intro w hMem
                 apply hKeep
                 rw [← hEq]
-                exact List.mem_append_right β₁.support hMem
+                exact mem_append_right_rt β₁.support hMem
               have h₁' := ih₁ h₁ hKeep₁
               have h₂' := ih₂ h₂ hKeep₂
               cases hEq
@@ -217,7 +290,7 @@ theorem supportPreservingReplay
                 rw [← hEq]
                 exact hMem
               have hSub : CandidateSubset (Γ.filter keep) Γ :=
-                candidateSubset_of_sublist List.filter_sublist
+                candidateSubset_of_sublist (filter_sublist_rt keep Γ)
               have h₁' := noNewWitness O hSub h₁
               have h₂' := ih₂ h₂ hKeep₂
               cases hEq
@@ -232,7 +305,8 @@ def projectSupport (Γ : List WarrantId) (β : Branch) : List WarrantId :=
 theorem projectSupport_sublist
     {Γ : List WarrantId} {β : Branch} :
     List.Sublist (projectSupport Γ β) Γ := by
-  exact List.filter_sublist
+  change List.Sublist (Γ.filter (fun w => decide (w ∈ β.support))) Γ
+  exact filter_sublist_rt (fun w => decide (w ∈ β.support)) Γ
 
 /-- A successful run guarantees that every recorded support ID occurs in its
 canonical support projection. -/
@@ -243,7 +317,9 @@ theorem projectSupport_keeps_support
     ∀ ⦃w⦄, w ∈ β.support → w ∈ projectSupport Γ β := by
   intro w hMem
   have hCandidate : w ∈ Γ := satisfy_support_subset O hRun hMem
-  simp [projectSupport, hCandidate, hMem]
+  have hKeep : decide (w ∈ β.support) = true := decide_eq_true hMem
+  change w ∈ Γ.filter (fun x => decide (x ∈ β.support))
+  exact mem_filter_of_mem_of_true_rt hCandidate hKeep
 
 /-- SP — support projection / exact replay. -/
 theorem supportProjection
@@ -253,6 +329,6 @@ theorem supportProjection
     satisfy O R (projectSupport Γ β) = some β := by
   apply supportPreservingReplay O (keep := fun w => decide (w ∈ β.support)) hRun
   intro w hMem
-  simp [hMem]
+  exact decide_eq_true hMem
 
 end ResponsibilityTopology
