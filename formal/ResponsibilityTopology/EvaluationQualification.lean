@@ -27,7 +27,10 @@ def usableFromState
     (S : CanonicalState)
     (profileDigest contextId use : String)
     (warrantId : WarrantId) : Bool :=
-  decide (Usable S ⟨profileDigest, contextId, use, warrantId⟩)
+  match S.epi ⟨profileDigest, contextId, use, warrantId⟩,
+      S.placement ⟨profileDigest, contextId, use, warrantId⟩ with
+  | some .live, some .placed => true
+  | _, _ => false
 
 theorem usable_iff_live_and_placed
     (S : CanonicalState) (key : EvalKey) :
@@ -47,7 +50,25 @@ theorem usableFromState_true_iff
     (warrantId : WarrantId) :
     usableFromState S profileDigest contextId use warrantId = true ↔
       Usable S ⟨profileDigest, contextId, use, warrantId⟩ := by
-  simp [usableFromState]
+  let key : EvalKey := ⟨profileDigest, contextId, use, warrantId⟩
+  change
+    (match S.epi key, S.placement key with
+      | some .live, some .placed => true
+      | _, _ => false) = true ↔
+      (S.epi key = some .live ∧ S.placement key = some .placed)
+  cases hEpi : S.epi key with
+  | none =>
+      simp [hEpi]
+  | some status =>
+      cases status with
+      | live =>
+          cases hPlacement : S.placement key with
+          | none =>
+              simp [hEpi, hPlacement]
+          | some placement =>
+              cases placement <;> simp [hEpi, hPlacement]
+      | suspended =>
+          simp [hEpi]
 
 /-- Exact history and evaluation facts exposed by a valid ROOT admission. The
 constructor does not require evaluation freshness, context activity, binding
@@ -148,7 +169,7 @@ private theorem freshWarrant_noEvaluation
   let key : EvalKey := ⟨profileDigest, contextId, use, warrantId⟩
   have hEpiNone : S.epi key = none := by
     cases hStatus : S.epi key with
-    | none => exact hStatus
+    | none => rfl
     | some status =>
         exfalso
         rcases hEvaluation (key := key) (Or.inl ⟨status, hStatus⟩) with
@@ -157,7 +178,7 @@ private theorem freshWarrant_noEvaluation
         cases hWarrant
   have hPlacementNone : S.placement key = none := by
     cases hPlacement : S.placement key with
-    | none => exact hPlacement
+    | none => rfl
     | some placement =>
         exfalso
         rcases hEvaluation (key := key) (Or.inr ⟨placement, hPlacement⟩) with
@@ -201,8 +222,11 @@ theorem rootStep_newWarrant_notUsable
   intro profileDigest observedContext use hUsable
   have hNone := rootStep_newWarrant_unqualified hReachable hStep
     profileDigest observedContext use
-  rw [hNone.1] at hUsable
-  cases hUsable.1
+  have hLive :
+      S'.epi ⟨profileDigest, observedContext, use, warrantId⟩ =
+        some .live := hUsable.1
+  rw [hNone.1] at hLive
+  cases hLive
 
 /-- Any usable evaluation position resolves to one immutable historical warrant
 with the same formation profile/context, and those referents are canonical in
