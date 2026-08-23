@@ -172,6 +172,19 @@ theorem grounded_has_bootstrap_chain
         rootBootstrap
       ⟩
 
+/-- Purely self-supporting activation worlds cannot produce current contexts. If
+there is no explicit bootstrap activation boundary anywhere, no grounded
+currentness derivation exists. -/
+theorem no_grounded_without_bootstrap
+    {R : ActivationRead}
+    (hNoBootstrap : ∀ c, R.activation c ≠ some Activation.bootstrap)
+    {c : ContextKey} :
+    ¬ Grounded R c := by
+  intro h
+  rcases grounded_has_bootstrap_chain h with
+    ⟨root, _chain, rootBootstrap⟩
+  exact hNoBootstrap root rootBootstrap
+
 /-- Dynamic wrapper around the existing static canonical licensing read.  The
 binding id is supplied here because `LicensingRead` intentionally did not need
 one for the PR #6 static projection. -/
