@@ -85,6 +85,20 @@ private def putAdoptLicense
   core := putActivationLicenseProjection A.core licenseId L
   adoptLicense := putCanonical A.adoptLicense licenseId L
 
+/-- Local copy of immutable insertion preservation; the corresponding helper in
+`Reachability` is intentionally private to that module. -/
+private theorem putCanonical_preserves_some_local
+    {α β : Type} [DecidableEq α]
+    {M : α → Option β} {key x : α} {oldValue newValue : β}
+    (fresh : M key = none)
+    (hOld : M x = some oldValue) :
+    putCanonical M key newValue x = some oldValue := by
+  by_cases hEq : x = key
+  · subst x
+    rw [fresh] at hOld
+    cases hOld
+  · simpa [putCanonical, hEq] using hOld
+
 inductive AdoptRecordEvent where
   | core (event : KernelEvent)
   | recordAdoptLicense
@@ -166,7 +180,7 @@ theorem recordAdoptLicense_historyReferentsImmutable
       · intro id binding h; exact h
       · intro id warrant h; exact h
       · intro id license h
-        exact putCanonical_preserves_some freshProjection h
+        exact putCanonical_preserves_some_local freshProjection h
 
 private theorem putActivationLicenseProjection_preserves_invariant
     {S : CanonicalState}
@@ -194,11 +208,11 @@ private theorem putActivationLicenseProjection_preserves_invariant
   · exact hInv.warrantParentsCanonical
   · exact hInv.rootWarrantWellFormed
   · exact hInv.warrantRootLineageCanonical
-  · exact hInv.inferWarrantWellFormed
+  · simpa [putActivationLicenseProjection] using hInv.inferWarrantWellFormed
   · exact hInv.evaluationReferentsCanonical
   · exact hInv.evaluationPairCoherent
   · exact hInv.evaluationProfileUseBackedByBinding
-  · exact hInv.transportWarrantWellFormed
+  · simpa [putActivationLicenseProjection] using hInv.transportWarrantWellFormed
 
 private theorem discipline_preserved_by_coreStep
     {S S' : CanonicalState}
