@@ -9,7 +9,8 @@ Current contents:
 - `Syntax.lean`: raw `Requirement` and `Branch` syntax, plus the minimal vocabulary needed to name atomic obligations;
 - `Satisfaction.lean`: semantic `Env.atomSat`, extrinsic `Derives E β R`, and branch-local equivalence `SatEqOn`;
 - `Conservativity.lean`: `derives_transport` and machine-checked Branch Conservativity (BC);
-- `ExecutableSatisfaction.lean`: executable `SatOracle`, `firstSat`, left-biased `satisfy`, No-New-Witness (NW), and executable Satisfaction Soundness (SS);
+- `ExecutableSatisfaction.lean`: executable `SatOracle`, `firstSat`, left-biased `satisfy`, extensional candidate inclusion, No-New-Witness (NW), and executable Satisfaction Soundness (SS);
+- `Replay.lean`: ordered/filter-preserving replay lemmas, branch-support inclusion, canonical support projection, Support-Preserving Replay (SPR), and exact Support Projection (SP);
 - `Audit.lean`: `#print axioms` audit surface for the current formal theorems;
 - `lake-manifest.json`: committed Lake workspace manifest used by CI.
 
@@ -18,30 +19,56 @@ Standing theorem boundary:
 - `Env.atomSat : WarrantId → Atom → Prop` remains the declarative observation interface;
 - `SatOracle` supplies a Boolean decision procedure together with a proof that it agrees with `Env.atomSat`;
 - BC concerns locality of derivability for a fixed branch;
-- NW concerns monotonicity of ordinary failure under candidate deletion;
-- SS connects successful executable search to the existing declarative `Derives` relation;
+- NW uses extensional candidate inclusion only: retained IDs need only have occurred in the original sequence;
+- SS connects successful executable search to the declarative `Derives` relation;
+- replay additionally needs order preservation. The canonical projection is implemented as a list filter, hence an order-preserving sublist;
+- arbitrary `Γ' <+ Γ` plus mere membership of support IDs is not sufficient for exact replay when duplicate warrant IDs are allowed. Therefore SPR is stated for ID-level filtering that keeps every support ID, which retains every occurrence of those IDs while preserving order;
+- `projectSupport` uses the local pure Boolean predicate `supportHas`; `supportHas_exact` proves `supportHas w xs = true ↔ w ∈ xs`. This avoids importing the proof dependencies of Lean 4.19's generic decidable list-membership instance into the SP proof term;
 - binding, context, profile, use, currentness, `INFER`, `TRANSPORT`, challenge/revision, context activation, kernel-floor checks, and concrete transition semantics remain outside this layer.
 
-Candidate deletion in NW is deliberately represented extensionally by `CandidateSubset`: every retained warrant was already present in the original candidate list. Order preservation is not required to prove failure monotonicity; replay will introduce the stronger structure it needs in a later milestone.
+The exact projection is
+
+```text
+projectSupport Γ β = Γ.filter (fun w => supportHas w β.support)
+```
+
+with
+
+```text
+supportHas w xs = true ↔ w ∈ xs
+```
+
+and SP states:
+
+```text
+satisfy O R Γ = some β
+→ satisfy O R (projectSupport Γ β) = some β
+```
 
 Logical dependency shape:
 
 ```text
-                    BC
+                    BC ✓
 
              executable satisfy
               /             \
-            NW               SS
+            NW ✓             SS ✓
              |
-            SPR
+       firstSat_replay
              |
-             SP
+             +------> SPR
+                       |
+       satisfy_support_subset
+                       |
+              projectSupport
+                       |
+                       SP ✓
 
-            KFL
+                      KFL
 
 BC + SS + SP + KFL + fixed ambient assumptions
-             |
-            RBC
+                       |
+                      RBC
 ```
 
-The next milestone after NW/SS is green is replay only: `firstSat_replay`, support-preserving replay (SPR), canonical support projection, and SP. It should not introduce KFL or the concrete kernel.
+This replay milestone does not introduce KFL, RBC, `INFER`, `TRANSPORT`, challenge/revision, context activation, or the concrete V0.1.2.2 transition kernel.

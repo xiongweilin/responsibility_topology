@@ -1,5 +1,6 @@
 import ResponsibilityTopology.Conservativity
 import ResponsibilityTopology.ExecutableSatisfaction
+import ResponsibilityTopology.Replay
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -14,3 +15,21 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.firstSat_noNewWitness
 #print axioms ResponsibilityTopology.noNewWitness
 #print axioms ResponsibilityTopology.satisfySound
+#print axioms ResponsibilityTopology.mem_append_left_rt
+#print axioms ResponsibilityTopology.mem_append_right_rt
+#print axioms ResponsibilityTopology.mem_append_cases_rt
+#print axioms ResponsibilityTopology.filter_sublist_rt
+#print axioms ResponsibilityTopology.mem_filter_of_mem_of_true_rt
+#print axioms ResponsibilityTopology.firstSat_mem
+#print axioms ResponsibilityTopology.candidateSubset_of_sublist
+#print axioms ResponsibilityTopology.firstSat_replay
+#print axioms ResponsibilityTopology.satisfy_support_subset
+#print axioms ResponsibilityTopology.supportPreservingReplay
+#print axioms ResponsibilityTopology.warrantEq_refl
+#print axioms ResponsibilityTopology.warrantEq_true_eq
+#print axioms ResponsibilityTopology.supportHas_of_mem
+#print axioms ResponsibilityTopology.supportHas_mem
+#print axioms ResponsibilityTopology.supportHas_exact
+#print axioms ResponsibilityTopology.projectSupport_sublist
+#print axioms ResponsibilityTopology.projectSupport_keeps_support
+#print axioms ResponsibilityTopology.supportProjection
