@@ -25,7 +25,7 @@ theorem firstSat_mem
 /-- Every order-preserving sublist is, in particular, an extensional candidate inclusion. -/
 theorem candidateSubset_of_sublist
     {Γ Γ' : List WarrantId}
-    (hSub : Γ' <+ Γ) :
+    (hSub : List.Sublist Γ' Γ) :
     CandidateSubset Γ' Γ := by
   intro w hMem
   exact hSub.subset hMem
@@ -55,10 +55,10 @@ theorem firstSat_replay
         cases hK : keep x with
         | false =>
             simp [List.filter, hK]
-            exact ih hRun hKeep
+            exact ih hRun
         | true =>
             simp [List.filter, hK, firstSat, hTest]
-            exact ih hRun hKeep
+            exact ih hRun
 
 /-- Every warrant ID recorded in the returned branch support came from the
 candidate sequence searched by `satisfy`. -/
@@ -99,21 +99,24 @@ theorem satisfy_support_subset
               cases hRun
           | some β₂ =>
               rw [satisfy, h₁, h₂] at hRun
+              have hLeft := ih₁ h₁
+              have hRight := ih₂ h₂
               have hEq : Branch.both β₁ β₂ = β := Option.some.inj hRun
               cases hEq
               intro w hMem
               have hParts : w ∈ β₁.support ∨ w ∈ β₂.support :=
                 List.mem_append.mp hMem
               cases hParts with
-              | inl h => exact ih₁ h₁ h
-              | inr h => exact ih₂ h₂ h
+              | inl h => exact hLeft h
+              | inr h => exact hRight h
   | disj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
       | some β₁ =>
           rw [satisfy, h₁] at hRun
+          have hChild := ih₁ h₁
           have hEq : Branch.orL β₁ = β := Option.some.inj hRun
           cases hEq
-          exact ih₁ h₁
+          exact hChild
       | none =>
           cases h₂ : satisfy O R₂ Γ with
           | none =>
@@ -121,9 +124,10 @@ theorem satisfy_support_subset
               cases hRun
           | some β₂ =>
               rw [satisfy, h₁, h₂] at hRun
+              have hChild := ih₂ h₂
               have hEq : Branch.orR β₂ = β := Option.some.inj hRun
               cases hEq
-              exact ih₂ h₂
+              exact hChild
 
 /-- SPR — support-preserving replay.
 Any ID-level filter that keeps every warrant ID in the recorded branch support
@@ -152,9 +156,12 @@ theorem supportPreservingReplay
       | some w =>
           rw [satisfy, hAtom] at hRun
           have hEq : Branch.leaf a w = β := Option.some.inj hRun
-          cases hEq
-          have hKeepW : keep w = true := hKeep (List.Mem.head [])
+          have hKeepW : keep w = true := by
+            apply hKeep
+            rw [← hEq]
+            exact List.Mem.head []
           have hReplay := firstSat_replay O keep hAtom hKeepW
+          cases hEq
           rw [satisfy, hReplay]
   | conj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
@@ -169,23 +176,32 @@ theorem supportPreservingReplay
           | some β₂ =>
               rw [satisfy, h₁, h₂] at hRun
               have hEq : Branch.both β₁ β₂ = β := Option.some.inj hRun
-              cases hEq
               have hKeep₁ : ∀ ⦃w⦄, w ∈ β₁.support → keep w = true := by
                 intro w hMem
-                exact hKeep (List.mem_append_left β₂.support hMem)
+                apply hKeep
+                rw [← hEq]
+                exact List.mem_append_left β₂.support hMem
               have hKeep₂ : ∀ ⦃w⦄, w ∈ β₂.support → keep w = true := by
                 intro w hMem
-                exact hKeep (List.mem_append_right β₁.support hMem)
-              have h₁' := ih₁ keep h₁ hKeep₁
-              have h₂' := ih₂ keep h₂ hKeep₂
+                apply hKeep
+                rw [← hEq]
+                exact List.mem_append_right β₁.support hMem
+              have h₁' := ih₁ h₁ hKeep₁
+              have h₂' := ih₂ h₂ hKeep₂
+              cases hEq
               rw [satisfy, h₁', h₂']
   | disj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
       | some β₁ =>
           rw [satisfy, h₁] at hRun
           have hEq : Branch.orL β₁ = β := Option.some.inj hRun
+          have hKeep₁ : ∀ ⦃w⦄, w ∈ β₁.support → keep w = true := by
+            intro w hMem
+            apply hKeep
+            rw [← hEq]
+            exact hMem
+          have h₁' := ih₁ h₁ hKeep₁
           cases hEq
-          have h₁' := ih₁ keep h₁ hKeep
           rw [satisfy, h₁']
       | none =>
           cases h₂ : satisfy O R₂ Γ with
@@ -195,11 +211,16 @@ theorem supportPreservingReplay
           | some β₂ =>
               rw [satisfy, h₁, h₂] at hRun
               have hEq : Branch.orR β₂ = β := Option.some.inj hRun
-              cases hEq
+              have hKeep₂ : ∀ ⦃w⦄, w ∈ β₂.support → keep w = true := by
+                intro w hMem
+                apply hKeep
+                rw [← hEq]
+                exact hMem
               have hSub : CandidateSubset (Γ.filter keep) Γ :=
                 candidateSubset_of_sublist List.filter_sublist
               have h₁' := noNewWitness O hSub h₁
-              have h₂' := ih₂ keep h₂ hKeep
+              have h₂' := ih₂ h₂ hKeep₂
+              cases hEq
               rw [satisfy, h₁', h₂']
 
 /-- Canonical order-preserving projection of a candidate sequence to the warrant
@@ -210,7 +231,7 @@ def projectSupport (Γ : List WarrantId) (β : Branch) : List WarrantId :=
 /-- The canonical support projection is an order-preserving sublist. -/
 theorem projectSupport_sublist
     {Γ : List WarrantId} {β : Branch} :
-    projectSupport Γ β <+ Γ := by
+    List.Sublist (projectSupport Γ β) Γ := by
   exact List.filter_sublist
 
 /-- A successful run guarantees that every recorded support ID occurs in its
