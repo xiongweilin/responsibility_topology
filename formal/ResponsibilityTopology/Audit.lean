@@ -17,6 +17,7 @@ import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
+import ResponsibilityTopology.InferQualification
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -91,6 +92,7 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.wellTypedRule_knownGuard
 #print axioms ResponsibilityTopology.wellTypedRule_special_provenance
 #print axioms ResponsibilityTopology.wellTypedRule_protected_output
+#print axioms ResponsibilityTopology.wellTypedRule_inputs_nonempty
 #print axioms ResponsibilityTopology.kernelGuard_distinctContentSources
 #print axioms ResponsibilityTopology.kernelGuard_distinctContentRoots
 #print axioms ResponsibilityTopology.grounded_contractiveness
@@ -103,6 +105,8 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.groundedCertificate_sound
 #print axioms ResponsibilityTopology.ungroundedCertificate_sound
 #print axioms ResponsibilityTopology.historicalWarrant_readProjection
+#print axioms ResponsibilityTopology.qualifyEvaluation_exact
+#print axioms ResponsibilityTopology.qualifyEvaluation_otherKey_unchanged
 #print axioms ResponsibilityTopology.canonicalIdsUnique
 #print axioms ResponsibilityTopology.step_historyReferentsImmutable
 #print axioms ResponsibilityTopology.step_preserves_invariant
@@ -111,6 +115,7 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.reachable_activeContextHasActivationProvenance
 #print axioms ResponsibilityTopology.reachable_adoptedActiveContextHasCanonicalLicense
 #print axioms ResponsibilityTopology.reachable_inferWarrantsWellFormed
+#print axioms ResponsibilityTopology.reachable_evaluationProfileUseBackedByBinding
 #print axioms ResponsibilityTopology.reachable_toActivationRead_wellFormed
 #print axioms ResponsibilityTopology.rootStep_newWarrant_exact
 #print axioms ResponsibilityTopology.rootStep_oldWarrants_immutable
@@ -148,3 +153,12 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.inferStep_lineage_union
 #print axioms ResponsibilityTopology.inferStep_preserves_inferWarrantWellFormed
 #print axioms ResponsibilityTopology.inferStep_preserves_warrantParentsCanonical
+#print axioms ResponsibilityTopology.inferWarrantWellFormed_parents_nonempty
+#print axioms ResponsibilityTopology.qualifyInfer_requires_usableParents
+#print axioms ResponsibilityTopology.qualifyInfer_evaluation_exact
+#print axioms ResponsibilityTopology.qualifyInfer_makes_usable
+#print axioms ResponsibilityTopology.qualifyInfer_historyReferentsImmutable
+#print axioms ResponsibilityTopology.qualifyInfer_preserves_evaluationInvariant
+#print axioms ResponsibilityTopology.qualifyInfer_preserves_profileUseBacking
+#print axioms ResponsibilityTopology.qualifyInfer_childProfileUse_backed
+#print axioms ResponsibilityTopology.inferFormationQualification_boundary
