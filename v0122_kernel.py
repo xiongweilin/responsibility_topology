@@ -1574,6 +1574,17 @@ class ProofKernel:
             raise KernelError(
                 "Historical Adopt license is not currently reusable"
             )
+        if (
+            state.context_status(
+                record.binding_id,
+                target_context_id,
+                record.use,
+            )
+            == ContextStatus.ACTIVE
+        ):
+            raise KernelError(
+                "Cannot re-activate an ACTIVE context: active context activation provenance is immutable"
+            )
 
         state._activate_context(
             record.binding_id,
