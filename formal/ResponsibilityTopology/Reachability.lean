@@ -199,7 +199,7 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
       R.activation key = some (Activation.adopt licenseId) →
       ∃ issuer, R.issuerContext licenseId = some issuer)
 
- theorem canonicalIdsUnique (S : CanonicalState) : CanonicalIdsUnique S := by
+theorem canonicalIdsUnique (S : CanonicalState) : CanonicalIdsUnique S := by
   refine ⟨?_, ?_, ?_⟩
   · intro id b₁ b₂ h₁ h₂
     exact Option.some.inj (h₁.symm.trans h₂)
@@ -208,7 +208,7 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
   · intro key a₁ a₂ h₁ h₂
     exact Option.some.inj (h₁.symm.trans h₂)
 
- theorem initialBoundary_invariant
+theorem initialBoundary_invariant
     {S : CanonicalState}
     (hInitial : InitialBoundary S) :
     CanonicalStateInvariant S := by
@@ -223,7 +223,7 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
   · intro key licenseId h
     cases h
 
- theorem step_historyReferentsImmutable
+theorem step_historyReferentsImmutable
     {S S' : CanonicalState} {event : KernelEvent}
     (hStep : Step S event S') :
     HistoryReferentsImmutable S S' := by
@@ -256,28 +256,26 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
         exact h
       · intro key activation h
         exact h
-  | bindProfile fresh profileCanonical =>
+  | @bindProfile id b fresh profileCanonical =>
       refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-      · intro id h
+      · intro contextId h
         exact h
       · intro digest h
         exact h
       · intro id' b' hLookup
-        unfold putOption
         by_cases hEq : id' = id
-        · subst id'
-          rw [fresh] at hLookup
+        · rw [hEq, fresh] at hLookup
           cases hLookup
-        · simp [hEq, hLookup]
+        · simpa [putOption, hEq] using hLookup
       · intro w h
         exact h
-      · intro id license h
+      · intro licenseId license h
         exact h
       · intro key activation h
         exact h
-  | bootstrapContext contextCanonical bindingCanonical inactive freshActivation =>
+  | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
       refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
-      · intro id h
+      · intro contextId h
         exact h
       · intro digest h
         exact h
@@ -285,17 +283,15 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
         exact h
       · intro w h
         exact h
-      · intro id license h
+      · intro licenseId license h
         exact h
       · intro key' activation hLookup
-        unfold putOption
         by_cases hEq : key' = key
-        · subst key'
-          rw [freshActivation] at hLookup
+        · rw [hEq, freshActivation] at hLookup
           cases hLookup
-        · simp [hEq, hLookup]
+        · simpa [putOption, hEq] using hLookup
 
- theorem step_preserves_invariant
+theorem step_preserves_invariant
     {S S' : CanonicalState} {event : KernelEvent}
     (hInv : CanonicalStateInvariant S)
     (hStep : Step S event S') :
@@ -321,39 +317,35 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
       · exact hActiveRefs
       · exact hProvenance
       · exact hAdopt
-  | @bindProfile S id b fresh profileCanonical =>
+  | @bindProfile id b fresh profileCanonical =>
       refine ⟨?_, ?_, ?_, ?_⟩
       · intro id' b' hLookup
-        unfold putOption at hLookup
         by_cases hEq : id' = id
-        · subst id'
-          simp at hLookup
-          cases hLookup
+        · have hNew : b' = b := by
+            simpa [putOption, hEq] using hLookup.symm
+          subst b'
           exact profileCanonical
-        · simp [hEq] at hLookup
-          exact hBinding hLookup
+        · have hOld : S.binding id' = some b' := by
+            simpa [putOption, hEq] using hLookup
+          exact hBinding hOld
       · intro key hActive
-        rcases hActiveRefs hActive with ⟨hContext, bOld, hLookup, hUse⟩
-        refine ⟨hContext, bOld, ?_, hUse⟩
-        unfold putOption
+        rcases hActiveRefs hActive with ⟨hContext, oldBinding, hLookup, hUse⟩
+        refine ⟨hContext, oldBinding, ?_, hUse⟩
         by_cases hEq : key.binding = id
-        · subst id
-          rw [fresh] at hLookup
+        · rw [hEq, fresh] at hLookup
           cases hLookup
-        · simp [hEq, hLookup]
+        · simpa [putOption, hEq] using hLookup
       · exact hProvenance
       · intro key licenseId hActive hActivation
         rcases hAdopt hActive hActivation with
-          ⟨license, hLicense, hTarget, hIssuer⟩
-        rcases hIssuer with ⟨hIssuerContext, issuerBinding, hIssuerBinding, hIssuerUse⟩
+          ⟨license, hLicense, hTarget, hIssuerContext, issuerBinding,
+            hIssuerBinding, hIssuerUse⟩
         refine ⟨license, hLicense, hTarget, hIssuerContext, issuerBinding, ?_, hIssuerUse⟩
-        unfold putOption
         by_cases hEq : license.issuer.binding = id
-        · subst id
-          rw [fresh] at hIssuerBinding
+        · rw [hEq, fresh] at hIssuerBinding
           cases hIssuerBinding
-        · simp [hEq, hIssuerBinding]
-  | @bootstrapContext S key contextCanonical bindingCanonical inactive freshActivation =>
+        · simpa [putOption, hEq] using hIssuerBinding
+  | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
       refine ⟨hBinding, ?_, ?_, ?_⟩
       · intro key' hActive
         rcases hActive with hEq | hOld
@@ -366,25 +358,23 @@ def WellFormedActivationRead (R : ActivationRead) : Prop :=
           exact ⟨Activation.bootstrap, by simp [putOption]⟩
         · rcases hProvenance hOld with ⟨activation, hLookup⟩
           refine ⟨activation, ?_⟩
-          unfold putOption
-          by_cases hEq : key' = key
-          · subst key'
-            exact False.elim (inactive hOld)
-          · simp [hEq, hLookup]
+          have hNe : key' ≠ key := by
+            intro hEq
+            subst key'
+            exact inactive hOld
+          simpa [putOption, hNe] using hLookup
       · intro key' licenseId hActive hActivation
         rcases hActive with hEq | hOld
         · subst key'
-          unfold putOption at hActivation
-          simp at hActivation
-        · have hKeyNe : key' ≠ key := by
+          simp [putOption] at hActivation
+        · have hNe : key' ≠ key := by
             intro hEq
             subst key'
             exact inactive hOld
           have hOldActivation :
               S.activationProvenance key' =
                 some (Activation.adopt licenseId) := by
-            unfold putOption at hActivation
-            simpa [hKeyNe] using hActivation
+            simpa [putOption, hNe] using hActivation
           rcases hAdopt hOld hOldActivation with
             ⟨license, hLicense, hTarget, hIssuer⟩
           exact ⟨license, hLicense, hTarget, hIssuer⟩
@@ -401,19 +391,19 @@ theorem reachable_invariant
   | step hReachable hStep ih =>
       exact step_preserves_invariant ih hStep
 
- theorem reachable_canonicalIdsUnique
+theorem reachable_canonicalIdsUnique
     {S : CanonicalState}
     (_hReachable : Reachable S) :
     CanonicalIdsUnique S :=
   canonicalIdsUnique S
 
- theorem reachable_activeContextHasActivationProvenance
+theorem reachable_activeContextHasActivationProvenance
     {S : CanonicalState}
     (hReachable : Reachable S) :
     ActiveContextHasActivationProvenance S :=
   (reachable_invariant hReachable).2.2.1
 
- theorem reachable_adoptedActiveContextHasCanonicalLicense
+theorem reachable_adoptedActiveContextHasCanonicalLicense
     {S : CanonicalState}
     (hReachable : Reachable S) :
     AdoptedActiveContextHasCanonicalLicense S :=
