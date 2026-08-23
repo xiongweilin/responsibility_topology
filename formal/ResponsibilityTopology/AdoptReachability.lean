@@ -208,11 +208,22 @@ private theorem putActivationLicenseProjection_preserves_invariant
   · exact hInv.warrantParentsCanonical
   · exact hInv.rootWarrantWellFormed
   · exact hInv.warrantRootLineageCanonical
-  · simpa [putActivationLicenseProjection] using hInv.inferWarrantWellFormed
+  · intro warrantId warrant ruleId hWarrant hConstructor
+    rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+      ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+        hParents, hDiscipline, hExact⟩
+    exact ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+      hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+      hDiscipline, hExact⟩
   · exact hInv.evaluationReferentsCanonical
   · exact hInv.evaluationPairCoherent
   · exact hInv.evaluationProfileUseBackedByBinding
-  · simpa [putActivationLicenseProjection] using hInv.transportWarrantWellFormed
+  · intro warrantId warrant mapId hWarrant hConstructor
+    rcases hInv.transportWarrantWellFormed hWarrant hConstructor with
+      ⟨targetContext, originalId, witnessId, original, witness,
+        hContext, hOriginal, hWitness, hDiscipline, hExact⟩
+    exact ⟨targetContext, originalId, witnessId, original, witness,
+      hContext, hOriginal, hWitness, hDiscipline, hExact⟩
 
 private theorem discipline_preserved_by_coreStep
     {S S' : CanonicalState}
