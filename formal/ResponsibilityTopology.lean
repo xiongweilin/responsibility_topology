@@ -8,4 +8,5 @@ import ResponsibilityTopology.Entitlement
 import ResponsibilityTopology.CanonicalRead
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
+import ResponsibilityTopology.CurrentnessConformance
 import ResponsibilityTopology.Audit

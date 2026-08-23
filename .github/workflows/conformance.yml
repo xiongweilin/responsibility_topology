@@ -23,4 +23,9 @@ jobs:
       - name: Install Python test dependency
         run: python -m pip install pytest
       - name: Run Python reference kernel and cross-language conformance
-        run: python -m pytest -q test_v0122_kernel.py test_v0122_currentness.py test_v0122_conformance.py
+        run: >-
+          python -m pytest -q
+          test_v0122_kernel.py
+          test_v0122_currentness.py
+          test_v0122_conformance.py
+          test_v0122_currentness_conformance.py
