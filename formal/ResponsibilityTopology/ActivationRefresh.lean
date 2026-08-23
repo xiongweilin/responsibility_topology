@@ -219,6 +219,8 @@ theorem challengeStep_baseCurrentRead_stricter
   have hLicenses : A'.adoptLicense = A.adoptLicense :=
     (challengeStep_topology_unchanged hStep).2.2.2.2.2.1
   refine ⟨L, ?_, challengeStep_baseCurrent_stricter hStep hBase⟩
+  change A'.adoptLicense licenseId = some L at hLicense
+  change A.adoptLicense licenseId = some L
   rw [hLicenses] at hLicense
   exact hLicense
 
