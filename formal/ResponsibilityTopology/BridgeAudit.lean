@@ -1,4 +1,5 @@
 import ResponsibilityTopology.Bridge.CertifiedObservation
+import ResponsibilityTopology.Bridge.RawRuntimeWithdrawal
 import ResponsibilityTopology.Bridge.FormalWithdrawalBridge
 
 namespace ResponsibilityTopology.Bridge
@@ -7,6 +8,9 @@ namespace ResponsibilityTopology.Bridge
 #print axioms checked_withdrawal_without_discharge_rejects_current_use
 #print axioms ref3RuntimeFixture_checked
 #print axioms ref3RuntimeFixture_rejects_current_use
+#print axioms checkRawWithdrawal_sound
+#print axioms ref4RawSelectedFixture_checked
+#print axioms ref4RawSelectedFixture_projects_B0
 #print axioms challenge_target_realizes_formal_withdrawal_pattern
 
 end ResponsibilityTopology.Bridge
