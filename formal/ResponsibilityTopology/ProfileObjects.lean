@@ -227,38 +227,50 @@ theorem wellTypedRule_inputs_nonempty
     | selection =>
         exact hNormal.2.2.2 hOutput
     | bridge =>
-        have hMem : Role.bridge ∈ rule.inputRoles :=
+        have hMem0 : rule.outputRole ∈ rule.inputRoles :=
           hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        have hMem : Role.bridge ∈ rule.inputRoles := by
+          simpa [hOutput] using hMem0
         intro hEmpty
         rw [hEmpty] at hMem
         cases hMem
     | provenance =>
-        have hMem : Role.provenance ∈ rule.inputRoles :=
+        have hMem0 : rule.outputRole ∈ rule.inputRoles :=
           hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        have hMem : Role.provenance ∈ rule.inputRoles := by
+          simpa [hOutput] using hMem0
         intro hEmpty
         rw [hEmpty] at hMem
         cases hMem
     | coverage =>
-        have hMem : Role.coverage ∈ rule.inputRoles :=
+        have hMem0 : rule.outputRole ∈ rule.inputRoles :=
           hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        have hMem : Role.coverage ∈ rule.inputRoles := by
+          simpa [hOutput] using hMem0
         intro hEmpty
         rw [hEmpty] at hMem
         cases hMem
     | escalation =>
-        have hMem : Role.escalation ∈ rule.inputRoles :=
+        have hMem0 : rule.outputRole ∈ rule.inputRoles :=
           hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        have hMem : Role.escalation ∈ rule.inputRoles := by
+          simpa [hOutput] using hMem0
         intro hEmpty
         rw [hEmpty] at hMem
         cases hMem
     | authorization =>
-        have hMem : Role.authorization ∈ rule.inputRoles :=
+        have hMem0 : rule.outputRole ∈ rule.inputRoles :=
           hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        have hMem : Role.authorization ∈ rule.inputRoles := by
+          simpa [hOutput] using hMem0
         intro hEmpty
         rw [hEmpty] at hMem
         cases hMem
     | binding =>
-        have hMem : Role.binding ∈ rule.inputRoles :=
+        have hMem0 : rule.outputRole ∈ rule.inputRoles :=
           hNormal.2.1 (by simp [ProtectedRuleRole, hOutput])
+        have hMem : Role.binding ∈ rule.inputRoles := by
+          simpa [hOutput] using hMem0
         intro hEmpty
         rw [hEmpty] at hMem
         cases hMem
