@@ -1,18 +1,17 @@
 import ResponsibilityTopology.ContextCurrentness
-import ResponsibilityTopology.HistoricalObjects
+import ResponsibilityTopology.InferenceSemantics
 import ResponsibilityTopology.EvaluationVocabulary
 
 namespace ResponsibilityTopology
 
 /-!
-Reachable canonical-state skeleton, extended by #13 with the first explicit
-historical-to-evaluation transition.
+Reachable canonical-state model through #14.
 
-The state separates immutable canonical history from mutable evaluation
-qualification. ROOT formation reads/writes only canonical history. ROOT
-admission reads canonical history and writes exactly one evaluation position.
-Derived qualification, INFER, TRANSPORT, license issuance, revalidation, and
-challenge/revision remain outside this milestone.
+The state keeps immutable canonical history distinct from mutable evaluation
+qualification. ROOT and INFER formation write only historical warrants. ROOT
+admission writes only evaluation qualification. INFER qualification, TRANSPORT,
+license issuance, revalidation, and challenge/revision remain outside this
+milestone.
 -/
 
 structure CanonicalBinding where
@@ -28,7 +27,7 @@ structure CanonicalActivationLicense where
 
 structure CanonicalState where
   context : String → Option CanonicalContext
-  profile : String → Prop
+  profile : String → Option CanonicalProfile
   binding : String → Option CanonicalBinding
   warrant : WarrantId → Option HistoricalWarrant
   license : ActivationLicenseId → Option CanonicalActivationLicense
@@ -65,17 +64,79 @@ def setOptionAt {α β : Type} [DecidableEq α]
     (M : α → Option β) (key : α) (value : β) : α → Option β :=
   fun x => if x = key then some value else M x
 
-/-- Shared evaluation qualification update. Later qualification milestones reuse
+/-- Shared evaluation qualification update. Later derived qualification reuses
 this state mechanism rather than creating constructor-specific status stores. -/
 def qualifyEvaluation (S : CanonicalState) (key : EvalKey) : CanonicalState :=
   { S with
     epi := setOptionAt S.epi key .live
     placement := setOptionAt S.placement key .placed }
 
+/-- Ordered, duplicate-preserving resolution of historical parent IDs. -/
+inductive ResolvesParents
+    (S : CanonicalState) : List WarrantId → List HistoricalWarrant → Prop where
+  | nil : ResolvesParents S [] []
+  | cons {id : WarrantId} {parent : HistoricalWarrant}
+      {ids : List WarrantId} {parents : List HistoricalWarrant}
+      (lookup : S.warrant id = some parent)
+      (tail : ResolvesParents S ids parents) :
+      ResolvesParents S (id :: ids) (parent :: parents)
+
+namespace ResolvesParents
+
+/-- Every parent-ID occurrence resolves to a correspondingly present historical
+object; order and duplicate occurrences are not erased. -/
+theorem lookup_of_id_mem
+    {S : CanonicalState} {ids : List WarrantId}
+    {parents : List HistoricalWarrant}
+    (hResolve : ResolvesParents S ids parents)
+    {id : WarrantId} (hMem : id ∈ ids) :
+    ∃ parent, parent ∈ parents ∧ S.warrant id = some parent := by
+  induction hResolve with
+  | nil => cases hMem
+  | @cons head parent tailIds tailParents hLookup hTail ih =>
+      cases hMem with
+      | head =>
+          exact ⟨parent, List.Mem.head tailParents, hLookup⟩
+      | tail _ hTailMem =>
+          rcases ih hTailMem with ⟨found, hFoundMem, hFoundLookup⟩
+          exact ⟨found, List.Mem.tail parent hFoundMem, hFoundLookup⟩
+
+/-- Every resolved parent-object occurrence comes from some parent ID. -/
+theorem id_of_parent_mem
+    {S : CanonicalState} {ids : List WarrantId}
+    {parents : List HistoricalWarrant}
+    (hResolve : ResolvesParents S ids parents)
+    {parent : HistoricalWarrant} (hMem : parent ∈ parents) :
+    ∃ id, id ∈ ids ∧ S.warrant id = some parent := by
+  induction hResolve with
+  | nil => cases hMem
+  | @cons head headParent tailIds tailParents hLookup hTail ih =>
+      cases hMem with
+      | head =>
+          exact ⟨head, List.Mem.head tailIds, hLookup⟩
+      | tail _ hTailMem =>
+          rcases ih hTailMem with ⟨found, hFoundMem, hFoundLookup⟩
+          exact ⟨found, List.Mem.tail head hFoundMem, hFoundLookup⟩
+
+/-- Exact referent preservation lifts an ordered parent resolution unchanged. -/
+theorem preserved
+    {S S' : CanonicalState} {ids : List WarrantId}
+    {parents : List HistoricalWarrant}
+    (hResolve : ResolvesParents S ids parents)
+    (hPreserve : ∀ ⦃id parent⦄,
+      S.warrant id = some parent → S'.warrant id = some parent) :
+    ResolvesParents S' ids parents := by
+  induction hResolve with
+  | nil => exact .nil
+  | cons hLookup hTail ih =>
+      exact .cons (hPreserve hLookup) ih
+
+end ResolvesParents
+
 /-- Empty trusted starting boundary. -/
 def emptyCanonicalState : CanonicalState where
   context := fun _ => none
-  profile := fun _ => False
+  profile := fun _ => none
   binding := fun _ => none
   warrant := fun _ => none
   license := fun _ => none
@@ -90,7 +151,7 @@ def InitialBoundary (S : CanonicalState) : Prop :=
 
 inductive KernelEvent where
   | registerContext (id : String) (context : CanonicalContext)
-  | registerProfile (digest : String)
+  | registerProfile (digest : String) (profile : CanonicalProfile)
   | bindProfile (id : String) (binding : CanonicalBinding)
   | bootstrapContext (key : ContextKey)
   | root
@@ -101,14 +162,14 @@ inductive KernelEvent where
       (warrantId : WarrantId)
       (bindingId contextId use : String)
       (metadata : AdmissionMetadata)
-  deriving Repr
+  | infer
+      (warrantId : WarrantId)
+      (bindingId contextId ruleId : String)
+      (parentIds : List WarrantId)
+      (outScope : Scope)
 
-/-- ROOT formation has exactly the static history-plane preconditions used by
-Python V0.1.2.2. ROOT admission likewise copies the current Python admission
-boundary: canonical binding/context/warrant, ROOT constructor identity, exact
-formation environment, and binding/use match. It deliberately adds no active
-context/binding premise, repeated context-signature check, or evaluation
-freshness premise. -/
+/-- Formation and admission transitions through #14. Ordinary INFER deliberately
+has no parent-usability or evaluation-state premise. -/
 inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop where
   | registerContext
       {S : CanonicalState} {id : String} {context : CanonicalContext}
@@ -116,14 +177,14 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
       Step S (.registerContext id context)
         { S with context := putCanonical S.context id context }
   | registerProfile
-      {S : CanonicalState} {digest : String}
-      (fresh : ¬ S.profile digest) :
-      Step S (.registerProfile digest)
-        { S with profile := addFact S.profile digest }
+      {S : CanonicalState} {digest : String} {profile : CanonicalProfile}
+      (fresh : S.profile digest = none) :
+      Step S (.registerProfile digest profile)
+        { S with profile := putCanonical S.profile digest profile }
   | bindProfile
       {S : CanonicalState} {id : String} {b : CanonicalBinding}
       (fresh : S.binding id = none)
-      (profileCanonical : S.profile b.profileDigest) :
+      (profileCanonical : ∃ profile, S.profile b.profileDigest = some profile) :
       Step S (.bindProfile id b)
         { S with binding := putCanonical S.binding id b }
   | bootstrapContext
@@ -173,6 +234,30 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
       Step S (.admitRoot warrantId bindingId contextId use metadata)
         (qualifyEvaluation S
           ⟨binding.profileDigest, contextId, use, warrantId⟩)
+  | infer
+      {S : CanonicalState}
+      {warrantId : WarrantId}
+      {bindingId contextId ruleId : String}
+      {parentIds : List WarrantId}
+      {outScope : Scope}
+      {binding : CanonicalBinding}
+      {profile : CanonicalProfile}
+      {context : CanonicalContext}
+      {rule : CanonicalRule}
+      {parents : List HistoricalWarrant}
+      (fresh : S.warrant warrantId = none)
+      (bindingCanonical : S.binding bindingId = some binding)
+      (profileCanonical : S.profile binding.profileDigest = some profile)
+      (ruleExact : lookupRule profile ruleId = some rule)
+      (contextCanonical : S.context contextId = some context)
+      (parentsCanonical : ResolvesParents S parentIds parents)
+      (discipline : InferFormationDiscipline
+        context binding.profileDigest contextId rule parents outScope) :
+      Step S (.infer warrantId bindingId contextId ruleId parentIds outScope)
+        { S with
+          warrant := putCanonical S.warrant warrantId
+            (inferHistoricalWarrant
+              ruleId binding.profileDigest contextId parentIds parents outScope rule) }
 
 inductive Reachable : CanonicalState → Prop where
   | initial {S : CanonicalState} : InitialBoundary S → Reachable S
@@ -184,7 +269,8 @@ def ContextKeyCanonical (S : CanonicalState) (key : ContextKey) : Prop :=
     ∃ b, S.binding key.binding = some b ∧ b.use = key.use
 
 def BindingReferentsCanonical (S : CanonicalState) : Prop :=
-  ∀ ⦃id b⦄, S.binding id = some b → S.profile b.profileDigest
+  ∀ ⦃id b⦄, S.binding id = some b →
+    ∃ profile, S.profile b.profileDigest = some profile
 
 def ActiveContextReferentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃key⦄, S.activeContext key → ContextKeyCanonical S key
@@ -202,15 +288,15 @@ def AdoptedActiveContextHasCanonicalLicense (S : CanonicalState) : Prop :=
       license.target = key ∧
       ContextKeyCanonical S license.issuer
 
-/-- Every historical warrant names canonical formation context/profile
-referents. Source authenticity is intentionally not part of this predicate. -/
+/-- Every historical warrant names exact canonical formation context/profile
+referents. -/
 def WarrantReferentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id warrant⦄,
     S.warrant id = some warrant →
     (∃ context, S.context warrant.formationContext = some context) ∧
-      S.profile warrant.formationProfileDigest
+      ∃ profile, S.profile warrant.formationProfileDigest = some profile
 
-/-- Every historical parent identifier resolves canonically. -/
+/-- Every ordered historical parent identifier resolves canonically. -/
 def WarrantParentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id warrant parentId⦄,
     S.warrant id = some warrant →
@@ -232,22 +318,38 @@ def RootWarrantWellFormed (S : CanonicalState) : Prop :=
           warrant.sourceLineage role sourceId ↔
             role = warrant.role ∧ sourceId = source)
 
-/-- Every root-lineage warrant ID resolves in the same post-state. -/
+/-- Every root-lineage warrant ID resolves in the same state. -/
 def WarrantRootLineageCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id warrant role rootId⦄,
     S.warrant id = some warrant →
     warrant.rootLineage role rootId →
     ∃ root, S.warrant rootId = some root
 
+/-- Every historical INFER object can be replayed against the exact immutable
+formation profile/rule and its ordered historical parents. -/
+def InferWarrantWellFormed (S : CanonicalState) : Prop :=
+  ∀ ⦃id warrant ruleId⦄,
+    S.warrant id = some warrant →
+    warrant.constructor = .infer ruleId →
+    ∃ profile context rule parents,
+      S.profile warrant.formationProfileDigest = some profile ∧
+      S.context warrant.formationContext = some context ∧
+      lookupRule profile ruleId = some rule ∧
+      ResolvesParents S warrant.parents parents ∧
+      InferFormationDiscipline
+        context warrant.formationProfileDigest warrant.formationContext
+        rule parents warrant.scope ∧
+      warrant = inferHistoricalWarrant
+        ruleId warrant.formationProfileDigest warrant.formationContext
+        warrant.parents parents warrant.scope rule
+
 /-- At least one evaluation axis is populated at this key. -/
 def HasEvaluationRecord (S : CanonicalState) (key : EvalKey) : Prop :=
   (∃ status, S.epi key = some status) ∨
     ∃ placement, S.placement key = some placement
 
-/-- Any evaluation record must resolve to the same immutable historical warrant
-and use exactly its formation profile/context identity. Combined with
-`WarrantReferentsCanonical`, this also gives canonical profile/context
-referents without duplicating that obligation here. -/
+/-- Any evaluation record resolves to the same immutable historical warrant and
+uses exactly its formation profile/context identity. -/
 def EvaluationReferentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃key⦄,
     HasEvaluationRecord S key →
@@ -256,8 +358,7 @@ def EvaluationReferentsCanonical (S : CanonicalState) : Prop :=
       warrant.formationProfileDigest = key.profileDigest ∧
       warrant.formationContext = key.contextId
 
-/-- Evaluation positions are created as a pair. No reachable state contains a
-half-created epi-only or placement-only position. -/
+/-- Evaluation positions are created as a pair. -/
 def EvaluationPairCoherent (S : CanonicalState) : Prop :=
   ∀ key, S.epi key = none ↔ S.placement key = none
 
@@ -270,12 +371,15 @@ structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   warrantParentsCanonical : WarrantParentsCanonical S
   rootWarrantWellFormed : RootWarrantWellFormed S
   warrantRootLineageCanonical : WarrantRootLineageCanonical S
+  inferWarrantWellFormed : InferWarrantWellFormed S
   evaluationReferentsCanonical : EvaluationReferentsCanonical S
   evaluationPairCoherent : EvaluationPairCoherent S
 
 structure CanonicalIdsUnique (S : CanonicalState) : Prop where
   contextUnique : ∀ ⦃id c₁ c₂⦄,
     S.context id = some c₁ → S.context id = some c₂ → c₁ = c₂
+  profileUnique : ∀ ⦃digest p₁ p₂⦄,
+    S.profile digest = some p₁ → S.profile digest = some p₂ → p₁ = p₂
   bindingUnique : ∀ ⦃id b₁ b₂⦄,
     S.binding id = some b₁ → S.binding id = some b₂ → b₁ = b₂
   warrantUnique : ∀ ⦃id w₁ w₂⦄,
@@ -290,7 +394,8 @@ structure CanonicalIdsUnique (S : CanonicalState) : Prop where
 structure HistoryReferentsImmutable (S S' : CanonicalState) : Prop where
   contextImmutable : ∀ ⦃id context⦄,
     S.context id = some context → S'.context id = some context
-  profileImmutable : ∀ ⦃digest⦄, S.profile digest → S'.profile digest
+  profileImmutable : ∀ ⦃digest profile⦄,
+    S.profile digest = some profile → S'.profile digest = some profile
   bindingImmutable : ∀ ⦃id binding⦄,
     S.binding id = some binding → S'.binding id = some binding
   warrantImmutable : ∀ ⦃id warrant⦄,
@@ -320,6 +425,8 @@ theorem canonicalIdsUnique (S : CanonicalState) : CanonicalIdsUnique S := by
   constructor
   · intro id c₁ c₂ h₁ h₂
     exact Option.some.inj (h₁.symm.trans h₂)
+  · intro digest p₁ p₂ h₁ h₂
+    exact Option.some.inj (h₁.symm.trans h₂)
   · intro id b₁ b₂ h₁ h₂
     exact Option.some.inj (h₁.symm.trans h₂)
   · intro id w₁ w₂ h₁ h₂
@@ -343,6 +450,7 @@ theorem initialBoundary_invariant
     WarrantParentsCanonical,
     RootWarrantWellFormed,
     WarrantRootLineageCanonical,
+    InferWarrantWellFormed,
     EvaluationReferentsCanonical,
     EvaluationPairCoherent,
     HasEvaluationRecord,
@@ -357,7 +465,7 @@ theorem step_historyReferentsImmutable
       constructor
       · intro id context h
         exact putCanonical_preserves_some fresh h
-      · intro digest h
+      · intro digest profile h
         exact h
       · intro id binding h
         exact h
@@ -369,8 +477,8 @@ theorem step_historyReferentsImmutable
       constructor
       · intro id context h
         exact h
-      · intro digest h
-        exact Or.inr h
+      · intro digest profile h
+        exact putCanonical_preserves_some fresh h
       · intro id binding h
         exact h
       · intro id warrant h
@@ -381,7 +489,7 @@ theorem step_historyReferentsImmutable
       constructor
       · intro id context h
         exact h
-      · intro digest h
+      · intro digest profile h
         exact h
       · intro id binding h
         exact putCanonical_preserves_some fresh h
@@ -390,22 +498,12 @@ theorem step_historyReferentsImmutable
       · intro id license h
         exact h
   | bootstrapContext contextCanonical bindingCanonical inactive freshActivation =>
-      constructor
-      · intro id context h
-        exact h
-      · intro digest h
-        exact h
-      · intro id binding h
-        exact h
-      · intro id warrant h
-        exact h
-      · intro id license h
-        exact h
+      constructor <;> intros <;> assumption
   | root fresh bindingCanonical contextCanonical accepted =>
       constructor
       · intro id context h
         exact h
-      · intro digest h
+      · intro digest profile h
         exact h
       · intro id binding h
         exact h
@@ -415,15 +513,18 @@ theorem step_historyReferentsImmutable
         exact h
   | admitRoot bindingCanonical contextCanonical warrantCanonical isRoot
       formationContext formationProfile useMatches =>
+      constructor <;> intros <;> assumption
+  | infer fresh bindingCanonical profileCanonical ruleExact contextCanonical
+      parentsCanonical discipline =>
       constructor
       · intro id context h
         exact h
-      · intro digest h
+      · intro digest profile h
         exact h
       · intro id binding h
         exact h
       · intro id warrant h
-        exact h
+        exact putCanonical_preserves_some fresh h
       · intro id license h
         exact h
 
@@ -455,22 +556,40 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · intro warrantId warrant ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, oldContext, rule, parents, hProfile,
+          putCanonical_preserves_some fresh hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
-  | @registerProfile digest fresh =>
+  | @registerProfile digest profile fresh =>
       constructor
-      · intro id binding hBinding
-        exact Or.inr (hInv.bindingReferentsCanonical hBinding)
+      · intro bindingId binding hBinding
+        rcases hInv.bindingReferentsCanonical hBinding with
+          ⟨oldProfile, hProfile⟩
+        exact ⟨oldProfile, putCanonical_preserves_some fresh hProfile⟩
       · exact hInv.activeContextReferentsCanonical
       · exact hInv.activeContextHasActivationProvenance
       · exact hInv.adoptedActiveContextHasCanonicalLicense
       · intro warrantId warrant hWarrant
         rcases hInv.warrantReferentsCanonical hWarrant with
-          ⟨hContext, hProfile⟩
-        exact ⟨hContext, Or.inr hProfile⟩
+          ⟨hContext, oldProfile, hProfile⟩
+        exact ⟨hContext, oldProfile, putCanonical_preserves_some fresh hProfile⟩
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · intro warrantId warrant ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨oldProfile, context, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨oldProfile, context, rule, parents,
+          putCanonical_preserves_some fresh hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @bindProfile id binding fresh profileCanonical =>
@@ -478,7 +597,7 @@ theorem step_preserves_invariant
       · intro id' binding' hLookup
         by_cases hEq : id' = id
         · subst id'
-          have hEqBinding : binding' = binding := by
+          have hBindingEq : binding' = binding := by
             simpa [putCanonical] using hLookup.symm
           subst binding'
           exact profileCanonical
@@ -488,8 +607,8 @@ theorem step_preserves_invariant
       · intro key hActive
         rcases hInv.activeContextReferentsCanonical hActive with
           ⟨hContext, oldBinding, hLookup, hUse⟩
-        refine ⟨hContext, oldBinding, ?_, hUse⟩
-        exact putCanonical_preserves_some fresh hLookup
+        exact ⟨hContext, oldBinding,
+          putCanonical_preserves_some fresh hLookup, hUse⟩
       · exact hInv.activeContextHasActivationProvenance
       · intro key licenseId hActive hActivation
         rcases hInv.adoptedActiveContextHasCanonicalLicense hActive hActivation with
@@ -501,6 +620,13 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · intro warrantId warrant ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
@@ -540,10 +666,24 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · intro warrantId warrant ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @root warrantId bindingId contextId input binding context
       fresh bindingCanonical contextCanonical accepted =>
+      have hPreserve : ∀ ⦃id warrant⦄,
+          S.warrant id = some warrant →
+            putCanonical S.warrant warrantId
+              (rootHistoricalWarrant warrantId binding.profileDigest contextId input) id =
+              some warrant := by
+        intro id warrant hLookup
+        exact putCanonical_preserves_some fresh hLookup
       constructor
       · exact hInv.bindingReferentsCanonical
       · exact hInv.activeContextReferentsCanonical
@@ -557,8 +697,9 @@ theorem step_preserves_invariant
                 binding.profileDigest contextId input := by
             simpa [putCanonical] using hLookup.symm
           subst warrant
-          exact ⟨⟨context, contextCanonical⟩,
-            hInv.bindingReferentsCanonical bindingCanonical⟩
+          rcases hInv.bindingReferentsCanonical bindingCanonical with
+            ⟨profile, hProfile⟩
+          exact ⟨⟨context, contextCanonical⟩, profile, hProfile⟩
         · have hOld : S.warrant id = some warrant := by
             simpa [putCanonical, hEq] using hLookup
           exact hInv.warrantReferentsCanonical hOld
@@ -575,7 +716,7 @@ theorem step_preserves_invariant
             simpa [putCanonical, hEq] using hLookup
           rcases hInv.warrantParentsCanonical hOld hParent with
             ⟨parent, hParentLookup⟩
-          exact ⟨parent, putCanonical_preserves_some fresh hParentLookup⟩
+          exact ⟨parent, hPreserve hParentLookup⟩
       · intro id warrant hLookup hConstructor
         by_cases hEq : id = warrantId
         · subst id
@@ -608,12 +749,27 @@ theorem step_preserves_invariant
             simpa [putCanonical, hEq] using hLookup
           rcases hInv.warrantRootLineageCanonical hOld hLineage with
             ⟨root, hRootLookup⟩
-          exact ⟨root, putCanonical_preserves_some fresh hRootLookup⟩
+          exact ⟨root, hPreserve hRootLookup⟩
+      · intro id warrant ruleId hLookup hConstructor
+        by_cases hEq : id = warrantId
+        · subst id
+          have hWarrantEq :
+              warrant = rootHistoricalWarrant warrantId
+                binding.profileDigest contextId input := by
+            simpa [putCanonical] using hLookup.symm
+          subst warrant
+          simp [rootHistoricalWarrant] at hConstructor
+        · have hOld : S.warrant id = some warrant := by
+            simpa [putCanonical, hEq] using hLookup
+          rcases hInv.inferWarrantWellFormed hOld hConstructor with
+            ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+              hParents, hDiscipline, hExact⟩
+          exact ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents.preserved hPreserve, hDiscipline, hExact⟩
       · intro key hRecord
         rcases hInv.evaluationReferentsCanonical hRecord with
           ⟨warrant, hWarrant, hProfile, hContext⟩
-        exact ⟨warrant, putCanonical_preserves_some fresh hWarrant,
-          hProfile, hContext⟩
+        exact ⟨warrant, hPreserve hWarrant, hProfile, hContext⟩
       · exact hInv.evaluationPairCoherent
   | @admitRoot warrantId bindingId contextId use metadata binding context warrant
       bindingCanonical contextCanonical warrantCanonical isRoot formationContext
@@ -627,6 +783,13 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · intro warrantId' warrant' ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · intro key' hRecord
         let key : EvalKey :=
           ⟨binding.profileDigest, contextId, use, warrantId⟩
@@ -650,6 +813,100 @@ theorem step_preserves_invariant
           simp [qualifyEvaluation, setOptionAt, key]
         · simpa [qualifyEvaluation, setOptionAt, key, hEq] using
             hInv.evaluationPairCoherent key'
+  | @infer warrantId bindingId contextId ruleId parentIds outScope
+      binding profile context rule parents fresh bindingCanonical profileCanonical
+      ruleExact contextCanonical parentsCanonical discipline =>
+      let newWarrant := inferHistoricalWarrant
+        ruleId binding.profileDigest contextId parentIds parents outScope rule
+      have hPreserve : ∀ ⦃id warrant⦄,
+          S.warrant id = some warrant →
+            putCanonical S.warrant warrantId newWarrant id = some warrant := by
+        intro id warrant hLookup
+        exact putCanonical_preserves_some fresh hLookup
+      constructor
+      · exact hInv.bindingReferentsCanonical
+      · exact hInv.activeContextReferentsCanonical
+      · exact hInv.activeContextHasActivationProvenance
+      · exact hInv.adoptedActiveContextHasCanonicalLicense
+      · intro id warrant hLookup
+        by_cases hEq : id = warrantId
+        · subst id
+          have hWarrantEq : warrant = newWarrant := by
+            simpa [putCanonical, newWarrant] using hLookup.symm
+          subst warrant
+          exact ⟨⟨context, contextCanonical⟩, profile, profileCanonical⟩
+        · have hOld : S.warrant id = some warrant := by
+            simpa [putCanonical, hEq, newWarrant] using hLookup
+          exact hInv.warrantReferentsCanonical hOld
+      · intro id warrant parentId hLookup hParentMem
+        by_cases hEq : id = warrantId
+        · subst id
+          have hWarrantEq : warrant = newWarrant := by
+            simpa [putCanonical, newWarrant] using hLookup.symm
+          subst warrant
+          have hParentInIds : parentId ∈ parentIds := by
+            simpa [newWarrant, inferHistoricalWarrant] using hParentMem
+          rcases parentsCanonical.lookup_of_id_mem hParentInIds with
+            ⟨parent, hParentObjMem, hParentLookup⟩
+          exact ⟨parent, hPreserve hParentLookup⟩
+        · have hOld : S.warrant id = some warrant := by
+            simpa [putCanonical, hEq, newWarrant] using hLookup
+          rcases hInv.warrantParentsCanonical hOld hParentMem with
+            ⟨parent, hParentLookup⟩
+          exact ⟨parent, hPreserve hParentLookup⟩
+      · intro id warrant hLookup hConstructor
+        by_cases hEq : id = warrantId
+        · subst id
+          have hWarrantEq : warrant = newWarrant := by
+            simpa [putCanonical, newWarrant] using hLookup.symm
+          subst warrant
+          simp [newWarrant, inferHistoricalWarrant] at hConstructor
+        · have hOld : S.warrant id = some warrant := by
+            simpa [putCanonical, hEq, newWarrant] using hLookup
+          exact hInv.rootWarrantWellFormed hOld hConstructor
+      · intro id warrant role rootId hLookup hLineage
+        by_cases hEq : id = warrantId
+        · subst id
+          have hWarrantEq : warrant = newWarrant := by
+            simpa [putCanonical, newWarrant] using hLookup.symm
+          subst warrant
+          rcases hLineage with ⟨parent, hParentMem, hParentLineage⟩
+          rcases parentsCanonical.id_of_parent_mem hParentMem with
+            ⟨parentId, hParentIdMem, hParentLookup⟩
+          rcases hInv.warrantRootLineageCanonical hParentLookup hParentLineage with
+            ⟨root, hRootLookup⟩
+          exact ⟨root, hPreserve hRootLookup⟩
+        · have hOld : S.warrant id = some warrant := by
+            simpa [putCanonical, hEq, newWarrant] using hLookup
+          rcases hInv.warrantRootLineageCanonical hOld hLineage with
+            ⟨root, hRootLookup⟩
+          exact ⟨root, hPreserve hRootLookup⟩
+      · intro id warrant observedRuleId hLookup hConstructor
+        by_cases hEq : id = warrantId
+        · subst id
+          have hWarrantEq : warrant = newWarrant := by
+            simpa [putCanonical, newWarrant] using hLookup.symm
+          subst warrant
+          have hRuleId : ruleId = observedRuleId := by
+            simpa [newWarrant, inferHistoricalWarrant] using hConstructor
+          subst observedRuleId
+          refine ⟨profile, context, rule, parents,
+            profileCanonical, contextCanonical, ruleExact, ?_, discipline, ?_⟩
+          · exact parentsCanonical.preserved hPreserve
+          · rfl
+        · have hOld : S.warrant id = some warrant := by
+            simpa [putCanonical, hEq, newWarrant] using hLookup
+          rcases hInv.inferWarrantWellFormed hOld hConstructor with
+            ⟨oldProfile, oldContext, oldRule, oldParents,
+              hProfile, hContext, hRule, hParents, hDiscipline, hExact⟩
+          exact ⟨oldProfile, oldContext, oldRule, oldParents,
+            hProfile, hContext, hRule, hParents.preserved hPreserve,
+            hDiscipline, hExact⟩
+      · intro key hRecord
+        rcases hInv.evaluationReferentsCanonical hRecord with
+          ⟨warrant, hWarrant, hProfile, hContext⟩
+        exact ⟨warrant, hPreserve hWarrant, hProfile, hContext⟩
+      · exact hInv.evaluationPairCoherent
 
 theorem reachable_invariant
     {S : CanonicalState}
@@ -678,6 +935,12 @@ theorem reachable_adoptedActiveContextHasCanonicalLicense
     (hReachable : Reachable S) :
     AdoptedActiveContextHasCanonicalLicense S :=
   (reachable_invariant hReachable).adoptedActiveContextHasCanonicalLicense
+
+theorem reachable_inferWarrantsWellFormed
+    {S : CanonicalState}
+    (hReachable : Reachable S) :
+    InferWarrantWellFormed S :=
+  (reachable_invariant hReachable).inferWarrantWellFormed
 
 theorem reachable_toActivationRead_wellFormed
     {S : CanonicalState}
