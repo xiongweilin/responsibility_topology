@@ -6,6 +6,7 @@ import ResponsibilityTopology.Replay
 import ResponsibilityTopology.KernelFloor
 import ResponsibilityTopology.Entitlement
 import ResponsibilityTopology.CanonicalRead
+import ResponsibilityTopology.RequirementResolution
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
