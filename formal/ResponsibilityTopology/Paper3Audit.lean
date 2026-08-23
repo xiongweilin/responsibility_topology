@@ -1,4 +1,4 @@
-import ResponsibilityTopology.RepairMinimality
+import ResponsibilityTopology.RevalidationLifecycle
 
 /-!
 Proof-audit surface for the Paper 3 revision/revalidation line.
@@ -44,3 +44,15 @@ This file is intentionally separate from the frozen Paper 1/2 audit surface.
 #print axioms ResponsibilityTopology.restoration_hits_every_unresolved_cut
 #print axioms ResponsibilityTopology.restoration_implies_repairSet
 #print axioms ResponsibilityTopology.minimalRestoringRepairSet_has_private_cut
+#print axioms ResponsibilityTopology.revalidateLicenseState_makes_baseCurrent
+#print axioms ResponsibilityTopology.grounded_preserved_by_context_revalidation
+#print axioms ResponsibilityTopology.revalidateContextState_makes_grounded
+#print axioms ResponsibilityTopology.repairActionStep_warrant_makes_usable
+#print axioms ResponsibilityTopology.repairActionStep_license_makes_baseCurrent
+#print axioms ResponsibilityTopology.repairActionStep_context_makes_grounded
+#print axioms ResponsibilityTopology.repairActionStep_historyReferentsImmutable
+#print axioms ResponsibilityTopology.refreshReachable_to_revalidationReachable
+#print axioms ResponsibilityTopology.revalidationTrace_preserves_reachability
+#print axioms ResponsibilityTopology.contextRevalidation_survives_refresh
+#print axioms ResponsibilityTopology.revalidation_lifecycle_restores
+#print axioms ResponsibilityTopology.reachable_revalidation_lifecycle_restores
