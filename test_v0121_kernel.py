@@ -1,6 +1,6 @@
 import pytest
 
-from v012_kernel import (
+from v0121_kernel import (
     Claim, Context, ContextStatus, EpiStatus, EvaluationState,
     FormationError, History, KernelError, LicenseError, LicenseType,
     Move, MoveKind, Placement, Profile, ProofKernel, RevisionDepth,
@@ -1053,3 +1053,317 @@ def test_historical_monotonicity_survives_challenge_and_review():
     assert licenses_before <= frozenset(h.licenses)
     assert L.id in h.licenses
     assert not k.check_license_current(h, s, L.id)
+
+
+# ============================================================
+# V0.1.2.1 hardening
+# ============================================================
+
+def test_canonical_warrant_lineage_is_deeply_immutable():
+    c = base_context()
+    p = Profile("k", "1")
+    k, h, s, bid = make_env(p, c)
+    w = add_admitted_root(
+        k, h, s, bid, c, "w", Claim("p"), Role.CONTENT, "S"
+    )
+    canonical = h.warrants[w]
+
+    with pytest.raises(TypeError):
+        canonical.source_ids_by_role[Role.CONTENT] = frozenset({"FORGED"})
+    with pytest.raises(TypeError):
+        canonical.root_ids_by_role[Role.CONTENT] = frozenset({"FORGED"})
+
+
+def test_lineage_mutation_cannot_forge_distinct_sources():
+    c = base_context()
+    p = Profile("k", "1")
+    p.add_rule(Rule(
+        "distinct",
+        (Role.CONTENT, Role.CONTENT, Role.CONTENT),
+        Role.PROVENANCE,
+        Claim("AuditedDistinctSources", ("p",)),
+        kernel_guard="distinct_content_sources",
+    ))
+    k, h, s, bid = make_env(p, c)
+    a = add_admitted_root(k, h, s, bid, c, "a", Claim("p"), Role.CONTENT, "S")
+    b = add_admitted_root(k, h, s, bid, c, "b", Claim("p"), Role.CONTENT, "S")
+    d = add_admitted_root(k, h, s, bid, c, "d", Claim("p"), Role.CONTENT, "S")
+
+    with pytest.raises(TypeError):
+        h.warrants[b].source_ids_by_role[Role.CONTENT] = frozenset({"S2"})
+
+    with pytest.raises(FormationError):
+        k.infer(h, bid, c.id, "distinct", [a, b, d], B)
+
+
+def test_transport_scope_cannot_exceed_bridge_scope():
+    wide = Scope.of("shared", "extra")
+    narrow = Scope.of("shared")
+    cA = base_context("cA")
+    cI = base_context("cI")
+    p = Profile("k", "1")
+    k = ProofKernel("K0")
+    h = History()
+    s = EvaluationState()
+    k.register_context_candidate(h, cA, source="fixture")
+    k.register_context_candidate(h, cI, source="candidate")
+    bid = k.bind_profile(h, s, p, wide, "u", source="owner")
+    k.bootstrap_activate_context(h, s, bid, cA.id, "u", source="init")
+
+    original = k.root(
+        h, bid, cA.id,
+        RootToken("p", Claim("p"), Role.CONTENT, wide, "sensor"),
+    )
+    k.admit_root(h, s, bid, cA.id, "u", original, actor="x", basis="input")
+
+    target = Claim("q")
+    witness = k.root(
+        h, bid, cA.id,
+        RootToken(
+            "bridge",
+            Claim("Transportable", ("A_to_I", original, cI.id, target.key())),
+            Role.BRIDGE,
+            narrow,
+            "bridge-audit",
+        ),
+    )
+    k.admit_root(h, s, bid, cA.id, "u", witness, actor="x", basis="bridge")
+
+    with pytest.raises(FormationError):
+        k.transport(
+            h, bid, cI.id,
+            map_id="A_to_I",
+            original_id=original,
+            witness_id=witness,
+            translated_claim=target,
+            out_scope=wide,
+        )
+
+
+def test_narrow_move_requirement_cannot_license_wider_move():
+    narrow = Scope.of("shared")
+    wide = Scope.of("shared", "extra")
+    c = base_context()
+    p = Profile("k", "1")
+
+    narrow_share = Move(MoveKind.SHARE, ("p",), narrow)
+    p.set_requirement(
+        LicenseType.EPISTEMIC,
+        narrow_share,
+        atom(Claim("Selected", ("p",)), Role.SELECTION, narrow),
+    )
+
+    k = ProofKernel("K0")
+    h = History()
+    s = EvaluationState()
+    k.register_context_candidate(h, c, source="fixture")
+    bid = k.bind_profile(h, s, p, wide, "u", source="owner")
+    k.bootstrap_activate_context(h, s, bid, c.id, "u", source="init")
+
+    sel = k.root(
+        h, bid, c.id,
+        RootToken("sel", Claim("Selected", ("p",)), Role.SELECTION, wide, "selector"),
+    )
+    k.admit_root(h, s, bid, c.id, "u", sel, actor="x", basis="selection")
+
+    wider_share = Move(MoveKind.SHARE, ("p",), wide)
+    with pytest.raises(LicenseError):
+        k.license(
+            h, s, bid, c.id, ["G"], "u",
+            LicenseType.EPISTEMIC, wider_share, [sel],
+        )
+
+
+def test_revision_of_ancestor_revalidates_descendants_and_licenses():
+    c = base_context()
+    p = Profile("k", "1")
+    p.add_rule(Rule("r1", (Role.CONTENT,), Role.CONTENT, Claim("p1")))
+    p.add_rule(Rule("r2", (Role.CONTENT,), Role.CONTENT, Claim("p2")))
+    share = Move(MoveKind.SHARE, ("p2",), B)
+    p.set_requirement(
+        LicenseType.EPISTEMIC,
+        share,
+        conj(
+            atom(Claim("p2"), Role.CONTENT, B),
+            atom(Claim("Selected", ("p2",)), Role.SELECTION, B),
+        ),
+    )
+    k, h, s, bid = make_env(p, c)
+    w0 = add_admitted_root(k, h, s, bid, c, "w0", Claim("p0"), Role.CONTENT, "S0")
+    sel = add_admitted_root(
+        k, h, s, bid, c, "sel",
+        Claim("Selected", ("p2",)), Role.SELECTION, "selector"
+    )
+    w1 = k.infer(h, bid, c.id, "r1", [w0], B)
+    k.qualify_derived(h, s, bid, c.id, "u", w1, actor="x", basis="r1")
+    w2 = k.infer(h, bid, c.id, "r2", [w1], B)
+    k.qualify_derived(h, s, bid, c.id, "u", w2, actor="x", basis="r2")
+    L = k.license(
+        h, s, bid, c.id, ["G"], "u",
+        LicenseType.EPISTEMIC, share, [w2, sel],
+    )
+
+    k.apply_revision(
+        h, s, bid, [w0],
+        reach=RevisionReach.USE_LOCAL,
+        use="u",
+        reason="ancestor revised",
+    )
+    pd = h.bindings[bid].profile_digest
+    assert not s.usable(pd, c.id, "u", w0)
+    assert not s.usable(pd, c.id, "u", w1)
+    assert not s.usable(pd, c.id, "u", w2)
+    assert L.id in s.review_required
+    assert not k.check_license_current(h, s, L.id)
+
+
+def test_distinct_source_guard_requires_multiple_inputs():
+    c = base_context()
+    p = Profile("k", "1")
+    p.add_rule(Rule(
+        "distinct-one",
+        (Role.CONTENT,),
+        Role.PROVENANCE,
+        Claim("AuditedDistinctSources", ("p",)),
+        kernel_guard="distinct_content_sources",
+    ))
+    k, h, s, bid = make_env(p, c)
+    a = add_admitted_root(k, h, s, bid, c, "a", Claim("p"), Role.CONTENT, "S1")
+    with pytest.raises(FormationError):
+        k.infer(h, bid, c.id, "distinct-one", [a], B)
+
+
+def test_distinct_root_guard_requires_multiple_inputs():
+    c = base_context()
+    p = Profile("k", "1")
+    p.add_rule(Rule(
+        "distinct-one",
+        (Role.CONTENT,),
+        Role.PROVENANCE,
+        Claim("AuditedDistinctRoots", ("p",)),
+        kernel_guard="distinct_content_roots",
+    ))
+    k, h, s, bid = make_env(p, c)
+    a = add_admitted_root(k, h, s, bid, c, "a", Claim("p"), Role.CONTENT, "S1")
+    with pytest.raises(FormationError):
+        k.infer(h, bid, c.id, "distinct-one", [a], B)
+
+
+def test_transport_cannot_amplify_revision_depth():
+    cA = base_context("cA")
+    cI = base_context("cI")
+    p = Profile("k", "1")
+    k, h, s, bid = make_env(p, cA)
+    k.register_context_candidate(h, cI, source="candidate")
+
+    local = Claim("EscalationDepth", (str(int(RevisionDepth.LOCAL)),))
+    architecture = Claim("EscalationDepth", (str(int(RevisionDepth.ARCHITECTURE)),))
+
+    original = add_admitted_root(
+        k, h, s, bid, cA, "esc", local, Role.ESCALATION, "review"
+    )
+    witness = add_admitted_root(
+        k, h, s, bid, cA, "bridge",
+        Claim(
+            "Transportable",
+            ("A_to_I", original, cI.id, architecture.key()),
+        ),
+        Role.BRIDGE,
+        "bridge-audit",
+    )
+
+    with pytest.raises(FormationError):
+        k.transport(
+            h, bid, cI.id,
+            map_id="A_to_I",
+            original_id=original,
+            witness_id=witness,
+            translated_claim=architecture,
+            out_scope=B,
+        )
+
+
+def test_adopt_support_review_pends_target_context_and_blocks_new_licenses():
+    c0 = base_context("c0")
+    c1 = base_context("c1")
+    p = Profile("k", "1")
+
+    adopt = Move(
+        MoveKind.ADOPT,
+        (c1.id,),
+        B,
+        RevisionDepth.DISTINCTION,
+    )
+    p.set_requirement(
+        LicenseType.EPISTEMIC,
+        adopt,
+        conj(
+            atom(
+                Claim("EscalationDepth", (str(int(RevisionDepth.DISTINCTION)),)),
+                Role.ESCALATION,
+                B,
+            ),
+            atom(Claim("Selected", (c1.id,)), Role.SELECTION, B),
+        ),
+    )
+    accept = Move(MoveKind.ACCEPT, ("q",), B)
+    p.set_requirement(
+        LicenseType.EPISTEMIC,
+        accept,
+        atom(Claim("q"), Role.CONTENT, B),
+    )
+
+    k, h, s, bid = make_env(p, c0)
+    k.register_context_candidate(h, c1, source="candidate")
+
+    esc = add_admitted_root(
+        k, h, s, bid, c0, "esc",
+        Claim("EscalationDepth", (str(int(RevisionDepth.DISTINCTION)),)),
+        Role.ESCALATION,
+        "review-board",
+    )
+    sel = add_admitted_root(
+        k, h, s, bid, c0, "sel",
+        Claim("Selected", (c1.id,)), Role.SELECTION, "selector",
+    )
+    L_adopt = k.license(
+        h, s, bid, c0.id, ["i"], "u",
+        LicenseType.EPISTEMIC, adopt, [esc, sel],
+    )
+    k.activate_context_with_adopt_license(h, s, L_adopt.id, c1.id)
+    assert s.context_status(bid, c1.id, "u") == ContextStatus.ACTIVE
+
+    q = add_admitted_root(
+        k, h, s, bid, c1, "q", Claim("q"), Role.CONTENT, "new-sensor"
+    )
+    k.license(
+        h, s, bid, c1.id, ["i"], "u",
+        LicenseType.EPISTEMIC, accept, [q],
+    )
+
+    # Revising adoption support marks the Adopt license for review,
+    # which in turn pends the context activated by that license.
+    k.apply_revision(
+        h, s, bid, [esc],
+        reach=RevisionReach.USE_LOCAL,
+        use="u",
+        reason="adoption basis revised",
+    )
+    assert L_adopt.id in s.review_required
+    assert s.context_status(bid, c1.id, "u") == ContextStatus.PENDING
+
+    with pytest.raises(LicenseError):
+        k.license(
+            h, s, bid, c1.id, ["i"], "u",
+            LicenseType.EPISTEMIC, accept, [q],
+        )
+
+
+def test_non_revision_move_cannot_carry_revision_depth():
+    with pytest.raises(ValueError):
+        Move(
+            MoveKind.ACCEPT,
+            ("p",),
+            B,
+            RevisionDepth.ARCHITECTURE,
+        )

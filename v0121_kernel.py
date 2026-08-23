@@ -70,6 +70,7 @@ class Placement(str, Enum):
 class ContextStatus(str, Enum):
     CANDIDATE = "candidate"
     ACTIVE = "active"
+    PENDING = "pending"
 
 
 @dataclass(frozen=True)
@@ -123,9 +124,16 @@ class Move:
             raise TypeError("Move.kind must be a kernel-owned MoveKind")
         if not isinstance(self.revision_depth, RevisionDepth):
             raise TypeError("revision_depth must be RevisionDepth")
-        if self.kind in {MoveKind.SUSPECT, MoveKind.REOPEN, MoveKind.ADOPT}:
+
+        revision_kinds = {MoveKind.SUSPECT, MoveKind.REOPEN, MoveKind.ADOPT}
+        if self.kind in revision_kinds:
             if self.revision_depth == RevisionDepth.NONE:
                 raise ValueError(f"{self.kind.value} requires an explicit revision depth")
+        elif self.revision_depth != RevisionDepth.NONE:
+            raise ValueError(
+                f"{self.kind.value} is not a revision move and must use RevisionDepth.NONE"
+            )
+
         if self.kind == MoveKind.ADOPT:
             if len(self.args) != 1:
                 raise ValueError("Adopt requires exactly one target context id")
@@ -225,7 +233,7 @@ class Profile:
     version: str = "0"
     rules: Dict[str, Rule] = field(default_factory=dict)
     requirements: Dict[
-        Tuple[str, str, Tuple[str, ...], int], Requirement
+        Tuple[str, str, Tuple[str, ...], int, Tuple[str, ...]], Requirement
     ] = field(default_factory=dict)
 
     def add_rule(self, rule: Rule) -> None:
@@ -240,6 +248,7 @@ class Profile:
                 move.kind.value,
                 move.args,
                 int(move.revision_depth),
+                move.scope.key(),
             )
         ] = req
 
@@ -248,7 +257,7 @@ class Profile:
         reqs = tuple(
             sorted(
                 self.requirements.items(),
-                key=lambda x: (x[0][0], x[0][1], x[0][2], x[0][3]),
+                key=lambda x: (x[0][0], x[0][1], x[0][2], x[0][3], x[0][4]),
             )
         )
         payload = {
@@ -256,7 +265,7 @@ class Profile:
             "version": self.version,
             "rules": [_rule_json(k, v) for k, v in rules],
             "requirements": [
-                [[k[0], k[1], list(k[2]), k[3]], _req_json(v)]
+                [[k[0], k[1], list(k[2]), k[3], list(k[4])], _req_json(v)]
                 for k, v in reqs
             ],
         }
@@ -273,7 +282,11 @@ class ProfileSnapshot:
     digest: str
     rules: Tuple[Tuple[str, Rule], ...]
     requirements: Tuple[
-        Tuple[Tuple[str, str, Tuple[str, ...], int], Requirement], ...
+        Tuple[
+            Tuple[str, str, Tuple[str, ...], int, Tuple[str, ...]],
+            Requirement,
+        ],
+        ...
     ]
 
     def rule_for(self, rule_id: str) -> Rule:
@@ -290,6 +303,7 @@ class ProfileSnapshot:
             move.kind.value,
             move.args,
             int(move.revision_depth),
+            move.scope.key(),
         )
         for candidate, req in self.requirements:
             if candidate == key:
@@ -297,7 +311,7 @@ class ProfileSnapshot:
         raise LicenseError(
             "No declared requirement in bound profile snapshot for "
             f"{license_type.value}:{move.kind.value}{move.args}"
-            f"@depth={int(move.revision_depth)}"
+            f"@depth={int(move.revision_depth)}@scope={move.scope.key()}"
         )
 
 
@@ -334,6 +348,17 @@ def _req_json(req: Requirement):
     if isinstance(req, Or):
         return ["or", _req_json(req.left), _req_json(req.right)]
     raise TypeError(req)
+
+
+def _freeze_role_map(
+    mapping: Mapping[Role, Iterable[str]]
+) -> Mapping[Role, FrozenSet[str]]:
+    """Deep-freeze a role->lineage mapping for canonical history objects."""
+    return MappingProxyType({
+        role: frozenset(values)
+        for role, values in dict(mapping).items()
+        if values
+    })
 
 
 # ============================================================
@@ -510,6 +535,10 @@ class EvaluationState:
         self._placement: Dict[EvalKey, Placement] = {}
         self._active_bindings: set[str] = set()
         self._active_contexts: set[Tuple[str, str, str]] = set()
+        self._pending_contexts: set[Tuple[str, str, str]] = set()
+        self._context_activation_license: Dict[
+            Tuple[str, str, str], Optional[str]
+        ] = {}
         self._review_required: set[str] = set()
 
     @property
@@ -527,6 +556,16 @@ class EvaluationState:
     @property
     def active_contexts(self) -> FrozenSet[Tuple[str, str, str]]:
         return frozenset(self._active_contexts)
+
+    @property
+    def pending_contexts(self) -> FrozenSet[Tuple[str, str, str]]:
+        return frozenset(self._pending_contexts)
+
+    @property
+    def context_activation_license(
+        self,
+    ) -> Mapping[Tuple[str, str, str], Optional[str]]:
+        return MappingProxyType(self._context_activation_license)
 
     @property
     def review_required(self) -> FrozenSet[str]:
@@ -557,7 +596,10 @@ class EvaluationState:
     def context_status(
         self, binding_id: str, context_id: str, use: str
     ) -> ContextStatus:
-        if (binding_id, context_id, use) in self._active_contexts:
+        key = (binding_id, context_id, use)
+        if key in self._pending_contexts:
+            return ContextStatus.PENDING
+        if key in self._active_contexts:
             return ContextStatus.ACTIVE
         return ContextStatus.CANDIDATE
 
@@ -580,12 +622,33 @@ class EvaluationState:
         self._active_bindings.add(binding_id)
 
     def _activate_context(
-        self, binding_id: str, context_id: str, use: str
+        self,
+        binding_id: str,
+        context_id: str,
+        use: str,
+        *,
+        activation_license_id: Optional[str],
     ) -> None:
-        self._active_contexts.add((binding_id, context_id, use))
+        key = (binding_id, context_id, use)
+        self._pending_contexts.discard(key)
+        self._active_contexts.add(key)
+        self._context_activation_license[key] = activation_license_id
+
+    def _pend_contexts_by_license(
+        self, license_ids: Iterable[str]
+    ) -> None:
+        affected = set(license_ids)
+        for key, activation_license_id in list(
+            self._context_activation_license.items()
+        ):
+            if activation_license_id in affected:
+                self._active_contexts.discard(key)
+                self._pending_contexts.add(key)
 
     def _mark_review(self, license_ids: Iterable[str]) -> None:
-        self._review_required.update(license_ids)
+        ids = set(license_ids)
+        self._review_required.update(ids)
+        self._pend_contexts_by_license(ids)
 
 
 # ============================================================
@@ -609,7 +672,7 @@ class LicenseError(KernelError):
 
 
 # ============================================================
-# V0.1.2 kernel
+# V0.1.2.1 kernel
 # ============================================================
 
 class ProofKernel:
@@ -726,7 +789,12 @@ class ProofKernel:
             raise KernelError(
                 "Bootstrap activation only allowed before any active context exists"
             )
-        state._activate_context(binding_id, context_id, use)
+        state._activate_context(
+            binding_id,
+            context_id,
+            use,
+            activation_license_id=None,
+        )
         history._add_event({
             "kind": "bootstrap_activate_context",
             "binding": binding_id,
@@ -752,7 +820,7 @@ class ProofKernel:
             "distinct_content_sources",
             "distinct_content_roots",
         }:
-            return bool(rule.input_roles) and all(
+            return len(rule.input_roles) >= 2 and all(
                 r == Role.CONTENT for r in rule.input_roles
             )
 
@@ -820,8 +888,12 @@ class ProofKernel:
             formation_profile_digest=binding.profile_digest,
             formation_context=context_id,
             source=token.source,
-            root_ids_by_role={token.role: frozenset({warrant_id})},
-            source_ids_by_role={token.role: frozenset({token.source})},
+            root_ids_by_role=_freeze_role_map(
+                {token.role: frozenset({warrant_id})}
+            ),
+            source_ids_by_role=_freeze_role_map(
+                {token.role: frozenset({token.source})}
+            ),
         )
         history._add_warrant(warrant)
         history._add_event({
@@ -855,6 +927,8 @@ class ProofKernel:
         else:
             raise FormationError(f"Unhandled kernel guard: {guard}")
 
+        if len(sets) < 2:
+            raise FormationError(f"{guard} requires at least two inputs")
         if any(not values for values in sets):
             raise FormationError(f"{guard} requires content ancestry")
         for i in range(len(sets)):
@@ -940,11 +1014,11 @@ class ProofKernel:
             parents=tuple(parent_ids),
             formation_profile_digest=binding.profile_digest,
             formation_context=context_id,
-            root_ids_by_role=self._merge_role_map(
-                parents, "root_ids_by_role"
+            root_ids_by_role=_freeze_role_map(
+                self._merge_role_map(parents, "root_ids_by_role")
             ),
-            source_ids_by_role=self._merge_role_map(
-                parents, "source_ids_by_role"
+            source_ids_by_role=_freeze_role_map(
+                self._merge_role_map(parents, "source_ids_by_role")
             ),
         )
         history._add_warrant(warrant)
@@ -998,7 +1072,21 @@ class ProofKernel:
                 "Translated claim is outside target context signature"
             )
         if not out_scope.narrower_or_equal(original.scope):
-            raise FormationError("Transport would widen scope")
+            raise FormationError("Transport would exceed original warrant scope")
+        if not out_scope.narrower_or_equal(witness.scope):
+            raise FormationError("Transport would exceed bridge witness scope")
+
+        # Kernel law V0.1.2.1: TRANSPORT may preserve or narrow revision
+        # strength, but may not amplify it. Any future strength-conversion
+        # constructor must be explicit and kernel-owned.
+        if original.role == Role.ESCALATION:
+            original_depth = self._claim_depth(original.claim)
+            translated_depth = self._claim_depth(translated_claim)
+            if translated_depth is not None:
+                if original_depth is None or translated_depth > original_depth:
+                    raise FormationError(
+                        "Transport cannot amplify escalation depth"
+                    )
 
         root_ids = {
             r: set(v) for r, v in original.root_ids_by_role.items()
@@ -1025,12 +1113,8 @@ class ProofKernel:
             parents=(original_id, witness_id),
             formation_profile_digest=binding.profile_digest,
             formation_context=target_context_id,
-            root_ids_by_role={
-                r: frozenset(v) for r, v in root_ids.items() if v
-            },
-            source_ids_by_role={
-                r: frozenset(v) for r, v in source_ids.items() if v
-            },
+            root_ids_by_role=_freeze_role_map(root_ids),
+            source_ids_by_role=_freeze_role_map(source_ids),
         )
         history._add_warrant(warrant)
         history._add_event({
@@ -1466,6 +1550,7 @@ class ProofKernel:
             record.binding_id,
             target_context_id,
             record.use,
+            activation_license_id=license_id,
         )
         history._add_event({
             "kind": "activate_context",
@@ -1574,9 +1659,14 @@ class ProofKernel:
         reason: str,
     ) -> None:
         binding = self._binding(history, binding_id)
-        ids = tuple(affected_ids)
-        for warrant_id in ids:
+        requested_ids = tuple(affected_ids)
+        for warrant_id in requested_ids:
             self._warrant(history, warrant_id)
+
+        impacted: set[str] = set(requested_ids)
+        for warrant_id in requested_ids:
+            impacted.update(history.descendants(warrant_id))
+        ids = tuple(sorted(impacted))
 
         if reach == RevisionReach.USE_LOCAL:
             if use is None:
@@ -1632,7 +1722,8 @@ class ProofKernel:
             "binding": binding_id,
             "reach": reach.value,
             "use": use,
-            "affected": list(ids),
+            "requested": list(requested_ids),
+            "impacted": list(ids),
             "affected_licenses": sorted(affected_licenses),
             "reason": reason,
         })

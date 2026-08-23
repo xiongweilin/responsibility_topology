@@ -1,113 +1,97 @@
-# Responsibility Topology V0.1.2 — semantic-boundary hardening
+# Responsibility Topology V0.1.2.1 — implementation hardening
 
-V0.1.2 is deliberately not a metatheorem release. It hardens the executable
-reference semantics around the four boundaries that must be stable before a
-formal inference sheet is extracted.
+V0.1.2.1 is a small hardening release before any metatheorem extraction.
+It does not add a new abstraction layer.
 
-Core adversarial criterion:
+The release keeps the V0.1.2 semantic-boundary model and closes five concrete
+public-API bypasses, then fixes two kernel-law choices explicitly.
 
-> Can an adversarial caller construct or reuse a license that has no canonical,
-> context-valid, typed responsibility path in append-only history H?
+## Hardening changes
 
-## Release invariants
+### 1. Canonical lineage is deeply immutable
 
-### G1 — Trusted transition state
+Canonical `Warrant.root_ids_by_role` and `source_ids_by_role` are now
+deep-frozen as `MappingProxyType[Role, frozenset]`.
 
-`History` and `EvaluationState` expose read-only views. Canonical stores,
-warrant status, active bindings, active contexts and review sets are mutated
-only through kernel transitions. Python reflection/private-field hacking is
-explicitly outside the V0.1.2 threat model.
+Caller code cannot mutate a canonical warrant's internal lineage through the
+public `History.warrants` view and forge distinct provenance.
 
-### G2 — Candidate context != active context
+### 2. TRANSPORT scope is conservative in both premises
 
-A context is first registered as a candidate. Candidate contexts may host
-exploratory roots, derived warrants and challenges. Operational `license(...)`
-requires an active context.
+A transported warrant must satisfy:
 
-The first active context for a binding/use is an explicit bootstrap boundary.
-Any later context activation must consume a currently reusable `Adopt` license.
+`out_scope <= original.scope`
 
-This permits exploration of a new distinction space without silently changing
-the map used for operational determination.
+and
 
-### G3 — Closed move strength
+`out_scope <= bridge_witness.scope`.
 
-`Move.kind` is a kernel-owned `MoveKind` enum. Unknown move kinds fail closed.
-Profiles may add requirements but cannot introduce a new semantic move by
-renaming `Adopt`, `Act`, `Reopen`, etc.
+A narrow bridge cannot authorize a wider transported conclusion.
 
-### G4 — Typed revision depth
+### 3. Move scope is part of profile requirement identity
 
-`Suspect`, `Reopen`, and `Adopt` carry a kernel-owned `RevisionDepth`.
-Licensing requires a live escalation warrant whose explicit
-`EscalationDepth(n)` is at least the move depth.
+Requirement keys now contain:
 
-Profile inference cannot silently amplify escalation depth.
+`(license_type, move_kind, args, revision_depth, move_scope)`.
 
-### G5 — Use-local invalidation
+A requirement declared for `Share(p)@NARROW` cannot silently license
+`Share(p)@WIDE`.
 
-Challenge propagation is use-indexed for both warrant status and affected
-licenses. A challenge in use `u1` does not put a `u2` license into review merely
-because it shares the same historical warrant.
+### 4. Revision propagates through derivation dependency closure
 
-### G6 — Explicit revision reach
+`apply_revision(... affected_ids=A ...)` first computes:
 
-Revision transitions declare their reach:
+`impacted = A union Descendants(A)`.
 
-- `USE_LOCAL(use)`
-- `PROFILE_GLOBAL`
+The declared `USE_LOCAL` / `PROFILE_GLOBAL` reach is then applied to the entire
+dependency closure. Derived warrants and licenses cannot remain current merely
+because the caller passed only an ancestor ID.
 
-There is no ambiguous revision function whose propagation scope depends on an
-omitted condition.
+### 5. Distinct-source/root guards require real plurality
 
-### G7 — Historical license != current capability
+`distinct_content_sources` and `distinct_content_roots` require at least two
+CONTENT inputs. The length-one vacuous case is rejected.
 
-`LicenseRecord` is an append-only historical issuance record and now records
-its exact `binding_id`.
+## Kernel law choices fixed in V0.1.2.1
 
-`check_license_current(L)` separately checks:
+### K-Law A — TRANSPORT is non-amplifying for revision strength
 
-- exact binding still active;
-- profile digest still matches;
-- license context is active for that binding/use;
-- license is not under review;
-- every branch leaf is currently usable.
+If an ESCALATION warrant carries `EscalationDepth(d)`, transport may preserve
+or narrow `d`, but may not translate it into a larger depth.
 
-Any effectful transition that consumes an old license (currently context
-activation) rechecks current reusability first.
+A future system that wants explicit cross-context strength conversion must add
+a new kernel-owned constructor/law. Bridge evidence alone is not such a
+constructor in V0.1.2.1.
 
-### G8 — Provenance guard semantics
+### K-Law B — adopted context activity is continuously current
 
-V0.1.2 stores both:
+`Adopt` is not treated as a permanently self-sufficient one-shot transition.
 
-- canonical root warrant IDs;
-- external source identities.
+An activated context records the exact Adopt license that activated it.
+If that license enters `review_required`, the target context becomes `PENDING`,
+and new operational licenses in that context fail closed until a later explicit
+requalification/reactivation path is introduced.
 
-They are not conflated.
+Bootstrap activation of the first context remains an explicit external stopping
+boundary and has no adoption-license dependency.
 
-`distinct_content_sources` is the guard used for evidence-source diversity.
-`distinct_content_roots` is separately available for historical-root identity.
-Both are kernel-known typed transitions from `CONTENT^n` to `PROVENANCE`.
-Unknown kernel guards fail closed.
+## Syntax hygiene
 
-## Trusted external stopping boundaries
+Only `Suspect`, `Reopen`, and `Adopt` may carry non-`NONE` revision depth.
+`Accept`, `Share`, `Act`, `Review`, etc. with nonzero revision depth are
+ill-formed.
 
-V0.1.2 makes the following external boundaries explicit rather than pretending
-to derive them internally:
+## Threat model
 
-- candidate context registration;
-- profile binding;
-- bootstrap activation of the first determination context for a binding/use;
-- root admission.
+Canonical history/state mutations are kernel transitions. Python reflection or
+direct mutation through `_private` implementation attributes remains outside
+the executable threat model; all caller-facing canonical maps are read-only.
 
-None of these events asserts truth or ultimate legitimacy. They are auditable
-boundary roots for the executable reference semantics.
+## Non-goal retained
 
-## Deliberate non-goal
-
-`LicenseRecord.agents` is still metadata. V0.1.2 does **not** yet claim
-agent-indexed obligation ownership or genuine distributed obligation discharge.
-It only supports licenses whose warrant lineage may come from multiple sources.
+`LicenseRecord.agents` is still attribution metadata, not agent-indexed
+obligation ownership. V0.1.2.1 still does not claim genuine distributed
+obligation discharge for Q_close.
 
 ## Run
 
@@ -115,6 +99,8 @@ It only supports licenses whose warrant lineage may come from multiple sources.
 python -m pytest -q
 ```
 
-The suite includes the V0.1.1 regressions plus V0.1.2 semantic-boundary attacks.
-The next formal step should begin only after this adversarial gate remains
-stable.
+The suite retains the prior adversarial regressions and adds direct tests for
+deep lineage immutability, transport scope, move-scope requirement identity,
+revision dependency closure, non-vacuous provenance guards, transport depth
+conservativity, continuously-current context adoption, and revision-depth
+syntax hygiene.
