@@ -1,6 +1,6 @@
 # Separating Canonical History from Current Usability in a Finite Epistemic Kernel
 
-_Status: full working draft through the paper-facing formal exposition and INFER responsibility-cut pass. The theorem surface remains frozen at R1–R9; this pass changes no Lean or Python semantics._
+_Status: full working draft through the paper-notation and artifact-reference normalization pass. The theorem surface remains frozen at R1–R9; this pass changes notation and artifact locators only, with no Lean or Python semantics changed._
 
 ## Abstract — revised working version
 
@@ -136,7 +136,7 @@ mutable current qualification
 branch-local entitlement observation
 ```
 
-and, specifically for ordinary INFER, a theorem-level split over the same ordered parent identities: formation permanently records `ParentOf(p,d)` and discharges rule/guard/context/scope/strength/lineage obligations, while later qualification applies the time-indexed predicate `Usable(S_pre,k_p)` to those historical parents.
+and, specifically for ordinary INFER, a theorem-level split over the same ordered parent identities: formation permanently records `ParentOf(p,d)` and discharges rule/guard/context/scope/strength/lineage obligations, while later qualification applies the time-indexed predicate `Usable(\sigma_{pre},k_p)` to those historical parents.
 
 ## 1.5 Contributions
 
@@ -152,7 +152,7 @@ A Python V0.1.2.2 implementation accompanies the formalization as an executable 
 
 ## 1.6 Organization and current assembly boundary
 
-Section 2 defines the four relations and introduces one running trace. Section 3 presents the static entitlement calculus. Section 4 introduces reachable state and the orthogonal grounded-currentness component. Sections 5 and 6 prove the ROOT and INFER lifecycle results. Section 7 states the executable conformance boundary. Section 8 collects non-theorems. Section 9 positions the contribution against neighboring literatures. Section 10 discusses extensions deliberately frozen during the first-paper window.
+Section 2 fixes paper notation, maps paper results to the artifact, defines the four relations, and introduces one running trace. Section 3 presents the static entitlement calculus. Section 4 introduces reachable state and the orthogonal grounded-currentness component. Sections 5 and 6 prove the ROOT and INFER lifecycle results. Section 7 states the executable conformance boundary. Section 8 collects non-theorems. Section 9 positions the contribution against neighboring literatures. Section 10 discusses extensions deliberately frozen during the first-paper window.
 
 The artifact currently has narrow state-backed bridges for historical-warrant projection, usability, requirement snapshots, and activation reads, but no single total theorem
 
@@ -164,18 +164,66 @@ The paper therefore does not claim that reachable state yields entitlement end-t
 
 ---
 
-# 2. Problem, Relations, and Running Example
+# 2. Problem, Notation, Relations, and Running Example
 
-The formal problem is easiest to state by separating four predicates that a single implementation field could otherwise collapse.
+The formal problem is easiest to state by separating four predicates that a single implementation field could otherwise collapse. Before stating them, we fix a paper notation layer that is intentionally distinct from Lean source identifiers.
 
-## 2.1 Historical existence
+## 2.1 Paper notation and transition shorthand
 
-For a state `S`, a historical warrant identifier `w`, and a historical object `W`, write informally
+| Paper notation | Meaning |
+| --- | --- |
+| `\(\sigma,\sigma',\sigma_0,\sigma_1,\sigma_2\)` | canonical states |
+| `\(\pi\)` | profile digest |
+| `\(c\)` | context identifier |
+| `\(u\)` | use |
+| `\(w,p,d\)` | warrant identifiers |
+| `\(W\)` | historical warrant object |
+| `\(P\)` | ordered parent-ID list |
+| `\(\bar W\)` | ordered resolved parent objects |
+| `\(A\)` | ambient view |
+| `\(E\)` | satisfaction environment |
+| `\(F\)` | floor observation/environment |
+| `\(\Phi\)` | kernel-floor semantics |
+| `\(\beta\)` | discharge branch |
+
+For the dynamic kernel, define the paper transition shorthand once:
 
 \[
-Hist_S(w,W)
+\boxed{
+\sigma\xrightarrow{e}\sigma'
+\;:\!\iff\;
+Step(\sigma,e,\sigma').
+}
+\]
+
+This abbreviation changes no theorem scope: every arrow below denotes exactly one `Step`, never a reflexive-transitive closure. Static entitlement notation remains separate; in particular `\Phi` denotes the floor-semantics parameter and is not a canonical state.
+
+## 2.2 Paper-to-artifact correspondence
+
+Lean declaration names are artifact locators rather than paper notation. The body therefore uses the mathematical statements and reserves the concrete source names for this correspondence table.
+
+| Paper result | Lean theorem / definition | Source module |
+| --- | --- | --- |
+| R1 | `relativeBranchConservativity` | `Entitlement.lean` |
+| R3 | `derives_projection_coherent` | `CanonicalRead.lean` |
+| R4 | `reachable_invariant`; support: `initialBoundary_invariant`, `step_preserves_invariant` | `Reachability.lean` |
+| R6 formation | `rootStep_newWarrant_exact`, `rootStep_evaluationTopology_unchanged`; non-usability: `rootStep_newWarrant_unqualified`, `rootStep_newWarrant_notUsable` | `RootFormation.lean`; `EvaluationQualification.lean` |
+| R6 admission | `admitRoot_evaluation_exact`, `admitRoot_makes_usable`; support: `qualifyEvaluation_exact` | `EvaluationQualification.lean` |
+| R7 | `inferStep_newWarrant_exact` | `InferFormation.lean` |
+| R7 support | `inferStep_orderedParentRoles_exact`, `inferStep_lineage_union`, `inferStep_evaluationTopology_unchanged`, `inferStep_newWarrant_unqualified`, `inferStep_newWarrant_notUsable` | `InferFormation.lean` |
+| R8 | `qualifyInfer_evaluation_exact`, `qualifyInfer_requires_usableParents`, `qualifyInfer_makes_usable`; support: `qualifyInfer_historyReferentsImmutable` | `InferQualification.lean` |
+| R9 | `inferFormationQualification_boundary` | `InferQualification.lean` |
+
+The mapping is one-way for exposition: paper claims are stated at their actual quantified strength, while implementation/support lemmas remain artifact locators rather than additional paper results.
+
+## 2.3 Historical existence
+
+For a canonical state `\(\sigma\)`, a historical warrant identifier `\(w\)`, and a historical object `\(W\)`, write informally
+
+\[
+Hist_{\sigma}(w,W)
 \quad\text{for}\quad
-S.warrant(w)=some\;W.
+\sigma.warrant(w)=some\;W.
 \]
 
 This is an identity relation, not a current validity flag. The shared immutability theorem says that once a historical identifier denotes `W`, later modeled steps preserve that exact referent.
@@ -186,7 +234,7 @@ Historical formation therefore answers:
 
 It does not answer whether the object is currently usable.
 
-## 2.2 Current evaluation and usability
+## 2.4 Current evaluation and usability
 
 Current evaluation is keyed by
 
@@ -194,14 +242,14 @@ Current evaluation is keyed by
 k=(profileDigest,contextId,use,warrantId).
 \]
 
-`Evaluated(S,k)` means both evaluation axes have records. `Usable(S,k)` is stronger:
+`Evaluated(\sigma,k)` means both evaluation axes have records. `Usable(\sigma,k)` is stronger:
 
 \[
-Usable(S,k)
+Usable(\sigma,k)
 \iff
-S.epi(k)=LIVE
+\sigma.epi(k)=LIVE
 \land
-S.placement(k)=PLACED.
+\sigma.placement(k)=PLACED.
 \]
 
 Thus:
@@ -228,7 +276,7 @@ Current qualification answers:
 
 > Under which exact profile/context/use evaluation environment may this historical object be used now?
 
-## 2.3 Entitlement
+## 2.5 Entitlement
 
 The static entitlement judgment is a separate relation. In simplified form:
 
@@ -239,7 +287,7 @@ Admissible(A)
 \land
 Derives(E,\beta,A.requirement)
 \land
-Safe(S,F,\beta,\tau,m).
+Safe(\Phi,F,\beta,\tau,m).
 \]
 
 Canonical atomic satisfaction requires the selected warrant to be usable, but usability alone is not enough. Exact requirement discharge, ambient admissibility, and floor safety remain independent obligations.
@@ -250,13 +298,13 @@ Accordingly:
 \boxed{CurrentUsability \not\Rightarrow Entitlement.}
 \]
 
-## 2.4 Adequacy
+## 2.6 Adequacy
 
 Adequacy is intentionally outside the theorem relation. A source string is recorded provenance, not authenticated truth. A rule may be structurally well typed without being a good epistemic rule. A use may have canonical binding backing without being normatively appropriate. An exact profile may execute correctly without being adequate.
 
 This layer separation prevents the formal results from being misread as a universal epistemology.
 
-## 2.5 Running trace
+## 2.7 Running trace
 
 Fix one evaluation environment
 
@@ -275,31 +323,31 @@ k_d=(\pi,c,u,d).
 The paper uses one minimal trace throughout Sections 5 and 6.
 
 ```text
-S0
+σ0
  │ form ROOT p1
  │ form ROOT p2
  ▼
-S1    p1,p2 historical; neither usable at k_p1,k_p2
+σ1    p1,p2 historical; neither usable at k_p1,k_p2
  │ admit p1 at k_p1
  │ admit p2 at k_p2
  ▼
-S2    Usable(S2,k_p1) ∧ Usable(S2,k_p2)
+σ2    Usable(σ2,k_p1) ∧ Usable(σ2,k_p2)
  │ INFER d from [p1,p2]
  ▼
-S3    d historical; ¬Usable(S3,k_d)
+σ3    d historical; ¬Usable(σ3,k_d)
  │ qualifyInfer d at k_d
- │ requires Usable(S3,k_p1) ∧ Usable(S3,k_p2)
+ │ requires Usable(σ3,k_p1) ∧ Usable(σ3,k_p2)
  ▼
-S4    Usable(S4,k_d)
+σ4    Usable(σ4,k_d)
 ```
 
-At `S3` the crucial conjunction is:
+At `\(\sigma_3\)` the crucial conjunction is:
 
 \[
 \boxed{
-Hist_{S_3}(d,W_d)
+Hist_{\sigma_3}(d,W_d)
 \land
-\neg Usable(S_3,k_d).
+\neg Usable(\sigma_3,k_d).
 }
 \]
 
@@ -312,18 +360,18 @@ p1 ─────┐
         ├──> d
 p2 ─────┘
 
-pre-state qualification condition at S3
+pre-state qualification condition at σ3
 
-Usable(S3,k_p1) ∧ Usable(S3,k_p2)
+Usable(σ3,k_p1) ∧ Usable(σ3,k_p2)
 ```
 
 The edges `p1,p2 → d` are part of immutable history. The usability condition is a predicate of a particular state and the exact evaluation environment `q`; usability is not a warrant-global property.
 
 The chosen trace admits the parents before forming `d` because it is easy to read. That ordering is **not** a formation premise. Ordinary INFER formation has no parent-usability requirement, so a different legal trace can form the historical child while the parents are themselves still unqualified. The later `qualifyInfer` transition is where current parent usability becomes a responsibility obligation.
 
-We intentionally stop the running example at `S4`. A later suspension or invalidation of a parent raises the separate question of dependency invalidation/revalidation, which is not yet part of the first-paper transition surface.
+We intentionally stop the running example at `\(\sigma_4\)`. A later suspension or invalidation of a parent raises the separate question of dependency invalidation/revalidation, which is not yet part of the first-paper transition surface.
 
-## 2.6 No-shortcut discipline
+## 2.8 No-shortcut discipline
 
 Across the four layers we use one design rule: a later judgment should not silently acquire support from observations outside its declared responsibility boundary.
 
@@ -359,16 +407,16 @@ Kernel-Floor Locality says safety of a fixed branch and move is invariant when f
 
 The abstract entitlement judgment combines ambient admissibility, exact requirement discharge, and floor safety.
 
-**Definition 3.1 (Entitlement and fixed ambient boundary).** For floor semantics `S`, ambient view `A`, declarative environment `E`, floor environment `F`, branch `β`, license type `τ`, and floor move `m`, define
+**Definition 3.1 (Entitlement and fixed ambient boundary).** For floor semantics `\(\Phi\)`, ambient view `\(A\)`, declarative environment `\(E\)`, floor environment `\(F\)`, branch `\(\beta\)`, license type `\(\tau\)`, and floor move `\(m\)`, define
 
 \[
-Entitled(S,A,E,F,\beta,\tau,m)
+Entitled(\Phi,A,E,F,\beta,\tau,m)
 \;:\!\iff\;
 Admissible(A)
 \land
 Derives(E,\beta,A.requirement)
 \land
-Safe(S,F,\beta,\tau,m).
+Safe(\Phi,F,\beta,\tau,m).
 \]
 
 For ambient views `A,A'` and exact requirement `R`, write
@@ -386,7 +434,7 @@ Admissible(A)\land Admissible(A')
 **Theorem R1 (Relative Branch Conservativity).** For all
 
 \[
-S,A,A',E,E',F,F',\beta,\tau,m,R,
+\Phi,A,A',E,E',F,F',\beta,\tau,m,R,
 \]
 
 if
@@ -401,13 +449,13 @@ then
 
 \[
 \boxed{
-Entitled(S,A,E,F,\beta,\tau,m)
+Entitled(\Phi,A,E,F,\beta,\tau,m)
 \iff
-Entitled(S,A',E',F',\beta,\tau,m).
+Entitled(\Phi,A',E',F',\beta,\tau,m).
 }
 \]
 
-The Lean witness is `relativeBranchConservativity`.
+This theorem is machine checked in Lean 4; its artifact locator is listed in §2.2.
 
 **Proof sketch.** `FixedAmbient` rewrites both ambient requirements to the same exact `R` and supplies admissibility on both sides. Branch Conservativity turns `SatEqOn(E,E',β)` into
 
@@ -418,9 +466,9 @@ Derives(E,\beta,R)\iff Derives(E',\beta,R),
 while Kernel-Floor Locality turns `FloorEqOn(F,F',β)` into
 
 \[
-Safe(S,F,\beta,\tau,m)
+Safe(\Phi,F,\beta,\tau,m)
 \iff
-Safe(S,F',\beta,\tau,m).
+Safe(\Phi,F',\beta,\tau,m).
 \]
 
 Combining the two equivalences with ambient admissibility proves the entitlement equivalence. No executable satisfaction theorem and no support-projection theorem is a premise of R1.
@@ -456,17 +504,11 @@ An undeclared move does not become an explicit no-obligation move by implementat
 
 `LicensingRead` supplies one shared partial warrant lookup and projects it into the satisfaction environment, executable oracle, ambient view, and floor environment.
 
-`derives_projection_coherent` proves that every leaf selected by a derivation over the canonical environment reads satisfaction-relevant fields and the floor leaf from the same canonical warrant object. The theorem prevents internal drift in which one identifier could silently denote one object for requirement discharge and another for floor safety.
+The machine-checked projection-coherence result proves that every leaf selected by a derivation over the canonical environment reads satisfaction-relevant fields and the floor leaf from the same canonical warrant object. The theorem prevents internal drift in which one identifier could silently denote one object for requirement discharge and another for floor safety. Its artifact locator is listed in §2.2.
 
 ## 3.6 Static/dynamic assembly boundary
 
-The reachable model already supplies several narrow bridges:
-
-```text
-HistoricalWarrant → CanonicalRead.CanonicalWarrant
-epi + placement  → usableFromState
-CanonicalProfile → RequirementSnapshot
-```
+The reachable model already supplies narrow state-backed bridges for historical-warrant projection, usability, exact requirement snapshots, and activation reads.
 
 Grounded currentness also has a structural state projection. These pieces are enough to state Sections 5 and 6 precisely, but the artifact does not contain one total state-backed `LicensingRead` assembly theorem.
 
@@ -488,12 +530,12 @@ This factorization is the semantic basis for the paper's main distinction: histo
 
 The system begins at an explicit empty `InitialBoundary`. `Reachable` is inductively generated by modeled `Step` transitions.
 
-**Definition 4.1 (Reachability).** `InitialBoundary(S)` means `S` is the empty canonical state. The least predicate `Reachable` is generated by
+**Definition 4.1 (Reachability).** `InitialBoundary(\sigma)` means `\sigma` is the empty canonical state. The least predicate `Reachable` is generated by
 
 \[
-\frac{InitialBoundary(S)}{Reachable(S)}
+\frac{InitialBoundary(\sigma)}{Reachable(\sigma)}
 \qquad
-\frac{Reachable(S)\qquad Step(S,e,S')}{Reachable(S')}.
+\frac{Reachable(\sigma)\qquad \sigma\xrightarrow{e}\sigma'}{Reachable(\sigma')}.
 \]
 
 The first-paper event surface is
@@ -511,21 +553,21 @@ qualifyInfer
 
 and no other constructor is implicitly admitted.
 
-`CanonicalStateInvariant(S)` packages the shared coherence conditions for canonical binding/profile/context referents, immutable warrant and parent/lineage referents, ROOT and INFER historical well-formedness, evaluation referent coherence, paired evaluation axes, and profile/use binding backing.
+`CanonicalStateInvariant(\sigma)` packages the shared coherence conditions for canonical binding/profile/context referents, immutable warrant and parent/lineage referents, ROOT and INFER historical well-formedness, evaluation referent coherence, paired evaluation axes, and profile/use binding backing.
 
-**Theorem R4 (Reachable canonical-state invariance).** For every canonical state `S`,
+**Theorem R4 (Reachable canonical-state invariance).** For every canonical state `\(\sigma\)`,
 
 \[
 \boxed{
-Reachable(S)
+Reachable(\sigma)
 \Rightarrow
-CanonicalStateInvariant(S).
+CanonicalStateInvariant(\sigma).
 }
 \]
 
-The Lean witness is `reachable_invariant`.
+This theorem is machine checked in Lean 4; its artifact locator is listed in §2.2.
 
-**Proof sketch.** Induct on the derivation of `Reachable(S)`. At the initial boundary, every lookup and evaluation relation is empty, so the invariant follows from `initialBoundary_invariant`. For an inductive step, apply `step_preserves_invariant` to the induction hypothesis and the concrete `Step(S,e,S')`. The theorem is therefore only as broad as the explicit `Step` constructors above; it is not a claim about unmodeled Python operations or future TRANSPORT/Adopt/revision events.
+**Proof sketch.** Induct on the derivation of `Reachable(\sigma)`. At the initial boundary, every lookup and evaluation relation is empty. For an inductive step, the shared preservation result lifts the invariant across the concrete one-step transition `\sigma\xrightarrow{e}\sigma'`. The theorem is therefore only as broad as the explicit `Step` constructors above; it is not a claim about unmodeled Python operations or future TRANSPORT/Adopt/revision events.
 
 The transition surface deliberately excludes reachable Adopt, license issuance, TRANSPORT, challenge, revision, and revalidation transitions.
 
@@ -534,11 +576,11 @@ The transition surface deliberately excludes reachable Adopt, license issuance, 
 Historical lookup immutability has object-level content. For a warrant:
 
 \[
-S.warrant(w)=some\;W
+\sigma.warrant(w)=some\;W
 \land
-Step(S,e,S')
+\sigma\xrightarrow{e}\sigma'
 \Rightarrow
-S'.warrant(w)=some\;W.
+\sigma'.warrant(w)=some\;W.
 \]
 
 The same style of preservation applies to other immutable history-plane referents. This law is what makes later branch support, lineage, and challenge targets meaningful: an identifier does not change historical referent between states.
@@ -577,7 +619,7 @@ A ROOT formation step requires a fresh warrant identifier, a canonical binding, 
 
 The transition deliberately does not require active context, evaluation-active binding, or a scope-within-binding check because those are not part of the represented ROOT formation boundary.
 
-The exact constructor-level postcondition is exposed by `rootStep_newWarrant_exact`: any successful ROOT step yields canonical pre-state binding/context witnesses, context acceptance of the claim, and the exact `rootHistoricalWarrant` at the new identifier in the post-state.
+The machine-checked constructor postcondition recovers canonical pre-state binding/context witnesses, context acceptance of the claim, and the exact ROOT historical object at the new identifier in the post-state. The artifact locator is listed in §2.2.
 
 ## 5.2 Formation preserves evaluation — R6a
 
@@ -585,39 +627,39 @@ ROOT formation writes the historical warrant lookup and leaves the represented e
 
 Combined with the reachable invariant and warrant-ID freshness, this yields a stronger result than mere field non-update: no pre-existing evaluation record can refer to the fresh warrant identifier.
 
-**Theorem R6a (Fresh ROOT formation is non-usable).** Let `S,S'` be canonical states, `w` a warrant identifier, `b,c` identifiers, and `x` a root input. If
+**Theorem R6a (Fresh ROOT formation is non-usable).** Let `\(\sigma,\sigma'\)` be canonical states, `\(w\)` a warrant identifier, `\(b,c\)` identifiers, and `\(x\)` a root input. If
 
 \[
-Reachable(S)
+Reachable(\sigma)
 \]
 
 and
 
 \[
-Step(S,\operatorname{root}(w,b,c,x),S'),
+\sigma\xrightarrow{\operatorname{root}(w,b,c,x)}\sigma',
 \]
 
-then for **every** observed profile digest `π'`, context `c'`, and use `u`,
+then for **every** observed profile digest `\(\pi'\)`, context `\(c'\)`, and use `\(u\)`,
 
 \[
-S'.epi(\pi',c',u,w)=none
+\sigma'.epi(\pi',c',u,w)=none
 \quad\land\quad
-S'.placement(\pi',c',u,w)=none,
+\sigma'.placement(\pi',c',u,w)=none,
 \]
 
 and therefore
 
 \[
 \boxed{
-\neg Usable(S',(\pi',c',u,w)).
+\neg Usable(\sigma',(\pi',c',u,w)).
 }
 \]
 
-The Lean witnesses are `rootStep_newWarrant_unqualified` and `rootStep_newWarrant_notUsable`.
+This theorem is machine checked in Lean 4; its artifact locators are listed in §2.2.
 
-**Proof sketch.** `Reachable(S)` gives `EvaluationReferentsCanonical(S)` through R4. Freshness of `w` means `S.warrant(w)=none`; referent coherence therefore rules out any pre-existing evaluation record at a key ending in `w`. `rootStep_evaluationTopology_unchanged` shows that ROOT formation copies both evaluation axes pointwise into `S'`. Hence no evaluation pair exists for the newly formed identifier at any environment, so usability is impossible.
+**Proof sketch.** `Reachable(\sigma)` supplies evaluation-referent coherence. Freshness of `w` means `\sigma.warrant(w)=none`; referent coherence therefore rules out any pre-existing evaluation record at a key ending in `w`. ROOT formation preserves both evaluation axes pointwise into `\sigma'`. Hence no evaluation pair exists for the newly formed identifier at any environment, so usability is impossible.
 
-In the running example, this is the state of `p1` and `p2` at `S1`: neither `Usable(S_1,k_{p_1})` nor `Usable(S_1,k_{p_2})` holds.
+In the running example, this is the state of `p1` and `p2` at `\(\sigma_1\)`: neither `Usable(\sigma_1,k_{p_1})` nor `Usable(\sigma_1,k_{p_2})` holds.
 
 ## 5.3 Explicit admission — R6b
 
@@ -626,34 +668,34 @@ ROOT admission is a separate evaluation transition. It checks the canonical bind
 **Theorem R6b (ROOT admission establishes exact-key usability).** If
 
 \[
-Step(S,\operatorname{admitRoot}(w,b,c,u,meta),S'),
+\sigma\xrightarrow{\operatorname{admitRoot}(w,b,c,u,meta)}\sigma',
 \]
 
 then there exists a canonical binding `B` such that
 
 \[
-S.binding(b)=some\;B
+\sigma.binding(b)=some\;B
 \]
 
 and
 
 \[
 \boxed{
-Usable(S',(B.profileDigest,c,u,w)).
+Usable(\sigma',(B.profileDigest,c,u,w)).
 }
 \]
 
-The stronger exact postcondition `admitRoot_evaluation_exact` additionally recovers the canonical context and historical ROOT warrant, the exact formation-context/profile equalities, `B.use=u`, and the two post-state facts
+The stronger machine-checked postcondition additionally recovers the canonical context and historical ROOT warrant, the exact formation-context/profile equalities, `B.use=u`, and the two post-state facts
 
 \[
-S'.epi(B.profileDigest,c,u,w)=LIVE,
+\sigma'.epi(B.profileDigest,c,u,w)=LIVE,
 \qquad
-S'.placement(B.profileDigest,c,u,w)=PLACED.
+\sigma'.placement(B.profileDigest,c,u,w)=PLACED.
 \]
 
-The Lean usability witness is `admitRoot_makes_usable`.
+The artifact locators are listed in §2.2.
 
-**Proof sketch.** Inverting the admission `Step` yields the canonical binding/warrant witnesses and exact formation/use equalities. The post-state is definitionally `qualifyEvaluation` at the selected key. `qualifyEvaluation_exact` writes `LIVE` and `PLACED` there, which is exactly the definition of `Usable`.
+**Proof sketch.** Inverting the admission transition yields the canonical binding/warrant witnesses and exact formation/use equalities. The post-state writes `LIVE` and `PLACED` at the selected key, which is exactly the definition of `Usable`.
 
 Admission has no evaluation freshness premise. Re-admission and overwrite semantics remain representable.
 
@@ -685,28 +727,28 @@ A canonical profile contains an immutable rule table. Ordinary INFER resolves th
 
 The paper-facing formation result is deliberately a **local `Step` theorem**. Unlike the later fresh-child non-usability result, it does not require the pre-state to be reachable.
 
-**Theorem R7 (Exact historical INFER formation).** Let `S,S'` be canonical states, `w` a fresh child identifier, `b,c,r` the formation binding/context/rule identifiers, `P` the ordered parent-ID list, and `s` the output scope. If
+**Theorem R7 (Exact historical INFER formation).** Let `\(\sigma,\sigma'\)` be canonical states, `\(w\)` a fresh child identifier, `\(b,c,r\)` the formation binding/context/rule identifiers, `\(P\)` the ordered parent-ID list, and `\(s\)` the output scope. If
 
 \[
-Step(S,\operatorname{infer}(w,b,c,r,P,s),S'),
+\sigma\xrightarrow{\operatorname{infer}(w,b,c,r,P,s)}\sigma',
 \]
 
 then there exist a canonical binding `B`, profile `\Pi`, context `C`, exact rule `R`, and ordered resolved parent objects `\bar W` such that
 
 \[
-S.binding(b)=some\;B,
+\sigma.binding(b)=some\;B,
 \qquad
-S.profile(B.profileDigest)=some\;\Pi,
+\sigma.profile(B.profileDigest)=some\;\Pi,
 \]
 
 \[
 lookupRule(\Pi,r)=some\;R,
 \qquad
-S.context(c)=some\;C,
+\sigma.context(c)=some\;C,
 \]
 
 \[
-ResolvesParents(S,P,\bar W),
+ResolvesParents(\sigma,P,\bar W),
 \]
 
 \[
@@ -717,22 +759,22 @@ and
 
 \[
 \boxed{
-S'.warrant(w)
+\sigma'.warrant(w)
 =
 some\;\operatorname{inferHistoricalWarrant}
 (r,B.profileDigest,c,P,\bar W,s,R).
 }
 \]
 
-The Lean witness is `inferStep_newWarrant_exact`.
+This theorem is machine checked in Lean 4; its artifact locator is listed in §2.2.
 
-**Proof sketch.** Invert the single `Step.infer` constructor. Its premises directly provide the canonical binding, profile, exact rule lookup, canonical context, ordered parent resolution, and formation discipline. The post-state updates the historical warrant lookup with `putCanonical`, so the fresh child identifier denotes exactly the displayed `inferHistoricalWarrant`. No reachability invariant is used in this proof.
+**Proof sketch.** Invert the single INFER formation transition. Its premises directly provide the canonical binding, profile, exact rule lookup, canonical context, ordered parent resolution, and formation discipline. The post-state installs the exact displayed historical warrant at the fresh child identifier. No reachability invariant is used in this proof.
 
 At the paper level we unfold only the formation obligations needed for the contribution claim. `InferFormationDiscipline` fixes: (i) ordered parent roles against the exact rule inputs; (ii) the parents' formation context/profile identity; (iii) scope non-widening and escalation-strength non-amplification; and (iv) structural typing, output acceptance, and the selected kernel guard. These are formation responsibilities, not qualification-time checks.
 
-Formation is occurrence-sensitive. `ResolvesParents(S,P,\bar W)` preserves list order and duplicate occurrences, and `inferStep_orderedParentRoles_exact` compares the resulting ordered parent-role list with the rule's ordered input-role list.
+Formation is occurrence-sensitive. `ResolvesParents(\sigma,P,\bar W)` preserves list order and duplicate occurrences, and the ordered parent-role list must equal the rule's ordered input-role list.
 
-**Corollary (Exact lineage construction).** Under the same formation step, the new historical object's root lineage and source lineage are the independent role-wise unions of the resolved parents' corresponding lineage relations. This is the paper-facing role of `inferStep_lineage_union`; it is supporting structure for R7 rather than a separate headline result.
+**Corollary (Exact lineage construction).** Under the same formation step, the new historical object's root lineage and source lineage are the independent role-wise unions of the resolved parents' corresponding lineage relations. This is supporting structure for R7 rather than a separate headline result; the artifact locator is listed in §2.2.
 
 ## 6.2 Why two lineage relations matter
 
@@ -754,7 +796,7 @@ CurrentParentUsability.
 }
 \]
 
-In the main running trace the parents happen to satisfy `Usable(S_2,k_{p_1})` and `Usable(S_2,k_{p_2})` before `d` is formed. That is not required by R7. The steps can be reordered so that `d` is historically formed before either root is admitted, provided the historical formation premises hold.
+In the main running trace the parents happen to satisfy `Usable(\sigma_2,k_{p_1})` and `Usable(\sigma_2,k_{p_2})` before `d` is formed. That is not required by R7. The steps can be reordered so that `d` is historically formed before either root is admitted, provided the historical formation premises hold.
 
 This is the first half of the distinction:
 
@@ -775,7 +817,7 @@ The two INFER transitions expose different responsibility boundaries. The distin
 
 “Does not re-check” does not mean that the historical obligations are irrelevant. In the reachable-state interpretation they are carried by the immutable historical warrant and the shared invariant. Qualification's responsibility is not to discharge formation a second time.
 
-The machine-checked write sets make the cut visible. `inferStep_evaluationTopology_unchanged` proves that ordinary INFER formation preserves, pointwise, active-context facts, activation provenance, review requirements, represented licenses, and both evaluation axes. Conversely, `qualifyInfer_historyReferentsImmutable` proves that qualification preserves every immutable historical referent, while `qualifyInfer_evaluation_exact` writes the selected child evaluation key.
+The machine-checked write-set results make the cut visible: ordinary INFER formation preserves the represented evaluation/currentness topology pointwise, while qualification preserves every immutable historical referent and writes the selected child evaluation key. The corresponding artifact locators are listed in §2.2.
 
 Thus the transition cut can be summarized as
 
@@ -799,23 +841,23 @@ This is stronger than observing that formation happens not to make the fresh chi
 
 R7 itself needs only one formation `Step`. The stronger statement that the fresh child has **no** evaluation position at any profile/context/use key needs reachability.
 
-Like ROOT formation, INFER formation leaves evaluation unchanged. Reachability supplies `EvaluationReferentsCanonical(S)`; together with warrant-ID freshness this rules out a pre-existing evaluation record referring to the fresh child, and `inferStep_evaluationTopology_unchanged` carries that absence into the post-state.
+Like ROOT formation, INFER formation leaves evaluation unchanged. Reachability supplies evaluation-referent coherence; together with warrant-ID freshness this rules out a pre-existing evaluation record referring to the fresh child, and the formation write-set result carries that absence into the post-state.
 
 Thus, from
 
 \[
-Reachable(S)
+Reachable(\sigma)
 \land
-Step(S,\operatorname{infer}(w,b,c,r,P,s),S'),
+\sigma\xrightarrow{\operatorname{infer}(w,b,c,r,P,s)}\sigma',
 \]
 
 we obtain for every profile/context/use environment
 
 \[
-\boxed{\neg Usable(S',(\pi,c',u,w)).}
+\boxed{\neg Usable(\sigma',(\pi,c',u,w)).}
 \]
 
-through `inferStep_newWarrant_unqualified` and `inferStep_newWarrant_notUsable`.
+The machine-checked supporting results are listed in §2.2.
 
 The proof-responsibility split is therefore:
 
@@ -827,24 +869,24 @@ The proof-responsibility split is therefore:
 }
 \]
 
-In the running trace this is the defining fact of `S3`:
+In the running trace this is the defining fact of `\(\sigma_3\)`:
 
 \[
-Hist_{S_3}(d,W_d)
+Hist_{\sigma_3}(d,W_d)
 \land
-\neg Usable(S_3,k_d).
+\neg Usable(\sigma_3,k_d).
 \]
 
 ## 6.6 Qualification requires a different responsibility — R8
 
 The current-parent predicate used by qualification is explicit.
 
-**Definition 6.1 (Current usable parents).** For state `S`, profile digest `π`, context `c`, use `u`, and historical warrant `W`, define
+**Definition 6.1 (Current usable parents).** For state `\(\sigma\)`, profile digest `\(\pi\)`, context `\(c\)`, use `\(u\)`, and historical warrant `\(W\)`, define
 
 \[
-InferParentsUsable(S,\pi,c,u,W)
+InferParentsUsable(\sigma,\pi,c,u,W)
 \;:\!\iff\;
-\forall p\in W.parents,\;Usable(S,(\pi,c,u,p)).
+\forall p\in W.parents,\;Usable(\sigma,(\pi,c,u,p)).
 \]
 
 The membership relation is over the warrant's stored parent-ID list; the universal predicate is evaluated in the qualification **pre-state**.
@@ -859,22 +901,22 @@ There is an intentional occurrence/identity asymmetry between formation and qual
 }
 \]
 
-Formation preserves ordered parent occurrences and duplicates because they occupy ordered derivational input positions and participate in occurrence-sensitive formation checks. Qualification instead asks whether each parent identifier appearing in that stored list is currently usable at one exact evaluation key. If the same identifier occurs repeatedly, the present `InferParentsUsable` predicate does not create a multiplicity-sensitive or use-once obligation: propositionally it asks for the same `Usable(S,(\pi,c,u,p))` fact. Current usability in this kernel is therefore an idempotent predicate of a warrant identity at an exact evaluation key, **not** a linear, consumable, or use-once capability resource.
+Formation preserves ordered parent occurrences and duplicates because they occupy ordered derivational input positions and participate in occurrence-sensitive formation checks. Qualification instead asks whether each parent identifier appearing in that stored list is currently usable at one exact evaluation key. If the same identifier occurs repeatedly, the present `InferParentsUsable` predicate does not create a multiplicity-sensitive or use-once obligation: propositionally it asks for the same `Usable(\sigma,(\pi,c,u,p))` fact. Current usability in this kernel is therefore an idempotent predicate of a warrant identity at an exact evaluation key, **not** a linear, consumable, or use-once capability resource.
 
 **Theorem R8 (Exact INFER qualification boundary).** Suppose
 
 \[
-Step(S,\operatorname{qualifyInfer}(w,b,c,u,meta),S').
+\sigma\xrightarrow{\operatorname{qualifyInfer}(w,b,c,u,meta)}\sigma'.
 \]
 
 Then there exist a binding `B`, a historical warrant `W`, and a rule identifier `r` such that
 
 \[
-S.binding(b)=some\;B,
+\sigma.binding(b)=some\;B,
 \]
 
 \[
-S.warrant(w)=some\;W,
+\sigma.warrant(w)=some\;W,
 \]
 
 \[
@@ -888,7 +930,7 @@ W.formationProfileDigest=B.profileDigest,
 and
 
 \[
-InferParentsUsable(S,B.profileDigest,c,u,W).
+InferParentsUsable(\sigma,B.profileDigest,c,u,W).
 \]
 
 Moreover the exact child key
@@ -900,27 +942,27 @@ k_w=(B.profileDigest,c,u,w)
 satisfies
 
 \[
-S'.epi(k_w)=LIVE
+\sigma'.epi(k_w)=LIVE
 \qquad\land\qquad
-S'.placement(k_w)=PLACED,
+\sigma'.placement(k_w)=PLACED,
 \]
 
 hence
 
 \[
-\boxed{Usable(S',k_w).}
+\boxed{Usable(\sigma',k_w).}
 \]
 
-The exact Lean witness for the preconditions and two-axis postcondition is `qualifyInfer_evaluation_exact`; `qualifyInfer_requires_usableParents` exposes the pre-state responsibility directly, and `qualifyInfer_makes_usable` gives the usability corollary.
+This theorem is machine checked in Lean 4; its artifact locators are listed in §2.2.
 
-**Proof sketch.** Invert the `qualifyInfer` constructor. Its premises already contain the canonical binding/warrant lookup, INFER constructor witness, exact historical formation context/profile, and `InferParentsUsable` in `S`. No rule lookup, typing, guard, context-acceptance, scope, strength, or lineage-construction premise occurs in this transition. Those obligations belong to historical formation; qualification does not discharge them a second time. The post-state is `qualifyEvaluation` at `k_w`, so the generic exact-setter theorem yields `LIVE/PLACED` and therefore usability.
+**Proof sketch.** Invert the `qualifyInfer` transition. Its premises already contain the canonical binding/warrant lookup, INFER constructor witness, exact historical formation context/profile, and `InferParentsUsable` in `\sigma`. No rule lookup, typing, guard, context-acceptance, scope, strength, or lineage-construction premise occurs in this transition. Those obligations belong to historical formation; qualification does not discharge them a second time. The post-state writes `LIVE/PLACED` at `k_w`, which is exactly child usability.
 
 For the running example, the pre-state obligation is exactly
 
 \[
-Usable(S_3,k_{p_1})
+Usable(\sigma_3,k_{p_1})
 \land
-Usable(S_3,k_{p_2}).
+Usable(\sigma_3,k_{p_2}).
 \]
 
 ## 6.7 Pre-state, not permanent, responsibility
@@ -928,11 +970,11 @@ Usable(S_3,k_{p_2}).
 The parent-usability obligation is explicitly indexed by the qualification pre-state:
 
 \[
-ParentsUsable(S_{pre})
+ParentsUsable(\sigma_{pre})
 +
-QualifyInfer(S_{pre},S_{post})
+QualifyInfer(\sigma_{pre},\sigma_{post})
 \Rightarrow
-ChildUsable(S_{post}).
+ChildUsable(\sigma_{post}).
 \]
 
 The current model does not assert the converse as a permanent invariant. A future revision/invalidation transition may change a parent's current status after the child was qualified. How such dependency invalidation should propagate is deliberately left to later work.
@@ -958,7 +1000,7 @@ R9 composes the historical formation boundary with the current qualification bou
 **Theorem R9 (Adjacent INFER formation/qualification lifecycle).** Let
 
 \[
-S_0,S_1,S_2
+\sigma_0,\sigma_1,\sigma_2
 \]
 
 be canonical states. Let `w` be the child warrant identifier; let
@@ -976,29 +1018,25 @@ b_q,c_q,u,meta
 be the qualification binding identifier, qualification context identifier, use, and audit metadata. Assume
 
 \[
-Reachable(S_0),
+Reachable(\sigma_0),
 \]
 
-\[
-Step(S_0,
-\operatorname{infer}(w,b_f,c_f,r,P,s),
-S_1),
-\]
-
-and the **adjacent** qualification step
+and the **adjacent** two-step trace
 
 \[
-Step(S_1,
-\operatorname{qualifyInfer}(w,b_q,c_q,u,meta),
-S_2).
+\sigma_0
+\xrightarrow{\operatorname{infer}(w,b_f,c_f,r,P,s)}
+\sigma_1
+\xrightarrow{\operatorname{qualifyInfer}(w,b_q,c_q,u,meta)}
+\sigma_2.
 \]
 
 Then there exist a binding `B`, historical warrant `W`, and actual rule identifier `r'` such that
 
 \[
-S_1.binding(b_q)=some\;B,
+\sigma_1.binding(b_q)=some\;B,
 \qquad
-S_1.warrant(w)=some\;W,
+\sigma_1.warrant(w)=some\;W,
 \]
 
 \[
@@ -1010,7 +1048,7 @@ W.formationProfileDigest=B.profileDigest,
 \]
 
 \[
-InferParentsUsable(S_1,B.profileDigest,c_q,u,W),
+InferParentsUsable(\sigma_1,B.profileDigest,c_q,u,W),
 \]
 
 and, for the exact child key
@@ -1022,33 +1060,33 @@ k_w=(B.profileDigest,c_q,u,w),
 both
 
 \[
-\boxed{\neg Usable(S_1,k_w)}
+\boxed{\neg Usable(\sigma_1,k_w)}
 \]
 
 and
 
 \[
-\boxed{Usable(S_2,k_w)}
+\boxed{Usable(\sigma_2,k_w)}
 \]
 
 hold.
 
-The Lean witness is `inferFormationQualification_boundary`.
+This theorem is machine checked in Lean 4; its artifact locator is listed in §2.2.
 
-**Proof sketch.** Invert the qualification step using `qualifyInfer_requires_usableParents` to obtain `B`, `W`, the INFER constructor witness, the historical formation context/profile equalities, and the pre-state parent-usability obligation. Because `S_0` is reachable and the immediately preceding step is a fresh INFER formation of `w`, `inferStep_newWarrant_notUsable` gives non-usability of `w` in `S_1` at **every** profile/context/use key, hence at `k_w`. Finally, `qualifyInfer_makes_usable` gives usability at the same exact key in `S_2`; functional lookups identify its binding and warrant witnesses with those already recovered from the qualification step.
+**Proof sketch.** Invert the qualification transition to obtain `B`, `W`, the INFER constructor witness, the historical formation context/profile equalities, and the pre-state parent-usability obligation. Because `\sigma_0` is reachable and the immediately preceding transition is a fresh INFER formation of `w`, the reachable-state coherence argument gives non-usability of `w` in `\sigma_1` at **every** profile/context/use key, hence at `k_w`. The qualification transition then establishes usability at the same exact key in `\sigma_2`; functional lookups identify its binding and warrant witnesses with those already recovered from qualification.
 
-Two scope points are important. First, the formation call-site identifiers `(b_f,c_f)` and qualification call-site identifiers `(b_q,c_q)` are quantified separately; the theorem recovers the qualification environment through the immutable warrant's recorded formation context/profile and the qualification premises rather than by assuming syntactic equality of the two calls. Second, R9 is a **two-step adjacent trace theorem**. It does not state that the same conclusion holds after an arbitrary sequence of intervening transitions.
+Two scope points are important. First, the formation call-site identifiers `(b_f,c_f)` and qualification call-site identifiers `(b_q,c_q)` are quantified separately; the theorem recovers the qualification environment through the immutable warrant's recorded formation context/profile and the qualification premises rather than by assuming syntactic equality of the two calls. Second, R9 is a **two-step adjacent trace theorem**. The arrow notation above denotes two individual `Step` relations, not `\xrightarrow{*}` and not an arbitrary sequence of intervening transitions.
 
-**Remark 6.2 (Separation is weaker than persistence, and deliberately so).** The adjacent theorem discharges a separation obligation: it exhibits a machine-checked boundary in which the same historical child is present but non-usable in `S_1`, and becomes usable only after the explicit qualification transition to `S_2`. Schematically,
+**Remark 6.2 (Separation is weaker than persistence, and deliberately so).** The adjacent theorem discharges a separation obligation: it exhibits a machine-checked boundary in which the same historical child is present but non-usable in `\sigma_1`, and becomes usable only after the explicit qualification transition to `\sigma_2`. Schematically,
 
 \[
 \begin{aligned}
 \textbf{Separation:}\quad
-&Hist_{S_1}(w,W)
+&Hist_{\sigma_1}(w,W)
 \land
-\neg Usable(S_1,k_w)
+\neg Usable(\sigma_1,k_w)
 \land
-Usable(S_2,k_w).
+Usable(\sigma_2,k_w).
 \end{aligned}
 \]
 
@@ -1074,14 +1112,14 @@ The machine-checked distinction is therefore not merely that history and status 
 \[
 \underbrace{ParentOf(p,d)}_{\text{persistent historical relation}}
 \qquad\text{and}\qquad
-\underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
+\underbrace{Usable(\sigma_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
 \]
 
 Formation establishes and preserves the first relation while carrying the already-discharged rule/guard/context/scope/strength/lineage obligations. Qualification later evaluates the second relation without replaying the first set of obligations.
 
 ## 6.10 Stopping before entitlement
 
-At `S4`, the running example establishes `Usable(S_4,k_d)`. It does not establish that any particular licensing move is entitled.
+At `\(\sigma_4\)`, the running example establishes `Usable(\sigma_4,k_d)`. It does not establish that any particular licensing move is entitled.
 
 The static layer still requires exact requirement resolution, branch discharge, ambient admissibility, and floor safety. This is why the paper's title stops at current usability rather than claiming a complete transition from historical formation to entitlement.
 
@@ -1203,7 +1241,7 @@ In schematic form:
 \[
 \underbrace{ParentOf(p,d)}_{\text{persistent historical relation}}
 \qquad\text{versus}\qquad
-\underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
+\underbrace{Usable(\sigma_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
 \]
 
 The present claim is thus not that proof material has never coexisted with mutable authorization state. It is the specific machine-checked separation between immutable derivation-parent structure and a later qualification transition whose premise is current usability of those same historical parents. The current usability predicate is not a use-once or multiplicity-sensitive credential resource; repeated historical parent occurrences remain an occurrence-sensitive formation fact rather than repeated consumption rights at qualification time.
