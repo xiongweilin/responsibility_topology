@@ -1,17 +1,18 @@
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.HistoricalObjects
+import ResponsibilityTopology.EvaluationVocabulary
 
 namespace ResponsibilityTopology
 
 /-!
-Reachable canonical-state skeleton, extended by #12 with the first historical
-formation transition.
+Reachable canonical-state skeleton, extended by #13 with the first explicit
+historical-to-evaluation transition.
 
-The state deliberately separates immutable canonical history from mutable
-evaluation topology.  ROOT formation reads only canonical binding/context
-history and writes only the historical warrant lookup.  Admission,
-qualification, usability, INFER, TRANSPORT, license issuance, Adopt activation,
-and challenge/revision remain outside this milestone.
+The state separates immutable canonical history from mutable evaluation
+qualification. ROOT formation reads/writes only canonical history. ROOT
+admission reads canonical history and writes exactly one evaluation position.
+Derived qualification, INFER, TRANSPORT, license issuance, revalidation, and
+challenge/revision remain outside this milestone.
 -/
 
 structure CanonicalBinding where
@@ -34,6 +35,8 @@ structure CanonicalState where
   activeContext : ContextKey → Prop
   activationProvenance : ContextKey → Option Activation
   reviewRequired : ActivationLicenseId → Prop
+  epi : EvalKey → Option EpiStatus
+  placement : EvalKey → Option Placement
 
 private def addFact {α : Type} (P : α → Prop) (x : α) : α → Prop :=
   fun y => y = x ∨ P y
@@ -55,6 +58,20 @@ private theorem putCanonical_preserves_some
     cases hOld
   · simpa [putCanonical, hEq] using hOld
 
+/-- Mutable evaluation setter. Unlike `putCanonical`, this intentionally has no
+freshness premise: explicit re-admission may overwrite an existing evaluation
+position. -/
+def setOptionAt {α β : Type} [DecidableEq α]
+    (M : α → Option β) (key : α) (value : β) : α → Option β :=
+  fun x => if x = key then some value else M x
+
+/-- Shared evaluation qualification update. Later qualification milestones reuse
+this state mechanism rather than creating constructor-specific status stores. -/
+def qualifyEvaluation (S : CanonicalState) (key : EvalKey) : CanonicalState :=
+  { S with
+    epi := setOptionAt S.epi key .live
+    placement := setOptionAt S.placement key .placed }
+
 /-- Empty trusted starting boundary. -/
 def emptyCanonicalState : CanonicalState where
   context := fun _ => none
@@ -65,6 +82,8 @@ def emptyCanonicalState : CanonicalState where
   activeContext := fun _ => False
   activationProvenance := fun _ => none
   reviewRequired := fun _ => False
+  epi := fun _ => none
+  placement := fun _ => none
 
 def InitialBoundary (S : CanonicalState) : Prop :=
   S = emptyCanonicalState
@@ -78,10 +97,18 @@ inductive KernelEvent where
       (warrantId : WarrantId)
       (bindingId contextId : String)
       (input : RootInput)
+  | admitRoot
+      (warrantId : WarrantId)
+      (bindingId contextId use : String)
+      (metadata : AdmissionMetadata)
   deriving Repr
 
-/-- ROOT has exactly the static history-plane preconditions used by Python
-V0.1.2.2.  No active-context/binding or scope-within-binding premise is added. -/
+/-- ROOT formation has exactly the static history-plane preconditions used by
+Python V0.1.2.2. ROOT admission likewise copies the current Python admission
+boundary: canonical binding/context/warrant, ROOT constructor identity, exact
+formation environment, and binding/use match. It deliberately adds no active
+context/binding premise, repeated context-signature check, or evaluation
+freshness premise. -/
 inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop where
   | registerContext
       {S : CanonicalState} {id : String} {context : CanonicalContext}
@@ -127,6 +154,25 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
           warrant := putCanonical S.warrant warrantId
             (rootHistoricalWarrant
               warrantId binding.profileDigest contextId input) }
+  | admitRoot
+      {S : CanonicalState}
+      {warrantId : WarrantId}
+      {bindingId contextId use : String}
+      {metadata : AdmissionMetadata}
+      {binding : CanonicalBinding}
+      {context : CanonicalContext}
+      {warrant : HistoricalWarrant}
+      (bindingCanonical : S.binding bindingId = some binding)
+      (contextCanonical : S.context contextId = some context)
+      (warrantCanonical : S.warrant warrantId = some warrant)
+      (isRoot : warrant.constructor = .root)
+      (formationContext : warrant.formationContext = contextId)
+      (formationProfile :
+        warrant.formationProfileDigest = binding.profileDigest)
+      (useMatches : binding.use = use) :
+      Step S (.admitRoot warrantId bindingId contextId use metadata)
+        (qualifyEvaluation S
+          ⟨binding.profileDigest, contextId, use, warrantId⟩)
 
 inductive Reachable : CanonicalState → Prop where
   | initial {S : CanonicalState} : InitialBoundary S → Reachable S
@@ -157,7 +203,7 @@ def AdoptedActiveContextHasCanonicalLicense (S : CanonicalState) : Prop :=
       ContextKeyCanonical S license.issuer
 
 /-- Every historical warrant names canonical formation context/profile
-referents.  Source authenticity is intentionally not part of this predicate. -/
+referents. Source authenticity is intentionally not part of this predicate. -/
 def WarrantReferentsCanonical (S : CanonicalState) : Prop :=
   ∀ ⦃id warrant⦄,
     S.warrant id = some warrant →
@@ -193,6 +239,28 @@ def WarrantRootLineageCanonical (S : CanonicalState) : Prop :=
     warrant.rootLineage role rootId →
     ∃ root, S.warrant rootId = some root
 
+/-- At least one evaluation axis is populated at this key. -/
+def HasEvaluationRecord (S : CanonicalState) (key : EvalKey) : Prop :=
+  (∃ status, S.epi key = some status) ∨
+    ∃ placement, S.placement key = some placement
+
+/-- Any evaluation record must resolve to the same immutable historical warrant
+and use exactly its formation profile/context identity. Combined with
+`WarrantReferentsCanonical`, this also gives canonical profile/context
+referents without duplicating that obligation here. -/
+def EvaluationReferentsCanonical (S : CanonicalState) : Prop :=
+  ∀ ⦃key⦄,
+    HasEvaluationRecord S key →
+    ∃ warrant,
+      S.warrant key.warrantId = some warrant ∧
+      warrant.formationProfileDigest = key.profileDigest ∧
+      warrant.formationContext = key.contextId
+
+/-- Evaluation positions are created as a pair. No reachable state contains a
+half-created epi-only or placement-only position. -/
+def EvaluationPairCoherent (S : CanonicalState) : Prop :=
+  ∀ key, S.epi key = none ↔ S.placement key = none
+
 structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   bindingReferentsCanonical : BindingReferentsCanonical S
   activeContextReferentsCanonical : ActiveContextReferentsCanonical S
@@ -202,6 +270,8 @@ structure CanonicalStateInvariant (S : CanonicalState) : Prop where
   warrantParentsCanonical : WarrantParentsCanonical S
   rootWarrantWellFormed : RootWarrantWellFormed S
   warrantRootLineageCanonical : WarrantRootLineageCanonical S
+  evaluationReferentsCanonical : EvaluationReferentsCanonical S
+  evaluationPairCoherent : EvaluationPairCoherent S
 
 structure CanonicalIdsUnique (S : CanonicalState) : Prop where
   contextUnique : ∀ ⦃id c₁ c₂⦄,
@@ -264,7 +334,7 @@ theorem initialBoundary_invariant
     (hInitial : InitialBoundary S) :
     CanonicalStateInvariant S := by
   subst S
-  constructor <;> intro <;> simp [
+  constructor <;> simp [
     BindingReferentsCanonical,
     ActiveContextReferentsCanonical,
     ActiveContextHasActivationProvenance,
@@ -273,7 +343,10 @@ theorem initialBoundary_invariant
     WarrantParentsCanonical,
     RootWarrantWellFormed,
     WarrantRootLineageCanonical,
-    emptyCanonicalState] at *
+    EvaluationReferentsCanonical,
+    EvaluationPairCoherent,
+    HasEvaluationRecord,
+    emptyCanonicalState]
 
 theorem step_historyReferentsImmutable
     {S S' : CanonicalState} {event : KernelEvent}
@@ -340,6 +413,19 @@ theorem step_historyReferentsImmutable
         exact putCanonical_preserves_some fresh h
       · intro id license h
         exact h
+  | admitRoot bindingCanonical contextCanonical warrantCanonical isRoot
+      formationContext formationProfile useMatches =>
+      constructor
+      · intro id context h
+        exact h
+      · intro digest h
+        exact h
+      · intro id binding h
+        exact h
+      · intro id warrant h
+        exact h
+      · intro id license h
+        exact h
 
 theorem step_preserves_invariant
     {S S' : CanonicalState} {event : KernelEvent}
@@ -369,6 +455,8 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · exact hInv.evaluationReferentsCanonical
+      · exact hInv.evaluationPairCoherent
   | @registerProfile digest fresh =>
       constructor
       · intro id binding hBinding
@@ -383,6 +471,8 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · exact hInv.evaluationReferentsCanonical
+      · exact hInv.evaluationPairCoherent
   | @bindProfile id binding fresh profileCanonical =>
       constructor
       · intro id' binding' hLookup
@@ -411,6 +501,8 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · exact hInv.evaluationReferentsCanonical
+      · exact hInv.evaluationPairCoherent
   | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
       constructor
       · exact hInv.bindingReferentsCanonical
@@ -448,6 +540,8 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
+      · exact hInv.evaluationReferentsCanonical
+      · exact hInv.evaluationPairCoherent
   | @root warrantId bindingId contextId input binding context
       fresh bindingCanonical contextCanonical accepted =>
       constructor
@@ -515,6 +609,47 @@ theorem step_preserves_invariant
           rcases hInv.warrantRootLineageCanonical hOld hLineage with
             ⟨root, hRootLookup⟩
           exact ⟨root, putCanonical_preserves_some fresh hRootLookup⟩
+      · intro key hRecord
+        rcases hInv.evaluationReferentsCanonical hRecord with
+          ⟨warrant, hWarrant, hProfile, hContext⟩
+        exact ⟨warrant, putCanonical_preserves_some fresh hWarrant,
+          hProfile, hContext⟩
+      · exact hInv.evaluationPairCoherent
+  | @admitRoot warrantId bindingId contextId use metadata binding context warrant
+      bindingCanonical contextCanonical warrantCanonical isRoot formationContext
+      formationProfile useMatches =>
+      constructor
+      · exact hInv.bindingReferentsCanonical
+      · exact hInv.activeContextReferentsCanonical
+      · exact hInv.activeContextHasActivationProvenance
+      · exact hInv.adoptedActiveContextHasCanonicalLicense
+      · exact hInv.warrantReferentsCanonical
+      · exact hInv.warrantParentsCanonical
+      · exact hInv.rootWarrantWellFormed
+      · exact hInv.warrantRootLineageCanonical
+      · intro key' hRecord
+        let key : EvalKey :=
+          ⟨binding.profileDigest, contextId, use, warrantId⟩
+        by_cases hEq : key' = key
+        · subst key'
+          exact ⟨warrant, warrantCanonical, formationProfile, formationContext⟩
+        · have hOldRecord : HasEvaluationRecord S key' := by
+            rcases hRecord with hEpi | hPlacement
+            · rcases hEpi with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, by
+                simpa [qualifyEvaluation, setOptionAt, key, hEq] using hStatus⟩
+            · rcases hPlacement with ⟨placement, hPlacement⟩
+              exact Or.inr ⟨placement, by
+                simpa [qualifyEvaluation, setOptionAt, key, hEq] using hPlacement⟩
+          exact hInv.evaluationReferentsCanonical hOldRecord
+      · intro key'
+        let key : EvalKey :=
+          ⟨binding.profileDigest, contextId, use, warrantId⟩
+        by_cases hEq : key' = key
+        · subst key'
+          simp [qualifyEvaluation, setOptionAt, key]
+        · simpa [qualifyEvaluation, setOptionAt, key, hEq] using
+            hInv.evaluationPairCoherent key'
 
 theorem reachable_invariant
     {S : CanonicalState}
