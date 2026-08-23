@@ -5,7 +5,7 @@ namespace ResponsibilityTopology
 /-!
 Ordinary INFER historical formation laws.
 
-The transition consumes only immutable canonical history.  Parent usability is
+The transition consumes only immutable canonical history. Parent usability is
 not a formation premise; current-parent qualification is reserved for the later
 `qualify_derived` milestone.
 -/
@@ -22,7 +22,7 @@ structure InferEvaluationTopologyUnchanged
   epi : ∀ key, S'.epi key = S.epi key
   placement : ∀ key, S'.placement key = S.placement key
 
-/-- Exact history facts exposed by one ordinary INFER step.  The rule comes
+/-- Exact history facts exposed by one ordinary INFER step. The rule comes
 from the immutable profile selected by the binding digest; parent IDs resolve in
 order and with duplicates preserved. -/
 theorem inferStep_newWarrant_exact
@@ -185,7 +185,7 @@ theorem inferStep_lineage_union
     {outScope : Scope}
     (hStep :
       Step S (.infer warrantId bindingId contextId ruleId parentIds outScope) S') :
-    ∃ binding profile context rule parents warrant,
+    ∃ binding profile rule parents warrant,
       S.binding bindingId = some binding ∧
       S.profile binding.profileDigest = some profile ∧
       lookupRule profile ruleId = some rule ∧
@@ -198,7 +198,7 @@ theorem inferStep_lineage_union
   rcases inferStep_newWarrant_exact hStep with
     ⟨binding, profile, context, rule, parents,
       hBinding, hProfile, hRule, hContext, hParents, hDiscipline, hWarrant⟩
-  refine ⟨binding, profile, context, rule, parents,
+  refine ⟨binding, profile, rule, parents,
     inferHistoricalWarrant ruleId binding.profileDigest contextId
       parentIds parents outScope rule,
     hBinding, hProfile, hRule, hParents, hWarrant, ?_, ?_⟩
