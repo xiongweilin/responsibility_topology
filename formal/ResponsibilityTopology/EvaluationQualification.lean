@@ -159,7 +159,7 @@ theorem admitRoot_preserves_evaluationInvariant
   exact ⟨hPost.evaluationReferentsCanonical, hPost.evaluationPairCoherent⟩
 
 /-- Fresh historical IDs cannot already carry an evaluation position in any
-canonical state satisfying evaluation-referent coherence.  This is reusable by
+canonical state satisfying evaluation-referent coherence. This is reusable by
 all history-only formation constructors. -/
 theorem freshHistoricalWarrant_noEvaluation
     {S : CanonicalState}
@@ -197,8 +197,9 @@ theorem noEvaluation_notUsable
     (hNone : S.epi key = none ∧ S.placement key = none) :
     ¬ Usable S key := by
   intro hUsable
-  rw [hNone.1] at hUsable
-  cases hUsable.1
+  have hLive : S.epi key = some .live := hUsable.1
+  rw [hNone.1] at hLive
+  cases hLive
 
 /-- A freshly formed ROOT has no evaluation position under any
 profile/context/use key. Historical formation therefore does not silently
