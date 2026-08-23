@@ -6,13 +6,13 @@ _Status: submission-facing architecture draft. The theorem surface is frozen at 
 
 Finite evidence-processing systems must distinguish two questions about the same object: whether it has a canonical historical formation, and whether it is currently usable in a particular evaluation environment. We mechanize that distinction in Lean 4 for a finite kernel with immutable canonical history and a separate mutable evaluation plane. Historical warrants record formation context, profile, constructor, ordered parents, and lineage. Current usability is indexed by an exact `(profile, context, use, warrant)` key and requires `LIVE` together with `PLACED`. A separate static entitlement calculus then consumes usable canonical warrants together with exact requirement discharge, ambient admissibility, and kernel-floor safety.
 
-The paper has three contribution families. First, Relative Branch Conservativity and supporting exact-resolution/projection results localize static entitlement responsibility. Second, an explicit `InitialBoundary / Step / Reachable` model preserves a shared invariant separating immutable historical referents from mutable evaluation state. Third, ROOT and ordinary INFER make the historical/current distinction transition-visible. ROOT formation creates history without usability; admission later qualifies an exact key. Ordinary INFER formation resolves an exact rule and ordered historical parent occurrences without requiring current parent usability. Later qualification does not replay formation obligations; it instead requires the same historical parent identities to be usable in the qualification pre-state and then establishes child usability in the post-state.
+The paper has three contribution families. First, Relative Branch Conservativity and supporting exact-resolution/projection results localize static entitlement responsibility. Second, an explicit `InitialBoundary / Step / Reachable` model preserves a shared invariant separating immutable historical referents from mutable evaluation state. Third, ROOT and ordinary INFER make the historical/current distinction transition-visible. ROOT formation creates history without usability; admission later qualifies an exact key. Ordinary INFER formation resolves an exact rule and ordered historical parent occurrences without requiring current parent usability. Later qualification has a different premise set: it preserves the historical referent, does not re-check the rule/typing/guard/context/scope/strength/lineage premises of formation, requires the same historical parent identities to be usable in the qualification pre-state, and establishes child usability in the post-state.
 
 The contribution is deliberately narrower than provenance, truth maintenance, dynamic evidence, or stateful authorization in general. It is a machine-checked decomposition in one reachable finite kernel between persistent historical relations, time-indexed current responsibility, and branch-local entitlement observations. The artifact does not prove profile adequacy, kernel-floor adequacy, source authenticity, Python operational refinement, a reachable Adopt/license lifecycle, TRANSPORT, temporal revalidation closure, or an end-to-end theorem from arbitrary reachable state directly to entitlement.
 
 # 1. Introduction
 
-A persistent derivation record and a current permission to rely on that record are different semantic objects. A system may need to preserve exactly how a warrant was formed while later suspending, qualifying, or otherwise changing whether that same warrant may be used under a particular profile, context, and use. Collapsing those questions into a single field such as `valid`, `trusted`, or `accepted` hides which responsibility was discharged at which boundary.
+A persistent derivation record and the kernel's current usability predicate are different semantic objects. A system may need to preserve exactly how a warrant was formed while separately changing whether that same warrant satisfies the current evaluation predicate under a particular profile, context, and use. Collapsing those questions into a single field such as `valid`, `trusted`, or `accepted` hides which modeled responsibility was checked at which boundary.
 
 This paper studies a deliberately finite kernel in which the split is explicit and machine checked. The state-level thesis is:
 
@@ -40,25 +40,11 @@ For ordinary INFER, the result is more specific:
 }
 \]
 
-The same parent identities participate at different responsibility boundaries. Formation records ordered parent occurrences and discharges rule, typing, guard, context, scope, strength, and lineage obligations. Qualification later evaluates a time-indexed usability predicate over those stored parent identities. The latter does not rewrite or replay the former.
+The same parent identities participate at different responsibility boundaries. Formation records ordered parent occurrences and checks the modeled rule, typing, guard, context, scope, strength, and lineage conditions. Qualification later evaluates a time-indexed usability predicate over those stored parent identities. The qualification transition preserves the historical referent and does not re-check the formation premises; those formation facts remain part of immutable reachable history rather than becoming irrelevant.
 
 The paper keeps four layers separate. **Canonical history** records immutable referents and formation structure. **Current evaluation** records time-indexed usability at exact evaluation keys. **Entitlement** additionally requires exact requirement discharge, ambient admissibility, and kernel-floor safety. **Adequacy**—whether the finite regime itself is substantively sufficient—remains outside the theorem surface.
 
-Accordingly:
-
-\[
-CurrentUsability \not\Rightarrow Entitlement,
-\]
-
-\[
-ProfileExecutionCorrectness \not\Rightarrow ProfileAdequacy,
-\]
-
-and
-
-\[
-KernelCorrectness \not\Rightarrow KernelFloorAdequacy.
-\]
+Accordingly, this paper does not claim that current usability alone yields entitlement: the definition of entitlement additionally requires ambient admissibility, exact requirement derivability, and kernel-floor safety. Nor does correct execution of the modeled profile or kernel establish substantive profile or kernel-floor adequacy; those adequacy questions lie outside the present formal vocabulary.
 
 ### Contributions and anchors
 
@@ -149,7 +135,7 @@ The trace admits the roots before INFER only for readability. That ordering is n
 | **INFER formation** | fresh child; exact binding/profile/rule; canonical context; ordered canonical parent occurrences; `InferFormationDiscipline` | exact immutable historical child; ordered parent identities; root/source lineage | current parent usability |
 | **INFER qualification** | existing historical INFER child; recorded formation profile/context; pre-state usability of the stored parent identities | exact child `LIVE/PLACED` at `(profile,context,use,warrant)` | rule lookup; typing; guard; output acceptance; scope/strength checks; lineage construction |
 
-**Table 1.** The table states responsibility boundaries, not resource consumption. `Usable` is an idempotent predicate at an evaluation key; repeated parent occurrences do not create use-once or linear consumption semantics.
+**Table 1.** The table states responsibility boundaries, not resource consumption. `Usable` is an idempotent predicate at an evaluation key; repeated parent occurrences do not create use-once or linear consumption semantics. “Does not re-check” means only that those premises are absent from the later transition; the corresponding formation facts remain encoded in immutable history and are not declared unimportant or invalid.
 
 # 3. Static Entitlement Locality
 
@@ -236,19 +222,9 @@ If
 \sigma\xrightarrow{\operatorname{admitRoot}(w,b,c,u,meta)}\sigma',
 \]
 
-then the canonical binding witness fixes the exact profile digest and the post-state has `LIVE/PLACED` at the exact `(profileDigest,c,u,w)` key. Admission does not replay the formation-time context acceptance check.
+then the canonical binding witness fixes the exact profile digest and the post-state has `LIVE/PLACED` at the exact `(profileDigest,c,u,w)` key. Admission does not re-check the formation-time context acceptance premise.
 
-The only conclusion needed here is the boundary itself:
-
-\[
-\boxed{
-ROOT\ Formation \not\Rightarrow Usable,
-\qquad
-Explicit\ Admission \Rightarrow ExactKeyUsable.
-}
-\]
-
-Recorded actor or basis metadata is not promoted into authentication or adequacy.
+The theorem-backed boundary used by the paper is therefore scoped as follows: reachable fresh ROOT formation yields non-usability of the fresh identifier at every evaluation key, while a valid explicit admission transition establishes usability at its exact post-state key. Recorded actor or basis metadata is not promoted into authentication or adequacy.
 
 # 6. INFER: Historical Parents and Current Parent Responsibility
 
@@ -379,7 +355,7 @@ The theorem regime is intentionally explicit.
 | Python | selected differential conformance | verified implementation / general operational refinement |
 | Regime | correct execution of modeled finite rules | profile adequacy; kernel-floor adequacy |
 
-The first-paper kernel does not contain Assembly, TRANSPORT, reachable Adopt/license issuance, challenge/revision/revalidation transitions, or temporal closure. Those absences are boundaries of the artifact, not implicit premises.
+The first-paper artifact does not include a total state-backed licensing-read assembly theorem, TRANSPORT, reachable Adopt/license issuance, challenge/revision/revalidation transitions, or temporal closure. Those absences are boundaries of the artifact, not implicit premises.
 
 # 9. Related Work — submission baseline
 
@@ -405,10 +381,10 @@ and, for ordinary INFER:
 }
 \]
 
-A final descendant-literature pass is reserved for the novelty-freeze stage. That pass may narrow this wording, but it must not broaden the theorem surface.
+The descendant-literature boundary is frozen in `paper/novelty-freeze.md`. Later discoveries may force narrower wording, but they are not answered by broadening the R1–R9 theorem surface.
 
 # 10. Conclusion and Frozen Extensions
 
 The paper mechanizes a finite responsibility decomposition rather than a universal account of epistemic validity. Static entitlement has a branch-local observation boundary; reachable state separates immutable history from mutable evaluation; ROOT and INFER expose distinct formation and qualification transitions. INFER is the central case because the same stored parent identities participate first in a persistent historical relation and later in a time-indexed current-usability predicate.
 
-The kernel remains frozen for the submission sequence. No Assembly, TRANSPORT, temporal-closure, or reachable Adopt/license semantics is added unless a later hostile-review audit identifies an indispensable core sentence that cannot be honestly supported by the current theorem surface and cannot instead be removed or narrowed.
+The kernel remains frozen for the submission sequence. No total state-backed licensing-read assembly theorem, TRANSPORT, temporal-closure, or reachable Adopt/license semantics is added unless a hostile-review audit identifies an indispensable core sentence that cannot be honestly supported by the current theorem surface and cannot instead be removed or narrowed.
