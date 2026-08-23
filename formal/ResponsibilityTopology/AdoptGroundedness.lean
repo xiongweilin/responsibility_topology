@@ -6,10 +6,10 @@ namespace ResponsibilityTopology
 Reachable grounded currentness for context activation.
 
 The central result connects the reachable activation relation to the previously
-orthogonal semantic `Grounded` relation.  Under the current transition surface,
+orthogonal semantic `Grounded` relation. Under the current transition surface,
 base-currentness is monotone: core steps may add canonical history or make an
 evaluation usable, but there is not yet a review/invalidation transition that can
-make a previously base-current Adopt license stale.  This monotonicity is a
+make a previously base-current Adopt license stale. This monotonicity is a
 property of the current kernel surface, not a temporal-persistence claim once
 challenge/revalidation is added.
 -/
@@ -41,7 +41,7 @@ private theorem qualifyEvaluation_preserves_usable
       by simpa [qualifyEvaluation, setOptionAt, hEq] using hEpi,
       by simpa [qualifyEvaluation, setOptionAt, hEq] using hPlacement⟩
 
-/-- Every current core transition preserves existing usability.  This relies on
+/-- Every current core transition preserves existing usability. This relies on
 the present absence of evaluation-invalidation transitions. -/
 theorem coreStep_preserves_usable
     {S S' : CanonicalState}
@@ -53,7 +53,7 @@ theorem coreStep_preserves_usable
   cases hStep <;>
     first
     | exact hUsable
-    | exact qualifyEvaluation_preserves_usable _ _ hUsable
+    | exact qualifyEvaluation_preserves_usable _ _ _ hUsable
 
 /-- Current core transitions do not modify Adopt-license review flags. -/
 theorem coreStep_reviewRequired_unchanged
@@ -77,7 +77,7 @@ theorem coreStep_active_monotone
     | exact Or.inr hActive
 
 /-- Existing activation provenance facts are immutable across current core
-steps.  Only bootstrap adds one fresh provenance fact. -/
+steps. Only bootstrap adds one fresh provenance fact. -/
 theorem coreStep_preserves_activation_fact
     {S S' : CanonicalState}
     {event : KernelEvent}
@@ -86,10 +86,24 @@ theorem coreStep_preserves_activation_fact
     (hStep : Step S event S')
     (hActivation : S.activationProvenance key = some activation) :
     S'.activationProvenance key = some activation := by
-  cases hStep <;>
-    first
-    | exact hActivation
-    | exact putCanonical_preserves_some_grounded freshActivation hActivation
+  cases hStep with
+  | registerContext fresh => exact hActivation
+  | registerProfile fresh => exact hActivation
+  | bindProfile fresh profileCanonical => exact hActivation
+  | bootstrapContext contextCanonical bindingCanonical inactive freshActivation =>
+      exact putCanonical_preserves_some_grounded freshActivation hActivation
+  | root fresh bindingCanonical contextCanonical accepted => exact hActivation
+  | admitRoot bindingCanonical contextCanonical warrantCanonical isRoot
+      formationContext formationProfile useMatches => exact hActivation
+  | infer fresh bindingCanonical profileCanonical ruleExact contextCanonical
+      parentsCanonical discipline => exact hActivation
+  | transport fresh bindingCanonical contextCanonical originalCanonical
+      witnessCanonical discipline => exact hActivation
+  | qualifyInfer bindingCanonical warrantCanonical isInfer formationContext
+      formationProfile parentsUsable => exact hActivation
+  | qualifyTransport bindingCanonical warrantCanonical isTransport parentsExact
+      originalCanonical witnessCanonical formationContext formationProfile
+      parentsUsable => exact hActivation
 
 /-- If a core step creates activity that was absent in the pre-state, the new
 activity is exactly a bootstrap activation. -/
@@ -158,14 +172,17 @@ theorem coreStep_preserves_adoptLicenseBaseCurrent
     exact ⟨warrant, hImmutable.warrantImmutable hWarrant,
       coreStep_preserves_usable hStep hUsable⟩
 
-/-- Generic lifting lemma specialized to the enriched Adopt-state read.  Exact
+/-- Generic lifting lemma specialized to the enriched Adopt-state read. Exact
 license-record preservation supplies exact issuer edges; BaseCurrent and active
-facts are supplied separately. -/
+facts are supplied separately. Activation preservation is required only for
+contexts already active in the pre-state, matching each `Grounded` constructor's
+own seed fact. -/
 private theorem grounded_preserved_between_adoptStates
     {A A' : AdoptState}
     (hActive : ∀ ⦃key⦄,
       A.core.activeContext key → A'.core.activeContext key)
     (hActivation : ∀ ⦃key activation⦄,
+      A.core.activeContext key →
       A.core.activationProvenance key = some activation →
         A'.core.activationProvenance key = some activation)
     (hLicense : ∀ ⦃licenseId L⦄,
@@ -182,7 +199,7 @@ private theorem grounded_preserved_between_adoptStates
   | @bootstrap key seed activation =>
       apply Grounded.bootstrap
       · exact hActive seed
-      · exact hActivation activation
+      · exact hActivation seed activation
   | @adopt key issuer license seed activation baseCurrent issuerContext
       issuerGrounded ih =>
       change ∃ L,
@@ -199,7 +216,7 @@ private theorem grounded_preserved_between_adoptStates
         adoptActivationRead_issuer_exact A'.toLicenseRead hPostLookup
       apply Grounded.adopt
       · exact hActive seed
-      · exact hActivation activation
+      · exact hActivation seed activation
       · change ∃ observed,
           A'.adoptLicense license = some observed ∧
             AdoptLicenseBaseCurrent A'.core license observed
@@ -221,7 +238,7 @@ private theorem grounded_preserved_by_coreStep
   apply grounded_preserved_between_adoptStates
   · intro observed hActive
     exact coreStep_active_monotone hStep hActive
-  · intro observed activation hActivation
+  · intro observed activation hSeed hActivation
     exact coreStep_preserves_activation_fact hStep hActivation
   · intro licenseId L hLookup
     exact hLookup
@@ -243,7 +260,7 @@ private theorem grounded_preserved_by_recordStep
   · intro observed hActive
     rw [hTopology.1]
     exact hActive
-  · intro observed activation hActivation
+  · intro observed activation hSeed hActivation
     rw [hTopology.2]
     exact hActivation
   · intro observedId observed hLookup
@@ -278,9 +295,7 @@ private theorem grounded_preserved_by_adoptStep
   apply grounded_preserved_between_adoptStates
   · intro observed hActive
     exact adoptContext_active_monotone hStep hActive
-  · intro observed activation hActivation
-    have hSeed : A.core.activeContext observed :=
-      grounded_contractiveness hGrounded
+  · intro observed activation hSeed hActivation
     have hEq := adoptContext_oldActivation_unchanged hStep hSeed
     rw [hEq]
     exact hActivation
@@ -292,6 +307,103 @@ private theorem grounded_preserved_by_adoptStep
     exact adoptContext_preserves_baseCurrent hStep hCurrent
   · exact hGrounded
 
+/-- Constructor inversion used only at the proof boundary: an Adopt step cannot
+create any fresh active context except its named target. -/
+private theorem adoptContext_newActive_is_target
+    {A A' : AdoptState}
+    {licenseId : ActivationLicenseId}
+    {target key : ContextKey}
+    (hStep : AdoptActivationStep A (.adoptContext licenseId target) A')
+    (hPost : A'.core.activeContext key)
+    (hPre : ¬ A.core.activeContext key) :
+    key = target := by
+  cases hStep with
+  | adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
+      inactive freshActivation =>
+      rcases hPost with hEq | hOld
+      · exact hEq
+      · exact False.elim (hPre hOld)
+
+/-- State-level invariant used by the reachability induction. -/
+def ActiveContextsGrounded (A : AdoptState) : Prop :=
+  ∀ ⦃key⦄,
+    A.core.activeContext key →
+      Grounded A.toLicenseRead.toActivationRead key
+
+/-- The empty activation boundary has no active contexts. -/
+theorem adoptInitial_activeContextsGrounded
+    {A : AdoptState}
+    (hInitial : AdoptInitialBoundary A) :
+    ActiveContextsGrounded A := by
+  subst A
+  intro key hActive
+  exact False.elim hActive
+
+/-- One-step preservation of grounded active-context closure. Existing active
+contexts preserve their grounded derivations; a genuinely new core context is a
+bootstrap, while a genuinely new Adopt context is grounded by the exact current
+license consumed by that transition. -/
+theorem adoptActivationStep_preserves_activeContextsGrounded
+    {A A' : AdoptState}
+    {event : AdoptActivationEvent}
+    (hBefore : ActiveContextsGrounded A)
+    (hStep : AdoptActivationStep A event A') :
+    ActiveContextsGrounded A' := by
+  cases event with
+  | prior recordEvent =>
+      cases hStep with
+      | prior recordStep =>
+          intro key hPostActive
+          cases recordStep with
+          | @core coreEvent S' coreStep =>
+              by_cases hPreActive : A.core.activeContext key
+              · exact grounded_preserved_by_coreStep coreStep
+                  (hBefore hPreActive)
+              · apply Grounded.bootstrap
+                · exact hPostActive
+                · exact coreStep_newActive_is_bootstrap coreStep
+                    hPostActive hPreActive
+          | @recordAdoptLicense licenseId L freshEnriched freshProjection
+              discipline =>
+              have hRecordStep :=
+                AdoptRecordStep.recordAdoptLicense
+                  freshEnriched freshProjection discipline
+              have hTopology :=
+                recordAdoptLicense_activationTopology_unchanged hRecordStep
+              have hPreActive : A.core.activeContext key := by
+                rw [hTopology.1] at hPostActive
+                exact hPostActive
+              exact grounded_preserved_by_recordStep hRecordStep
+                (hBefore hPreActive)
+  | adoptContext licenseId target =>
+      intro key hPostActive
+      by_cases hPreActive : A.core.activeContext key
+      · exact grounded_preserved_by_adoptStep hStep
+          (hBefore hPreActive)
+      · have hKeyEq :=
+          adoptContext_newActive_is_target hStep hPostActive hPreActive
+        subst key
+        rcases adoptContext_requires_currentLicense hStep with
+          ⟨L, hLookup, hBaseCurrent, hIssuerGrounded⟩
+        have hIssuerPost :=
+          grounded_preserved_by_adoptStep hStep hIssuerGrounded
+        have hPostLookup : A'.adoptLicense licenseId = some L := by
+          rw [adoptContext_enrichedLicenses_unchanged hStep]
+          exact hLookup
+        have hPostBase :
+            AdoptLicenseBaseCurrent A'.core licenseId L :=
+          adoptContext_preserves_baseCurrent hStep hBaseCurrent
+        have hActivation := adoptContext_activation_exact hStep
+        apply Grounded.adopt (issuer := L.issuer) (license := licenseId)
+        · exact hActivation.1
+        · exact hActivation.2
+        · change ∃ observed,
+            A'.adoptLicense licenseId = some observed ∧
+              AdoptLicenseBaseCurrent A'.core licenseId observed
+          exact ⟨L, hPostLookup, hPostBase⟩
+        · exact adoptActivationRead_issuer_exact A'.toLicenseRead hPostLookup
+        · exact hIssuerPost
+
 /-- Main reachable closure: every context marked active in an activation-reachable
 state is grounded in the exact state-backed Adopt-license read. -/
 theorem reachable_activeContext_grounded
@@ -300,70 +412,13 @@ theorem reachable_activeContext_grounded
     ∀ ⦃key⦄,
       A.core.activeContext key →
       Grounded A.toLicenseRead.toActivationRead key := by
-  induction hReachable with
-  | initial hInitial =>
-      subst A
-      intro key hActive
-      cases hActive
-  | @step A A' event hReachable hStep ih =>
-      intro key hPostActive
-      cases hStep with
-      | prior recordStep =>
-          cases recordStep with
-          | @core event S' coreStep =>
-              by_cases hPreActive : A.core.activeContext key
-              · exact grounded_preserved_by_coreStep coreStep
-                  (ih hPreActive)
-              · apply Grounded.bootstrap
-                · exact hPostActive
-                · exact coreStep_newActive_is_bootstrap coreStep
-                    hPostActive hPreActive
-          | @recordAdoptLicense licenseId L freshEnriched freshProjection
-              discipline =>
-              have hRecordStep :
-                  AdoptRecordStep A (.recordAdoptLicense licenseId L) A' :=
-                .recordAdoptLicense freshEnriched freshProjection discipline
-              have hTopology :=
-                recordAdoptLicense_activationTopology_unchanged hRecordStep
-              have hPreActive : A.core.activeContext key := by
-                rw [← hTopology.1]
-                exact hPostActive
-              exact grounded_preserved_by_recordStep hRecordStep
-                (ih hPreActive)
-      | @adoptContext licenseId target L licenseCanonical targetExact baseCurrent
-          issuerGrounded inactive freshActivation =>
-          have hAdoptStep :
-              AdoptActivationStep A (.adoptContext licenseId target) A' :=
-            .adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
-              inactive freshActivation
-          by_cases hPreActive : A.core.activeContext key
-          · exact grounded_preserved_by_adoptStep hAdoptStep
-              (ih hPreActive)
-          · have hKeyEq : key = target := by
-              rcases hPostActive with hEq | hOld
-              · exact hEq
-              · exact False.elim (hPreActive hOld)
-            subst key
-            have hIssuerPost :
-                Grounded A'.toLicenseRead.toActivationRead L.issuer :=
-              grounded_preserved_by_adoptStep hAdoptStep issuerGrounded
-            have hPostLicense : A'.adoptLicense licenseId = some L := by
-              have hEq := adoptContext_enrichedLicenses_unchanged hAdoptStep
-              rw [hEq]
-              exact licenseCanonical
-            have hPostBase :
-                AdoptLicenseBaseCurrent A'.core licenseId L :=
-              adoptContext_preserves_baseCurrent hAdoptStep baseCurrent
-            have hActivation := adoptContext_activation_exact hAdoptStep
-            apply Grounded.adopt
-            · exact hActivation.1
-            · exact hActivation.2
-            · change ∃ observed,
-                A'.adoptLicense licenseId = some observed ∧
-                  AdoptLicenseBaseCurrent A'.core licenseId observed
-              exact ⟨L, hPostLicense, hPostBase⟩
-            · exact adoptActivationRead_issuer_exact A'.toLicenseRead hPostLicense
-            · exact hIssuerPost
+  have hAll : ActiveContextsGrounded A := by
+    induction hReachable with
+    | initial hInitial =>
+        exact adoptInitial_activeContextsGrounded hInitial
+    | step hReachable hStep ih =>
+        exact adoptActivationStep_preserves_activeContextsGrounded ih hStep
+  exact hAll
 
 /-- Reachable form of the finite bootstrap-chain theorem. -/
 theorem reachable_activeContext_has_bootstrap_chain
