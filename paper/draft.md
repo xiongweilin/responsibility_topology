@@ -1055,11 +1055,8 @@ Usable(S_2,k_w).
 A stronger temporal-persistence theorem would quantify over states reached through arbitrary intervening transitions and would have to state which historical/current properties are preserved, which transitions may suspend or invalidate them, and under what revalidation obligations they can be restored. Schematically,
 
 \[
-\begin{aligned}
-\textbf{Temporal persistence:}\quad
-&\text{for arbitrary admissible intervening transitions,}\
-&\text{specified properties persist until an explicit invalidator, subject to stated preservation rules.}
-\end{aligned}
+\textbf{TemporalPersistence}
+\quad\text{requires explicit preservation and invalidation premises over intervening transitions.}
 \]
 
 The current `Step` surface has no challenge/revision/invalidation theory from which those premises could be derived. The stronger statement is therefore not silently assumed and is not required to establish relation-level separation:
