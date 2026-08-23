@@ -1,218 +1,188 @@
-# First-paper workspace
+# Paper Workspace Index
 
-Working title:
+This directory contains writing, claim maps, running examples, hostile reviews, and submission drafts for multiple papers in the Responsibility Topology research program.
 
-> **Separating Canonical History from Current Usability in a Finite Epistemic Kernel**
+It is **not** a single first-paper workspace. Paper-specific claims are frozen by their own files and commit baselines; later `main` changes do not retroactively expand an earlier paper.
 
-`Responsibility Topology` remains the interpretive framework and repository identity, but the paper title and theorem-facing thesis are intentionally narrower than the broader research program.
-
-This directory is the paper-facing workspace for the first article built from the current mechanized core.
-
-The paper-freeze rule is strict:
-
-> **Do not expand the core semantics merely because another kernel constructor is available. Add a formal milestone only when writing exposes a theorem gap that cannot be crossed honestly.**
-
-The theorem-facing central thesis is:
-
-\[
-\boxed{
-\text{Canonical history and current usability are distinct state relations.}
-}
-\]
-
-Historical formation and current qualification are distinct transitions governing those two relations.
-
-For ordinary INFER, the stronger relation-level thesis is:
-
-\[
-\boxed{
-\text{Historical derivation and current usable-parent responsibility are distinct relations.}
-}
-\]
-
-A canonical warrant may exist in immutable formation/derivation history without thereby being currently usable or entitled. This statement does **not** imply that the historical object is epistemically adequate, that its source is authentic, or that the governing profile is normatively sufficient.
-
-## Files
-
-- `theorem-map.md` — paper-facing results R1–R9, their Lean witnesses, dependencies, and non-claims.
-- `related-work-matrix.md` — comparison matrix used to discipline novelty claims before writing Section 9.
-- `draft.md` — ten-section working paper. The current pass completes Section 2, the running example, Sections 7–9, and rewrites the Abstract/Introduction after related-work positioning.
-
-## Frozen paper architecture
+## Program sequence
 
 ```text
-1. Introduction
-2. Problem, Relations, and Running Example
-3. Static Entitlement Calculus
-4. Reachable Canonical Kernel
-5. Historical Formation Is Not Current Qualification
-6. Current-Parent Responsibility
-7. Executable Reference and Conformance
-8. Limits and Non-Theorems
-9. Related Work
-10. Discussion and Future Work
+Paper 1 — Object / identity
+  historical formation != current qualification
+
+Paper 2 — Environment
+  transported historical responsibility != current environment responsibility
+
+Paper 3 — Change
+  preserved history != invalidated/restored current responsibility
+
+Next — Regime adequacy / Q_open
+  correct repair inside a model != knowing the model is adequate
+
+Later — Multi-agent regime / Q_close
 ```
 
-The first paper has three contribution families.
-
-1. **Static entitlement locality.** Branch-local derivability, kernel-floor locality, Relative Branch Conservativity, exact full-move requirement resolution, and canonical projection coherence locate entitlement responsibility on explicit finite observation boundaries.
-2. **Reachable canonical history/evaluation state.** An explicit initial boundary, kernel-owned transitions, immutable historical identity, and mutable evaluation state replace an arbitrary supplied world with a reachable one. Grounded adopted-context currentness is included as an orthogonal semantic currentness component, not as a completed reachable Adopt lifecycle.
-3. **Historical formation/current qualification separation.** ROOT and INFER provide two lifecycle instances showing that historical existence or derivability does not silently establish current usability. INFER further separates historical parenthood from current usable-parent responsibility.
-
-The third contribution is the center of the paper. Python differential conformance is evidence about an executable reference implementation, not a fourth metatheoretical contribution.
-
-## Paper-facing state pipeline
+The three completed paper lines should be described as:
 
 ```text
-immutable canonical history
-        │
-        │ formation
-        ▼
-historical warrant
-        │
-        │ explicit evaluation boundary
-        ▼
-current qualification
-        │
-        ▼
-usable warrant
-        │
-        │ exact requirement + ambient admissibility + floor safety
-        ▼
-entitlement
+identity -> environment -> change
 ```
 
-The current mechanization does **not** contain one total theorem assembling every `CanonicalState` observation into a `LicensingRead` and then deriving `Entitled`. Existing narrow bridges include:
+not as:
 
 ```text
-HistoricalWarrant
-    → CanonicalRead.CanonicalWarrant
-
-epi + placement
-    → usableFromState
-
-CanonicalProfile
-    → RequirementSnapshot
-
-reachable state
-    → ActivationRead structural well-formedness
+INFER -> TRANSPORT -> challenge constructor
 ```
 
-Accordingly, the paper may say:
+## Paper 1 — history / qualification
 
-> The reachable kernel establishes current usability, which is one input to the separately proved entitlement layer.
+Primary files:
 
-It must not yet say:
+- `draft.md` — long-form working draft.
+- `submission-draft.md` — submission-oriented compressed draft.
+- `theorem-map.md` — R1–R9 paper-facing theorem map.
+- `related-work-matrix.md` — related-work/novelty discipline.
+- `novelty-freeze.md` — frozen novelty wording.
+- `hostile-review-audit.md` — adversarial claim audit.
 
-> The reachable kernel yields entitlement end-to-end.
+Repository-root `ARTIFACT.md` belongs **only** to Paper 1 and locks semantic baseline `d0074353176fc74c11bc33adab2feae448f56bd8`. It must not be edited to describe Paper 2 or Paper 3.
 
-Sections 3–6 can currently be written without an informal hidden assembly step, so the trigger condition for a State-Backed Licensing Read Assembly theorem has **not** fired.
-
-## Running example contract
-
-Fix one evaluation environment
-
-\[
-q=(\pi,c,u),
-\]
-
-and exact evaluation keys
-
-\[
-k_{p_1}=(\pi,c,u,p_1),\qquad
-k_{p_2}=(\pi,c,u,p_2),\qquad
-k_d=(\pi,c,u,d).
-\]
-
-The paper uses one minimal trace throughout Sections 2, 5, and 6:
+Paper 1 mother distinction:
 
 ```text
-S0
- │ form ROOT p1
- │ form ROOT p2
- ▼
-S1    p1,p2 historical; neither usable at k_p1,k_p2
- │ admit p1 at k_p1
- │ admit p2 at k_p2
- ▼
-S2    Usable(S2,k_p1) and Usable(S2,k_p2)
- │ INFER d from [p1,p2]
- ▼
-S3    d historical; NOT Usable(S3,k_d)
- │ qualifyInfer d at k_d
- │ requires Usable(S3,k_p1) and Usable(S3,k_p2)
- ▼
-S4    Usable(S4,k_d)
+persistent historical parent identity
+!=
+state-indexed current usable-parent responsibility
 ```
 
-The historical edges `p1,p2 → d` are persistent. The usable-parent condition is a time-indexed pre-state obligation at `S3` over the same parent identities. The example stops before suspension/invalidation because those transition semantics are future work.
+## Paper 2 — cross-environment responsibility
 
-## Related-work discipline
+Primary files use the `transport-*` prefix, including:
 
-The first paper does **not** claim novelty for:
+- `transport-paper-checkpoint.md`
+- `transport-theorem-map.md`
+- `transport-running-example.md`
+- `transport-related-work.md` / novelty material
+- `transport-submission-draft.md`
+- `transport-hostile-review.md`
 
-- storing provenance or justification structure;
-- proof-relevant evidence objects;
-- dynamically revisable explicit evidence;
-- truth maintenance, retraction, or context switching in general;
-- authorization depending on mutable state or time;
-- staged or proof-carrying authorization, including revocable credential state;
-- belief revision or dynamic epistemic state change.
+Program-level Paper 2 scope is:
 
-The narrower positioning claim is that this mechanized kernel separates immutable warrant history, mutable current qualification, and branch-local entitlement observations, and proves a lifecycle in which ordinary INFER formation permanently records ordered historical parent identities without consuming parent usability, while later qualification evaluates current usability over those same historical parent identities in the pre-state without replaying historical formation obligations.
+```text
+TRANSPORT historical formation
++
+source-context current qualification
++
+Adopt-license BaseCurrent
++
+reachable Adopt activation
++
+Grounded reachable currentness
+```
 
-See `related-work-matrix.md` for the comparison matrix and bibliographic anchors.
+The historical TRANSPORT manuscript line predates the final Adopt/License/Grounded formal closure. Treat the current Paper 2 submission draft as a frozen writing baseline, not as proof that every later Paper 2 formal result is already integrated into that manuscript. Any future Paper 2 submission pass should be paper-only synchronization unless writing exposes a genuine theorem gap.
 
-## Permanent claim discipline
+Paper 2 mother question:
 
-### Machine proved
+> When responsibility crosses an environment boundary, which facts remain attached to historical objects and which current responsibilities must be discharged in the relevant source/target environment?
 
-- Branch Conservativity and Relative Branch Conservativity;
-- Kernel-Floor Locality;
-- exact full-move requirement resolution, including `none ≠ some top`;
-- canonical projection coherence;
-- reachable canonical-state invariance and historical referent immutability;
-- grounded adopted-context currentness and absence of pure self-support as a semantic currentness component;
-- ROOT formation/admission separation;
-- ordinary INFER historical formation discipline and lineage preservation;
-- INFER current-parent qualification and lifecycle separation.
+## Paper 3 — dependency-sensitive revision
 
-### Differentially conformance tested
+Primary files:
 
-Selected Python V0.1.2.2 projection and context-currentness behavior is tested against mechanized projection semantics on finite fixtures.
+- `revalidation-paper-checkpoint.md` — formal-kernel checkpoint.
+- `revalidation-claim-map.md` — theorem/claim firewall.
+- `revalidation-running-example.md` — three-layer currentness counterexample.
+- `revalidation-related-work.md` — prior-art narrowing.
+- `revalidation-submission-draft.md` — first full manuscript.
+- `revalidation-hostile-review.md` — adversarial review.
+- `revalidation-post-review-corrections.md` — terminology/claim corrections.
+- `revalidation-submission-v2.md` — current venue-neutral submission baseline before conceptual normalization.
+- `revalidation-venue-target.md` — venue-specific planning; not part of the semantic claim surface.
 
-### Not claimed
+Paper 3 mother distinction:
 
-- Python operational refinement or a verified Python kernel;
-- total `CanonicalState → LicensingRead → Entitled` assembly;
-- reachable Adopt lifecycle;
-- TRANSPORT lifecycle;
-- license issuance lifecycle;
-- challenge/revision/revalidation transitions;
-- source authenticity;
-- admission, use, profile, or rule adequacy;
-- `ProfileExecutionCorrectness → ProfileAdequacy`;
-- `KernelCorrectness → KernelFloorAdequacy`;
-- Q_open or Q_close.
+```text
+Revision should withdraw current responsibility
+without rewriting historical dependency.
+```
 
-Two non-theorems should remain visible throughout the paper:
+The paper then separates:
 
-\[
-\boxed{
-\text{ProfileExecutionCorrectness}
-\not\Rightarrow
-\text{ProfileAdequacy}
-}
-\]
+```text
+impact detection
+!= repair selection
+!= semantic effectiveness
+!= represented-cut necessity
+!= extraction completeness
+!= ordered execution
+```
 
-and
+The current formal kernel is frozen at PR #48. Manuscript work should reduce theorem-catalog presentation rather than request more Lean by default.
 
-\[
-\boxed{
-\text{KernelCorrectness}
-\not\Rightarrow
-\text{KernelFloorAdequacy}.
-}
-\]
+## Paper 3 result hierarchy for future drafts
 
-The paper studies correct execution inside a finite responsibility regime. It does not establish that the regime itself is epistemically or normatively adequate.
+Use four memorable result families:
+
+```text
+T1  history-preserving currentness invalidation
+T2  repair selection + realization -> restoration
+T3  inclusion-minimal repair -> private-cut witnesses
+T4  proof-carrying repair has a reachable realization bridge
+```
+
+Treat these as supporting definitions/lemmas/boundaries rather than peer headline theorems:
+
+- target-plus-descendants `Affected` boundary;
+- refresh contractiveness;
+- `EveryRepairCutNecessary` represented-cut necessity premise;
+- stage-local history-preservation lemmas.
+
+`EveryRepairCutNecessary` does not prove extraction completeness. `MinimalRepairSet` does not mean minimum-cardinality, minimum-cost, optimal, unique, or canonical.
+
+## Figure architecture
+
+Paper 3 should carry two primary figures.
+
+### Figure A — persistent history vs typed currentness across change
+
+```text
+                         formation/qualification   challenge      refresh       repair       final refresh
+
+historical plane        ======================= identity preserved ======================================
+
+warrant currentness           LIVE/PLACED       SUSPENDED/...                restored
+                                      |
+license currentness              BaseCurrent       stale                      restored
+                                      |
+context currentness               Grounded        loss/inactive              reactivated -> Grounded
+```
+
+The visual point is persistent historical identity plus typed, non-monotone currentness.
+
+### Figure B — repair responsibility interfaces
+
+```text
+RepairProblem
+    |
+    v
+RepairSet                 unordered selection
+    |
+    v
+RepairRealization         semantic effectiveness certificate
+    |
+    v
+RevalidationTrace         ordered proof-carrying execution
+```
+
+The hypergraph is a technical representation inside this argument, not the conceptual starting point.
+
+## Permanent writing rule
+
+Across all papers:
+
+> **Fix prose before reopening semantics.**
+
+A new formal milestone is permitted only when an indispensable central sentence cannot be supported honestly, cannot be deleted or weakened without breaking the thesis, and the missing result is narrow enough not to broaden the object model opportunistically.
+
+Version identities are recorded in repository-root `PAPER_VERSIONS.md`.
