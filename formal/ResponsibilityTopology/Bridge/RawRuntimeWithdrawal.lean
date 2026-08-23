@@ -136,7 +136,8 @@ theorem checkRawWithdrawal_sound
       simp [checkRawWithdrawal, before, after, hProjected, hEvent, hSchema] at hCheck
   | true =>
       unfold RawB0WithdrawalHolds
-      exact checkProjectedB0Withdrawal_sound before after hProjected
+      simpa [before, after] using
+        (checkProjectedB0Withdrawal_sound before after hProjected)
 
 /-- Concrete selected-field mirror used only to exercise the checker in normal
 Lean compilation. The cross-repository CI gate separately feeds the actual raw
