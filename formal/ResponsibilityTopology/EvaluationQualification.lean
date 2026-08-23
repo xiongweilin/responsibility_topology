@@ -3,11 +3,12 @@ import ResponsibilityTopology.RootFormation
 namespace ResponsibilityTopology
 
 /-!
-ROOT admission and evaluation qualification laws.
+Evaluation qualification laws.
 
 Historical existence, evaluation presence, and current usability are distinct.
-Admission records declared actor/basis metadata but does not authenticate the
-actor or establish adequacy of the recorded basis.
+ROOT admission records declared actor/basis metadata but does not authenticate
+the actor or establish adequacy of the recorded basis. Historical formation
+families reuse the generic fresh-warrant non-qualification lemma below.
 -/
 
 /-- Both evaluation axes have records at this key. -/
@@ -157,7 +158,10 @@ theorem admitRoot_preserves_evaluationInvariant
   have hPost := step_preserves_invariant hInv hStep
   exact ⟨hPost.evaluationReferentsCanonical, hPost.evaluationPairCoherent⟩
 
-private theorem freshWarrant_noEvaluation
+/-- Fresh historical IDs cannot already carry an evaluation position in any
+canonical state satisfying evaluation-referent coherence.  This is reusable by
+all history-only formation constructors. -/
+theorem freshHistoricalWarrant_noEvaluation
     {S : CanonicalState}
     {warrantId : WarrantId}
     (hEvaluation : EvaluationReferentsCanonical S)
@@ -187,6 +191,15 @@ private theorem freshWarrant_noEvaluation
         cases hWarrant
   exact ⟨hEpiNone, hPlacementNone⟩
 
+/-- A missing evaluation pair is sufficient to refute usability. -/
+theorem noEvaluation_notUsable
+    {S : CanonicalState} {key : EvalKey}
+    (hNone : S.epi key = none ∧ S.placement key = none) :
+    ¬ Usable S key := by
+  intro hUsable
+  rw [hNone.1] at hUsable
+  cases hUsable.1
+
 /-- A freshly formed ROOT has no evaluation position under any
 profile/context/use key. Historical formation therefore does not silently
 qualify the new warrant. -/
@@ -204,7 +217,7 @@ theorem rootStep_newWarrant_unqualified
   cases hStep with
   | root fresh bindingCanonical contextCanonical accepted =>
       intro profileDigest observedContext use
-      exact freshWarrant_noEvaluation
+      exact freshHistoricalWarrant_noEvaluation
         hInv.evaluationReferentsCanonical fresh
         profileDigest observedContext use
 
@@ -219,14 +232,10 @@ theorem rootStep_newWarrant_notUsable
     (hStep : Step S (.root warrantId bindingId contextId input) S') :
     ∀ profileDigest observedContext use,
       ¬ Usable S' ⟨profileDigest, observedContext, use, warrantId⟩ := by
-  intro profileDigest observedContext use hUsable
-  have hNone := rootStep_newWarrant_unqualified hReachable hStep
-    profileDigest observedContext use
-  have hLive :
-      S'.epi ⟨profileDigest, observedContext, use, warrantId⟩ =
-        some .live := hUsable.1
-  rw [hNone.1] at hLive
-  cases hLive
+  intro profileDigest observedContext use
+  exact noEvaluation_notUsable
+    (rootStep_newWarrant_unqualified hReachable hStep
+      profileDigest observedContext use)
 
 /-- Any usable evaluation position resolves to one immutable historical warrant
 with the same formation profile/context, and those referents are canonical in
@@ -239,18 +248,18 @@ theorem usable_implies_canonicalHistoricalWarrant
       S.warrant key.warrantId = some warrant ∧
       warrant.formationProfileDigest = key.profileDigest ∧
       warrant.formationContext = key.contextId ∧
-      S.profile key.profileDigest ∧
+      (∃ profile, S.profile key.profileDigest = some profile) ∧
       ∃ context, S.context key.contextId = some context := by
   have hRecord : HasEvaluationRecord S key :=
     Or.inl ⟨.live, hUsable.1⟩
   rcases hInv.evaluationReferentsCanonical hRecord with
     ⟨warrant, hWarrant, hProfile, hContext⟩
   rcases hInv.warrantReferentsCanonical hWarrant with
-    ⟨⟨context, hCanonicalContext⟩, hCanonicalProfile⟩
+    ⟨⟨context, hCanonicalContext⟩, profile, hCanonicalProfile⟩
   rw [hProfile] at hCanonicalProfile
   rw [hContext] at hCanonicalContext
-  exact ⟨warrant, hWarrant, hProfile, hContext, hCanonicalProfile,
-    context, hCanonicalContext⟩
+  exact ⟨warrant, hWarrant, hProfile, hContext,
+    ⟨profile, hCanonicalProfile⟩, context, hCanonicalContext⟩
 
 theorem reachable_usable_implies_canonical
     {S : CanonicalState} {key : EvalKey}
@@ -260,7 +269,7 @@ theorem reachable_usable_implies_canonical
       S.warrant key.warrantId = some warrant ∧
       warrant.formationProfileDigest = key.profileDigest ∧
       warrant.formationContext = key.contextId ∧
-      S.profile key.profileDigest ∧
+      (∃ profile, S.profile key.profileDigest = some profile) ∧
       ∃ context, S.context key.contextId = some context := by
   exact usable_implies_canonicalHistoricalWarrant
     (reachable_invariant hReachable) hUsable
