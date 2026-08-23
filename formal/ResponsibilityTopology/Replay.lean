@@ -54,7 +54,7 @@ theorem filter_sublist_rt
           exact (filter_sublist_rt keep xs).cons x
       | true =>
           rw [List.filter, hK]
-          exact (filter_sublist_rt keep xs).cons_cons x
+          exact (filter_sublist_rt keep xs).cons₂ x
 
 /-- Constructive membership preservation for a Boolean filter. -/
 theorem mem_filter_of_mem_of_true_rt
