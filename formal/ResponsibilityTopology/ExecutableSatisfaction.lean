@@ -58,13 +58,15 @@ theorem firstSat_sound
     E.atomSat w a := by
   induction Γ with
   | nil =>
-      simp [firstSat] at hRun
+      change (none : Option WarrantId) = some w at hRun
+      cases hRun
   | cons x xs ih =>
       by_cases hTest : O.test x a = true
-      · simp [firstSat, hTest] at hRun
+      · rw [firstSat, if_pos hTest] at hRun
+        have hEq : x = w := Option.some.inj hRun
         subst w
         exact (O.correct x a).mp hTest
-      · simp [firstSat, hTest] at hRun
+      · rw [firstSat, if_neg hTest] at hRun
         exact ih hRun
 
 /-- If atomic search fails, every candidate in the list is rejected. -/
@@ -76,18 +78,19 @@ theorem firstSat_none_rejects
   induction Γ with
   | nil =>
       intro w hMem
-      simp at hMem
+      cases hMem
   | cons x xs ih =>
       by_cases hTest : O.test x a = true
-      · simp [firstSat, hTest] at hFail
-      · have hTail : firstSat O a xs = none := by
-          simpa [firstSat, hTest] using hFail
-        have ihTail := ih hTail
+      · rw [firstSat, if_pos hTest] at hFail
+        cases hFail
+      · rw [firstSat, if_neg hTest] at hFail
+        have ihTail := ih hFail
         intro w hMem
-        simp at hMem
-        rcases hMem with rfl | hMem
-        · exact hTest
-        · exact ihTail hMem
+        cases hMem with
+        | head =>
+            exact hTest
+        | tail _ hTailMem =>
+            exact ihTail hTailMem
 
 /-- If every candidate is rejected, atomic search fails. -/
 theorem firstSat_none_of_rejects
@@ -99,11 +102,13 @@ theorem firstSat_none_of_rejects
   | nil =>
       rfl
   | cons x xs ih =>
-      have hx : O.test x a ≠ true := hReject (by simp)
+      have hx : O.test x a ≠ true :=
+        hReject (List.Mem.head xs)
       have hxs : ∀ ⦃w⦄, w ∈ xs → O.test w a ≠ true := by
         intro w hMem
-        exact hReject (by simp [hMem])
-      simp [firstSat, hx, ih hxs]
+        exact hReject (List.Mem.tail x hMem)
+      rw [firstSat, if_neg hx]
+      exact ih hxs
 
 /-- Atomic failure is monotone under candidate deletion. -/
 theorem firstSat_noNewWitness
@@ -127,38 +132,47 @@ theorem noNewWitness
     satisfy O R Γ' = none := by
   induction R with
   | top =>
-      simp [satisfy] at hFail
+      change (some Branch.top : Option Branch) = none at hFail
+      cases hFail
   | atom a =>
       cases hAtom : firstSat O a Γ with
       | none =>
           have hAtom' := firstSat_noNewWitness O hSub hAtom
-          simp [satisfy, hAtom']
+          rw [satisfy, hAtom']
       | some w =>
-          simp [satisfy, hAtom] at hFail
+          rw [satisfy, hAtom] at hFail
+          cases hFail
   | conj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
       | none =>
           have h₁' := ih₁ h₁
-          simp [satisfy, h₁']
+          rw [satisfy, h₁']
       | some β₁ =>
           cases h₂ : satisfy O R₂ Γ with
           | none =>
               have h₂' := ih₂ h₂
-              cases h₁' : satisfy O R₁ Γ' <;> simp [satisfy, h₁', h₂']
+              cases h₁' : satisfy O R₁ Γ' with
+              | none =>
+                  rw [satisfy, h₁']
+              | some β₁' =>
+                  rw [satisfy, h₁', h₂']
           | some β₂ =>
-              simp [satisfy, h₁, h₂] at hFail
+              rw [satisfy, h₁, h₂] at hFail
+              cases hFail
   | disj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
       | some β₁ =>
-          simp [satisfy, h₁] at hFail
+          rw [satisfy, h₁] at hFail
+          cases hFail
       | none =>
           cases h₂ : satisfy O R₂ Γ with
           | some β₂ =>
-              simp [satisfy, h₁, h₂] at hFail
+              rw [satisfy, h₁, h₂] at hFail
+              cases hFail
           | none =>
               have h₁' := ih₁ h₁
               have h₂' := ih₂ h₂
-              simp [satisfy, h₁', h₂']
+              rw [satisfy, h₁', h₂']
 
 /-- SS — executable satisfaction soundness.
 Every branch returned by the executable search is a derivation in the existing
@@ -170,42 +184,51 @@ theorem satisfySound
     Derives E β R := by
   induction R generalizing β with
   | top =>
-      simp [satisfy] at hRun
-      subst β
+      change (some Branch.top : Option Branch) = some β at hRun
+      have hEq : Branch.top = β := Option.some.inj hRun
+      cases hEq
       exact Derives.top
   | atom a =>
       cases hAtom : firstSat O a Γ with
       | none =>
-          simp [satisfy, hAtom] at hRun
+          rw [satisfy, hAtom] at hRun
+          cases hRun
       | some w =>
-          simp [satisfy, hAtom] at hRun
-          subst β
+          rw [satisfy, hAtom] at hRun
+          have hEq : Branch.leaf a w = β := Option.some.inj hRun
+          cases hEq
           exact Derives.atom (firstSat_sound O hAtom)
   | conj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
       | none =>
-          simp [satisfy, h₁] at hRun
+          rw [satisfy, h₁] at hRun
+          cases hRun
       | some β₁ =>
           cases h₂ : satisfy O R₂ Γ with
           | none =>
-              simp [satisfy, h₁, h₂] at hRun
+              rw [satisfy, h₁, h₂] at hRun
+              cases hRun
           | some β₂ =>
-              simp [satisfy, h₁, h₂] at hRun
-              subst β
+              rw [satisfy, h₁, h₂] at hRun
+              have hEq : Branch.both β₁ β₂ = β := Option.some.inj hRun
+              cases hEq
               exact Derives.both (ih₁ h₁) (ih₂ h₂)
   | disj R₁ R₂ ih₁ ih₂ =>
       cases h₁ : satisfy O R₁ Γ with
       | some β₁ =>
-          simp [satisfy, h₁] at hRun
-          subst β
+          rw [satisfy, h₁] at hRun
+          have hEq : Branch.orL β₁ = β := Option.some.inj hRun
+          cases hEq
           exact Derives.orL (ih₁ h₁)
       | none =>
           cases h₂ : satisfy O R₂ Γ with
           | none =>
-              simp [satisfy, h₁, h₂] at hRun
+              rw [satisfy, h₁, h₂] at hRun
+              cases hRun
           | some β₂ =>
-              simp [satisfy, h₁, h₂] at hRun
-              subst β
+              rw [satisfy, h₁, h₂] at hRun
+              have hEq : Branch.orR β₂ = β := Option.some.inj hRun
+              cases hEq
               exact Derives.orR (ih₂ h₂)
 
 end ResponsibilityTopology
