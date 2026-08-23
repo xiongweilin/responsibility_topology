@@ -168,7 +168,7 @@ inductive KernelEvent where
       (parentIds : List WarrantId)
       (outScope : Scope)
 
-/-- Formation and admission transitions through #14.  Ordinary INFER deliberately
+/-- Formation and admission transitions through #14. Ordinary INFER deliberately
 has no parent-usability or evaluation-state premise. -/
 inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop where
   | registerContext
@@ -562,7 +562,8 @@ theorem step_preserves_invariant
             hParents, hDiscipline, hExact⟩
         exact ⟨profile, oldContext, rule, parents, hProfile,
           putCanonical_preserves_some fresh hContext, hRule,
-          hParents, hDiscipline, hExact⟩
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @registerProfile digest profile fresh =>
@@ -587,7 +588,8 @@ theorem step_preserves_invariant
             hParents, hDiscipline, hExact⟩
         exact ⟨oldProfile, context, rule, parents,
           putCanonical_preserves_some fresh hProfile, hContext, hRule,
-          hParents, hDiscipline, hExact⟩
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @bindProfile id binding fresh profileCanonical =>
@@ -618,7 +620,13 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-      · exact hInv.inferWarrantWellFormed
+      · intro warrantId warrant ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @bootstrapContext key contextCanonical bindingCanonical inactive freshActivation =>
@@ -658,7 +666,13 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-      · exact hInv.inferWarrantWellFormed
+      · intro warrantId warrant ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, context, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · exact hInv.evaluationReferentsCanonical
       · exact hInv.evaluationPairCoherent
   | @root warrantId bindingId contextId input binding context
@@ -769,7 +783,13 @@ theorem step_preserves_invariant
       · exact hInv.warrantParentsCanonical
       · exact hInv.rootWarrantWellFormed
       · exact hInv.warrantRootLineageCanonical
-      · exact hInv.inferWarrantWellFormed
+      · intro warrantId' warrant' ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
       · intro key' hRecord
         let key : EvalKey :=
           ⟨binding.profileDigest, contextId, use, warrantId⟩
@@ -867,7 +887,7 @@ theorem step_preserves_invariant
           have hWarrantEq : warrant = newWarrant := by
             simpa [putCanonical, newWarrant] using hLookup.symm
           subst warrant
-          have hRuleId : observedRuleId = ruleId := by
+          have hRuleId : ruleId = observedRuleId := by
             simpa [newWarrant, inferHistoricalWarrant] using hConstructor
           subst observedRuleId
           refine ⟨profile, context, rule, parents,
