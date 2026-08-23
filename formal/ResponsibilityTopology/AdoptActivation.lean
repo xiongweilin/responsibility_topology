@@ -88,9 +88,9 @@ theorem adoptContext_requires_currentLicense
     (hStep : AdoptActivationStep A (.adoptContext licenseId target) A') :
     AdoptLicenseCurrent A.toLicenseRead licenseId := by
   cases hStep with
-  | @adoptContext L licenseCanonical targetExact baseCurrent issuerGrounded
+  | adoptContext licenseCanonical targetExact baseCurrent issuerGrounded
       inactive freshActivation =>
-      exact ⟨L, licenseCanonical, baseCurrent, issuerGrounded⟩
+      exact ⟨_, licenseCanonical, baseCurrent, issuerGrounded⟩
 
 /-- Adopt activates exactly the selected target and records exact Adopt
 provenance. -/
@@ -212,7 +212,7 @@ private theorem activationOnly_preserves_coreInvariant
       subst observedId
       refine ⟨
         ({ issuer := L.issuer, target := L.target } : CanonicalActivationLicense),
-        ?_, hTarget.symm, hIssuerCanonical⟩
+        ?_, hTarget, hIssuerCanonical⟩
       exact hProjection
     · have hNe : key ≠ target := by
         intro hEq
