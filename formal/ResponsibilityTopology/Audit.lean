@@ -4,6 +4,7 @@ import ResponsibilityTopology.Replay
 import ResponsibilityTopology.KernelFloor
 import ResponsibilityTopology.Entitlement
 import ResponsibilityTopology.CanonicalRead
+import ResponsibilityTopology.RequirementResolution
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
@@ -64,6 +65,17 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.derives_projection_coherent
 #print axioms ResponsibilityTopology.projectedEntitled_fallback_irrelevant
 #print axioms ResponsibilityTopology.projectedAmbientAdmissible_true_iff
+#print axioms ResponsibilityTopology.canonicalMove_floorProjection
+#print axioms ResponsibilityTopology.scopeIdentityTest_true_iff
+#print axioms ResponsibilityTopology.requirementKeyTest_true_iff
+#print axioms ResponsibilityTopology.requirementLookup_sound
+#print axioms ResponsibilityTopology.requirementLookup_complete
+#print axioms ResponsibilityTopology.requirementLookup_deterministic
+#print axioms ResponsibilityTopology.requirementLookup_exactKey
+#print axioms ResponsibilityTopology.missingRequirement_noMatchingEntry
+#print axioms ResponsibilityTopology.missingRequirement_notTop
+#print axioms ResponsibilityTopology.requirementLookup_permutation
+#print axioms ResponsibilityTopology.resolvedLicensingRead_requirement
 #print axioms ResponsibilityTopology.grounded_contractiveness
 #print axioms ResponsibilityTopology.grounded_fixedPoint_soundness
 #print axioms ResponsibilityTopology.grounded_refresh_idempotence
