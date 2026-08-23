@@ -96,7 +96,9 @@ theorem checked_withdrawal_without_discharge_rejects_current_use
     currentUseContinuationAccepted c = false := by
   have hStep := checkQualificationWithdrawal_sound c hCheck
   rcases hStep with ⟨hTraceBefore, hTraceAfter, hBefore, hAfter⟩
-  simp [currentUseContinuationAccepted, hAfter, hNoDischarge]
+  have hAfterExact : c.qualificationAfter = .withdrawn := by
+    simpa [QualificationWithdrawalCertificate.after] using hAfter
+  simp [currentUseContinuationAccepted, hAfterExact, hNoDischarge]
 
 /-- Mirror of the frozen REF-3 runtime fixture.  This proves only that the
 presented certificate satisfies the checker contract; provenance from raw Python
@@ -108,11 +110,11 @@ def ref3RuntimeFixture : QualificationWithdrawalCertificate where
   qualificationAfter := .withdrawn
   acceptedDischargeEvidenceAfter := false
 
- theorem ref3RuntimeFixture_checked :
+theorem ref3RuntimeFixture_checked :
     checkQualificationWithdrawal ref3RuntimeFixture = true := by
   decide
 
- theorem ref3RuntimeFixture_rejects_current_use :
+theorem ref3RuntimeFixture_rejects_current_use :
     currentUseContinuationAccepted ref3RuntimeFixture = false := by
   decide
 
