@@ -2,7 +2,9 @@
 
 This repository studies a narrow formal distinction:
 
-> **Canonical historical formation and current usability are distinct state relations.**
+> **Canonical history and current usability are distinct state relations.**
+
+Historical formation and current qualification are distinct transitions governing those two relations.
 
 For ordinary INFER, the stronger machine-facing distinction is:
 
