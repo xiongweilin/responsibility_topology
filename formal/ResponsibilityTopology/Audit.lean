@@ -18,6 +18,7 @@ import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
+import ResponsibilityTopology.TransportFormation
 import ResponsibilityTopology.InferQualification
 
 /-!
@@ -116,6 +117,7 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.reachable_activeContextHasActivationProvenance
 #print axioms ResponsibilityTopology.reachable_adoptedActiveContextHasCanonicalLicense
 #print axioms ResponsibilityTopology.reachable_inferWarrantsWellFormed
+#print axioms ResponsibilityTopology.reachable_transportWarrantsWellFormed
 #print axioms ResponsibilityTopology.reachable_evaluationProfileUseBackedByBinding
 #print axioms ResponsibilityTopology.reachable_toActivationRead_wellFormed
 #print axioms ResponsibilityTopology.rootStep_newWarrant_exact
@@ -172,3 +174,11 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.transportHistoricalWarrant_parents_exact
 #print axioms ResponsibilityTopology.transportHistoricalWarrant_role_exact
 #print axioms ResponsibilityTopology.transportHistoricalWarrant_formation_exact
+#print axioms ResponsibilityTopology.transportStep_newWarrant_exact
+#print axioms ResponsibilityTopology.transportStep_scope_conservative
+#print axioms ResponsibilityTopology.transportStep_strength_nonamplifying
+#print axioms ResponsibilityTopology.transportStep_oldWarrants_immutable
+#print axioms ResponsibilityTopology.transportStep_evaluationTopology_unchanged
+#print axioms ResponsibilityTopology.transportStep_newWarrant_unqualified
+#print axioms ResponsibilityTopology.transportStep_newWarrant_notUsable
+#print axioms ResponsibilityTopology.transportStep_preserves_transportWarrantWellFormed
