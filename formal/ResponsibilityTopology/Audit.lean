@@ -2,6 +2,7 @@ import ResponsibilityTopology.Conservativity
 import ResponsibilityTopology.ExecutableSatisfaction
 import ResponsibilityTopology.Replay
 import ResponsibilityTopology.KernelFloor
+import ResponsibilityTopology.Entitlement
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -43,3 +44,7 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.revisionFloor_insufficient_depth
 #print axioms ResponsibilityTopology.accept_has_no_extra_moveFloor
 #print axioms ResponsibilityTopology.review_has_no_extra_moveFloor
+#print axioms ResponsibilityTopology.relativeBranchConservativity
+#print axioms ResponsibilityTopology.entitled_of_satisfy
+#print axioms ResponsibilityTopology.entitlementSupportReplay
+#print axioms ResponsibilityTopology.entitled_from_projected_support
