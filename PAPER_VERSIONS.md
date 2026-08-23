@@ -81,7 +81,7 @@ invalidated / restored current responsibility
 | hostile-review baseline | `252030ec777baa52cf7cc41c0da0487283c3a5d5` | PR #55 merge |
 | venue-neutral v2 manuscript baseline | `c5d569e0219cf7ff9c78eb6054631fe44b06dd48` | PR #57 merge; state-indexed/finite/adequacy terminology corrected |
 | conceptual v3 manuscript baseline | `44605d00d66921aebc6279fc11270d1e58d7867f` | PR #60 merge; four result families, two-figure architecture, affected/necessity hierarchy normalized |
-| artifact packaging baseline | **pending merge of Paper 3 artifact-freeze PR** | packaging metadata only; record exact merge SHA immediately after merge |
+| artifact packaging baseline | `2b620cd7479aec3700f72c2faead0873a889cb63` | PR #61 merge; `PAPER3_ARTIFACT.md` and version packaging only; formal semantics unchanged |
 
 The formal identity remains `190e24e4...` unless an explicit formal trigger fires. Later paper-only commits do not change Paper 3 semantics.
 
