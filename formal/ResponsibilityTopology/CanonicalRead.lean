@@ -132,7 +132,10 @@ theorem toFloorEnv_lookup_canonical
     {w : WarrantId} {cw : CanonicalWarrant}
     (hLookup : C.warrant w = some cw) :
     (toFloorEnv C fallback).lookup w = floorLeafOf cw := by
-  unfold toFloorEnv
+  change
+    (match C.warrant w with
+      | some cw => floorLeafOf cw
+      | none => fallback) = floorLeafOf cw
   rw [hLookup]
 
 /-- A branch leaf is projection-coherent when both satisfaction-relevant fields
