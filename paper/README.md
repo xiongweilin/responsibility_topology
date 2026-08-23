@@ -65,8 +65,9 @@ state-indexed current usable-parent responsibility
 
 Current environment-synthesis files:
 
-- `transport-environment-submission-v2.md` — current Paper 2 manuscript baseline before hostile consistency pass; integrates final TRANSPORT + Adopt/License/Grounded formal scope.
+- `transport-environment-submission-v2.md` — current Paper 2 environment manuscript; integrates final TRANSPORT + Adopt/License/Grounded formal scope.
 - `transport-environment-claim-map.md` — current two-block E1/E2 claim map and end-to-end firewall.
+- `transport-environment-hostile-consistency.md` — final P2-S2 adversarial consistency pass; formal trigger not fired.
 
 Historical TRANSPORT-only files remain preserved, including:
 
