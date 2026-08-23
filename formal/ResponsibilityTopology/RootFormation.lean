@@ -38,7 +38,7 @@ theorem rootStep_newWarrant_exact
         (rootHistoricalWarrant
           warrantId binding.profileDigest contextId input) := by
   cases hStep with
-  | @root _ _ _ _ _ binding context fresh bindingCanonical contextCanonical accepted =>
+  | @root wid bid cid rin binding context fresh bindingCanonical contextCanonical accepted =>
       exact ⟨binding, context, bindingCanonical, contextCanonical, accepted,
         by simp [putCanonical]⟩
 
