@@ -17,3 +17,9 @@ jobs:
           lake-package-directory: formal
           build: true
           test: false
+      - name: Reject proof placeholders
+        run: |
+          if grep -R -nE '(^|[^[:alnum:]_])(sorry|admit)([^[:alnum:]_]|$)' formal/ResponsibilityTopology formal/ResponsibilityTopology.lean; then
+            echo 'Proof placeholder found in formal core.'
+            exit 1
+          fi
