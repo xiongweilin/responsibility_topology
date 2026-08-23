@@ -20,5 +20,6 @@ import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
 import ResponsibilityTopology.InferFormation
+import ResponsibilityTopology.TransportFormation
 import ResponsibilityTopology.InferQualification
 import ResponsibilityTopology.Audit
