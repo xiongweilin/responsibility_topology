@@ -34,9 +34,16 @@ theorem repairObligation_refresh_iff
   | warrantUsable key =>
       rfl
   | licenseBaseCurrent licenseId =>
+      change
+        (refreshActiveContexts A).toLicenseRead.toActivationRead.baseCurrent
+            licenseId ↔
+          A.toLicenseRead.toActivationRead.baseCurrent licenseId
       rw [refreshActiveContexts_activationRead_eq_refreshed]
       rfl
   | contextGrounded key =>
+      change
+        Grounded (refreshActiveContexts A).toLicenseRead.toActivationRead key ↔
+          Grounded A.toLicenseRead.toActivationRead key
       rw [refreshActiveContexts_activationRead_eq_refreshed]
       exact grounded_refresh_idempotence A.toLicenseRead.toActivationRead key
 
@@ -108,7 +115,8 @@ theorem repairSet_sufficient_before_refresh
   exact repairSet_realization_restores_staleDependencies hRepair hRealization
 
 /-- Semantic name for the post-revalidation fixed-point projection. -/
-def RefreshAfterRevalidation (revalidated : AdoptState) : AdoptState :=
+noncomputable def RefreshAfterRevalidation
+    (revalidated : AdoptState) : AdoptState :=
   refreshActiveContexts revalidated
 
 /-- Main #46 sufficiency theorem.
