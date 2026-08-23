@@ -27,6 +27,7 @@ import ResponsibilityTopology.ChallengeInvalidation
 import ResponsibilityTopology.ChallengeInvalidationInvariant
 import ResponsibilityTopology.ActivationRefresh
 import ResponsibilityTopology.RepairSemantics
+import ResponsibilityTopology.RepairSufficiency
 import ResponsibilityTopology.Paper3Audit
 import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.EvaluationQualification
