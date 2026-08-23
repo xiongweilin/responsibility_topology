@@ -1,4 +1,4 @@
-import ResponsibilityTopology.RepairSemantics
+import ResponsibilityTopology.RepairSufficiency
 
 /-!
 Proof-audit surface for the Paper 3 revision/revalidation line.
@@ -29,3 +29,10 @@ This file is intentionally separate from the frozen Paper 1/2 audit surface.
 #print axioms ResponsibilityTopology.repairProblem_stale_has_edge
 #print axioms ResponsibilityTopology.minimalRepairSet_is_repairSet
 #print axioms ResponsibilityTopology.historicalWellFormedness_separate_from_staleness
+#print axioms ResponsibilityTopology.refreshActiveContexts_activationRead_eq_refreshed
+#print axioms ResponsibilityTopology.repairObligation_refresh_iff
+#print axioms ResponsibilityTopology.repairSet_realization_restores_edges
+#print axioms ResponsibilityTopology.repairSet_realization_restores_staleDependencies
+#print axioms ResponsibilityTopology.repairSet_sufficient_before_refresh
+#print axioms ResponsibilityTopology.repairSet_sufficient_after_refresh
+#print axioms ResponsibilityTopology.minimalRepairSet_sufficient_after_refresh
