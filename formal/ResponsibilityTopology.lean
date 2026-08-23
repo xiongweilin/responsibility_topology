@@ -25,4 +25,5 @@ import ResponsibilityTopology.TransportFormation
 import ResponsibilityTopology.InferQualification
 import ResponsibilityTopology.TransportQualification
 import ResponsibilityTopology.TransportLifecycle
+import ResponsibilityTopology.TransportComposition
 import ResponsibilityTopology.Audit
