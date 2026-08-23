@@ -80,10 +80,12 @@ invalidated / restored current responsibility
 | first full manuscript baseline | `1d87f0327a7edea891db41ef3b71d0d5d3421837` | PR #54 merge |
 | hostile-review baseline | `252030ec777baa52cf7cc41c0da0487283c3a5d5` | PR #55 merge |
 | venue-neutral v2 manuscript baseline | `c5d569e0219cf7ff9c78eb6054631fe44b06dd48` | PR #57 merge; state-indexed/finite/adequacy terminology corrected |
+| conceptual v3 manuscript baseline | `44605d00d66921aebc6279fc11270d1e58d7867f` | PR #60 merge; four result families, two-figure architecture, affected/necessity hierarchy normalized |
+| artifact packaging baseline | **pending merge of Paper 3 artifact-freeze PR** | packaging metadata only; record exact merge SHA immediately after merge |
 
 The formal identity remains `190e24e4...` unless an explicit formal trigger fires. Later paper-only commits do not change Paper 3 semantics.
 
-The next manuscript freeze should be assigned only after conceptual compression, theorem-hierarchy normalization, and figure architecture are integrated. At that point add a new row rather than replacing earlier baselines.
+`PAPER3_ARTIFACT.md` is the authoritative Paper 3 artifact/version document. It freezes the formal baseline separately from manuscript and packaging identities.
 
 ## Naming policy
 
@@ -99,7 +101,7 @@ paper2-manuscript-v1
 
 paper3-formal-v1
 paper3-manuscript-v1
-paper3-artifact-v1          [when packaged]
+paper3-artifact-v1
 ```
 
 The exact commit SHA in this manifest is authoritative even if a human-readable tag/ref is added later.
