@@ -1,0 +1,12 @@
+import ResponsibilityTopology.Bridge.CertifiedObservation
+import ResponsibilityTopology.Bridge.FormalWithdrawalBridge
+
+namespace ResponsibilityTopology.Bridge
+
+#print axioms checkQualificationWithdrawal_sound
+#print axioms checked_withdrawal_without_discharge_rejects_current_use
+#print axioms ref3RuntimeFixture_checked
+#print axioms ref3RuntimeFixture_rejects_current_use
+#print axioms challenge_target_realizes_formal_withdrawal_pattern
+
+end ResponsibilityTopology.Bridge
