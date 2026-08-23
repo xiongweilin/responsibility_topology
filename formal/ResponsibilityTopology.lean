@@ -40,3 +40,6 @@ import ResponsibilityTopology.TransportQualification
 import ResponsibilityTopology.TransportLifecycle
 import ResponsibilityTopology.TransportComposition
 import ResponsibilityTopology.Audit
+import ResponsibilityTopology.CrossDomain.ImpactDischargeCore
+import ResponsibilityTopology.CrossDomain.EvaluationLayerCore
+import ResponsibilityTopology.CrossDomainAudit
