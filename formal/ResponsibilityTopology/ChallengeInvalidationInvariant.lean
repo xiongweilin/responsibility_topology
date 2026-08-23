@@ -179,12 +179,12 @@ theorem challengeInvalidate_preserves_invariant
     · intro warrantId warrant hWarrant
       have hPre : A.core.warrant warrantId = some warrant := by
         simpa [challengeInvalidate] using hWarrant
-      rcases hInv.coreInvariant.warrantReferentsCanonical hPre with
-        ⟨context, hContext, profile, hProfile⟩
-      exact ⟨
-        context, by simpa [challengeInvalidate] using hContext,
-        profile, by simpa [challengeInvalidate] using hProfile
-      ⟩
+      have hRefs := hInv.coreInvariant.warrantReferentsCanonical hPre
+      refine ⟨?_, ?_⟩
+      · rcases hRefs.1 with ⟨context, hContext⟩
+        exact ⟨context, by simpa [challengeInvalidate] using hContext⟩
+      · rcases hRefs.2 with ⟨profile, hProfile⟩
+        exact ⟨profile, by simpa [challengeInvalidate] using hProfile⟩
     · intro warrantId warrant parentId hWarrant hParent
       have hPre : A.core.warrant warrantId = some warrant := by
         simpa [challengeInvalidate] using hWarrant
