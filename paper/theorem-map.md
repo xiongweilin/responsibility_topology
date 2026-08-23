@@ -2,6 +2,20 @@
 
 This file maps the first paper's claims to a deliberately small set of mechanized result families. It is **not** organized by source-file chronology and it is **not** an exhaustive theorem index. `formal/ResponsibilityTopology/Audit.lean` remains authoritative for axiom dependencies.
 
+The theorem-facing state thesis is deliberately narrow:
+
+```text
+canonical historical existence ≠ current usability
+```
+
+Historical formation and current qualification are distinct transitions governing those relations. For ordinary INFER, the stronger relation-level thesis is:
+
+```text
+historical derivation relation ≠ current usable-parent responsibility
+```
+
+`Responsibility Topology` is the interpretive framework for these boundaries; the result map does not claim source, rule, profile, or regime adequacy.
+
 The paper should cite R1–R9 as result families and move implementation lemmas, setter locality, and preservation specializations to the artifact/appendix discussion.
 
 ## R1 — Relative Branch Conservativity
@@ -141,9 +155,9 @@ S'.warrant(w)=some\;W.
 
 ---
 
-## R5 — Grounded Currentness / No Self-Support
+## R5 — Grounded Currentness / No Self-Support — semantic component
 
-**Paper statement.** Adopted-context currentness is grounded: every retained adopted context has a finite activation dependency chain terminating at an explicit bootstrap boundary. A pure activation cycle cannot create its own currentness.
+**Paper statement.** In the separate adopted-context currentness semantics, every grounded adopted context has a finite activation dependency chain terminating at an explicit bootstrap boundary. A pure activation cycle cannot create its own currentness.
 
 Representative Lean theorems:
 
@@ -170,13 +184,15 @@ The state bridge is structural:
 reachable_toActivationRead_wellFormed
 ```
 
-**Do not claim:** the complete Python refresh algorithm is proved to compute `Grounded`, or that `baseCurrent` itself is adequate.
+**Paper status.** R5 is an orthogonal semantic currentness component connected to reachable state. It is **not** a completed reachable Adopt lifecycle: the current `Step` surface does not contain license issuance or Adopt transitions.
+
+**Do not claim:** the complete Python refresh algorithm is proved to compute `Grounded`, that `baseCurrent` itself is adequate, or that reachable states are closed under an Adopt transition already formalized in `Step`.
 
 ---
 
 ## R6 — ROOT Formation–Qualification Separation
 
-**Paper statement.** ROOT historical formation creates an immutable canonical warrant but no evaluation position. Explicit ROOT admission separately establishes `LIVE/PLACED`, hence usability, at the exact evaluation key.
+**Paper statement.** Canonical ROOT historical formation creates an immutable warrant but no evaluation position. Explicit ROOT admission separately establishes `LIVE/PLACED`, hence usability, at the exact evaluation key.
 
 Representative Lean theorems:
 
@@ -318,13 +334,15 @@ HistoricalDerived \not\Rightarrow CurrentUsability.
 }
 \]
 
-This is the paper's most important lifecycle result because it distinguishes two relations that are often collapsed operationally:
+This is the paper's most important lifecycle result because it distinguishes two relations over the same parent identities:
 
-```text
-historical derivation relation
-        ≠
-current responsibility chain
-```
+\[
+\underbrace{ParentOf(p,d)}_{\text{persistent historical relation}}
+\qquad\text{versus}\qquad
+\underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
+\]
+
+Formation carries the already-discharged rule/guard/context/scope/strength/lineage obligations in immutable history; qualification later evaluates current usability over those same historical parents rather than replaying formation.
 
 **Do not claim:** `DerivedUsable → Entitled`. Entitlement additionally requires ambient admissibility, exact requirement discharge, and kernel-floor safety.
 
@@ -382,7 +400,7 @@ state-backed LicensingRead
 existing ProjectedEntitled / Entitled layer
 ```
 
-No such end-to-end theorem is claimed in the present artifact. During drafting, this gap is a **trigger condition** for a small formal milestone only if the exposition cannot remain precise without it.
+No such end-to-end theorem is claimed in the present artifact. Sections 3–6 currently remain precise without it, so the paper-freeze trigger condition has not fired.
 
 # Non-theorems that should be explicit in the paper
 
