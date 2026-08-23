@@ -88,16 +88,16 @@ theorem admitRoot_evaluation_exact
       S'.placement ⟨binding.profileDigest, contextId, use, warrantId⟩ =
         some .placed := by
   cases hStep with
-  | @admitRoot wid bid cid actualUse md binding context warrant
+  | @admitRoot _ _ _ _ _ binding context warrant
       bindingCanonical contextCanonical warrantCanonical isRoot
       formationContext formationProfile useMatches =>
       refine ⟨binding, context, warrant, bindingCanonical, contextCanonical,
         warrantCanonical, isRoot, formationContext, formationProfile,
         useMatches, ?_, ?_⟩
       · exact (qualifyEvaluation_exact S
-          ⟨binding.profileDigest, cid, actualUse, wid⟩).1
+          ⟨binding.profileDigest, contextId, use, warrantId⟩).1
       · exact (qualifyEvaluation_exact S
-          ⟨binding.profileDigest, cid, actualUse, wid⟩).2
+          ⟨binding.profileDigest, contextId, use, warrantId⟩).2
 
 /-- Valid ROOT admission establishes usability at the exact formation-profile,
 context, and requested-use evaluation key. -/
