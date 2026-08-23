@@ -1,4 +1,4 @@
-import ResponsibilityTopology.RepairSufficiency
+import ResponsibilityTopology.RepairMinimality
 
 /-!
 Proof-audit surface for the Paper 3 revision/revalidation line.
@@ -36,3 +36,11 @@ This file is intentionally separate from the frozen Paper 1/2 audit surface.
 #print axioms ResponsibilityTopology.repairSet_sufficient_before_refresh
 #print axioms ResponsibilityTopology.repairSet_sufficient_after_refresh
 #print axioms ResponsibilityTopology.minimalRepairSet_sufficient_after_refresh
+#print axioms ResponsibilityTopology.removeRepairAction_subset
+#print axioms ResponsibilityTopology.removeRepairAction_proper
+#print axioms ResponsibilityTopology.minimalRepairSet_remove_member_insufficient
+#print axioms ResponsibilityTopology.minimalRepairSet_has_private_edge
+#print axioms ResponsibilityTopology.minimalRepairSet_every_member_necessary
+#print axioms ResponsibilityTopology.restoration_hits_every_unresolved_cut
+#print axioms ResponsibilityTopology.restoration_implies_repairSet
+#print axioms ResponsibilityTopology.minimalRestoringRepairSet_has_private_cut
