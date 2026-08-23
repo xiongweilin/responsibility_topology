@@ -226,6 +226,6 @@ theorem transportHistoricalWarrant_formation_exact
       child.formationContext = targetContextId ∧
       child.claim = translatedClaim ∧
       child.scope = outScope := by
-  rfl
+  simp [transportHistoricalWarrant]
 
 end ResponsibilityTopology
