@@ -51,3 +51,4 @@ import ResponsibilityTopology.Bridge.RawRuntimeWithdrawal
 import ResponsibilityTopology.Bridge.FormalWithdrawalBridge
 import ResponsibilityTopology.BridgeAudit
 import ResponsibilityTopology.Level6Audit
+import ResponsibilityTopology.StrictLevel6Audit
