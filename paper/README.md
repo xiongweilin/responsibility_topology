@@ -16,9 +16,11 @@ The theorem-facing central thesis is:
 
 \[
 \boxed{
-\text{Canonical historical formation and current usability are distinct state relations.}
+\text{Canonical history and current usability are distinct state relations.}
 }
 \]
+
+Historical formation and current qualification are distinct transitions governing those two relations.
 
 For ordinary INFER, the stronger relation-level thesis is:
 
@@ -108,6 +110,20 @@ Sections 3–6 can currently be written without an informal hidden assembly step
 
 ## Running example contract
 
+Fix one evaluation environment
+
+\[
+q=(\pi,c,u),
+\]
+
+and exact evaluation keys
+
+\[
+k_{p_1}=(\pi,c,u,p_1),\qquad
+k_{p_2}=(\pi,c,u,p_2),\qquad
+k_d=(\pi,c,u,d).
+\]
+
 The paper uses one minimal trace throughout Sections 2, 5, and 6:
 
 ```text
@@ -115,21 +131,21 @@ S0
  │ form ROOT p1
  │ form ROOT p2
  ▼
-S1    p1,p2 historical; neither usable
- │ admit p1
- │ admit p2
+S1    p1,p2 historical; neither usable at k_p1,k_p2
+ │ admit p1 at k_p1
+ │ admit p2 at k_p2
  ▼
-S2    p1,p2 usable
+S2    Usable(S2,k_p1) and Usable(S2,k_p2)
  │ INFER d from [p1,p2]
  ▼
-S3    d historical; d NOT usable
- │ qualifyInfer d
- │ requires p1,p2 usable in S3
+S3    d historical; NOT Usable(S3,k_d)
+ │ qualifyInfer d at k_d
+ │ requires Usable(S3,k_p1) and Usable(S3,k_p2)
  ▼
-S4    d usable
+S4    Usable(S4,k_d)
 ```
 
-The historical edges `p1,p2 → d` are persistent. The usable-parent condition is a time-indexed pre-state obligation at `S3`. The example stops before suspension/invalidation because those transition semantics are future work.
+The historical edges `p1,p2 → d` are persistent. The usable-parent condition is a time-indexed pre-state obligation at `S3` over the same parent identities. The example stops before suspension/invalidation because those transition semantics are future work.
 
 ## Related-work discipline
 
@@ -137,12 +153,13 @@ The first paper does **not** claim novelty for:
 
 - storing provenance or justification structure;
 - proof-relevant evidence objects;
+- dynamically revisable explicit evidence;
 - truth maintenance, retraction, or context switching in general;
 - authorization depending on mutable state or time;
-- proof-carrying authorization;
+- staged or proof-carrying authorization, including revocable credential state;
 - belief revision or dynamic epistemic state change.
 
-The narrower positioning claim is that this mechanized kernel separates immutable warrant formation, mutable current qualification, and branch-local entitlement observations, and proves a lifecycle in which ordinary INFER formation does not consume parent usability while later qualification consumes pre-state parent usability without replaying historical formation obligations.
+The narrower positioning claim is that this mechanized kernel separates immutable warrant history, mutable current qualification, and branch-local entitlement observations, and proves a lifecycle in which ordinary INFER formation permanently records ordered historical parent identities without consuming parent usability, while later qualification evaluates current usability over those same historical parent identities in the pre-state without replaying historical formation obligations.
 
 See `related-work-matrix.md` for the comparison matrix and bibliographic anchors.
 
