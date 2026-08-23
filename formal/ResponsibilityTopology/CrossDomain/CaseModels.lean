@@ -252,10 +252,18 @@ XDI case encodings plus the D4 software regression encoding.  This theorem says
 nothing about empirical correctness of the encodings beyond the audited source
 interpretation recorded outside Lean. -/
 theorem ci2_case_models_share_one_calculus :
-    Maintenance.impact_without_discharge ∧
-    InstitutionalAuthority.impact_without_discharge ∧
-    Measurement.impact_without_discharge ∧
-    SoftwareRegression.impact_without_discharge := by
+    (Maintenance.impactModel.Affected
+        .component .unsafeCondition .directiveApplies ∧
+      ¬ Maintenance.impactModel.Discharged .component .unsafeCondition) ∧
+    (InstitutionalAuthority.impactModel.Affected
+        .officialAct .authorityDefect .appointmentDefectFound ∧
+      ¬ InstitutionalAuthority.impactModel.Discharged .officialAct .authorityDefect) ∧
+    (Measurement.impactModel.Affected
+        .measurementResult .processOutOfControl .controlSignal ∧
+      ¬ Measurement.impactModel.Discharged .measurementResult .processOutOfControl) ∧
+    (SoftwareRegression.impactModel.Affected
+        .assertion .dependencyChanged .revalidationRequired ∧
+      ¬ SoftwareRegression.impactModel.Discharged .assertion .dependencyChanged) := by
   exact ⟨Maintenance.impact_without_discharge,
     InstitutionalAuthority.impact_without_discharge,
     Measurement.impact_without_discharge,
@@ -263,10 +271,24 @@ theorem ci2_case_models_share_one_calculus :
 
 /-- Integration statement for the CI-3 evaluation-layer separation. -/
 theorem ci3_case_models_share_one_calculus :
-    Maintenance.local_conformance_without_higher_acceptance ∧
-    InstitutionalAuthority.local_conformance_without_higher_acceptance ∧
-    Measurement.local_conformance_without_higher_acceptance ∧
-    SoftwareRegression.local_conformance_without_higher_acceptance := by
+    (Maintenance.evaluationModel.LocalConformance
+        .maintenanceProcedure .component .procedureConformance ∧
+      ¬ Maintenance.evaluationModel.HigherAccepted
+        .maintenanceProcedure .component .continuedService
+        .continuedAirworthinessEvidence) ∧
+    (InstitutionalAuthority.evaluationModel.LocalConformance
+        .agencyProcedure .officialAct .proceduralCompliance ∧
+      ¬ InstitutionalAuthority.evaluationModel.HigherAccepted
+        .agencyProcedure .officialAct .legallyEffectiveAct .higherLawAuthority) ∧
+    (Measurement.evaluationModel.LocalConformance
+        .measurementProcedure .measurementResult .traceabilityConformance ∧
+      ¬ Measurement.evaluationModel.HigherAccepted
+        .measurementProcedure .measurementResult .fitForIntendedUse
+        .uncertaintyAndModelEvidence) ∧
+    (SoftwareRegression.evaluationModel.LocalConformance
+        .validationPolicy .assertion .policyConformance ∧
+      ¬ SoftwareRegression.evaluationModel.HigherAccepted
+        .validationPolicy .assertion .currentUse .externalAdequacyEvidence) := by
   exact ⟨Maintenance.local_conformance_without_higher_acceptance,
     InstitutionalAuthority.local_conformance_without_higher_acceptance,
     Measurement.local_conformance_without_higher_acceptance,
