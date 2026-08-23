@@ -144,7 +144,7 @@ theorem noNewWitness
           cases h₂ : satisfy O R₂ Γ with
           | none =>
               have h₂' := ih₂ h₂
-              simp [satisfy, h₁, h₂']
+              cases h₁' : satisfy O R₁ Γ' <;> simp [satisfy, h₁', h₂']
           | some β₂ =>
               simp [satisfy, h₁, h₂] at hFail
   | disj R₁ R₂ ih₁ ih₂ =>
