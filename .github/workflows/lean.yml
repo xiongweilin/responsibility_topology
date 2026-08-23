@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, formal/bc-foundation]
+    branches: [main, formal/bc-foundation, formal/satisfaction-core]
   workflow_dispatch:
 
 jobs:
@@ -23,6 +23,6 @@ jobs:
             echo 'Proof placeholder found in formal core.'
             exit 1
           fi
-      - name: Print BC axiom dependencies
+      - name: Print formal theorem axiom dependencies
         working-directory: formal
         run: lake env lean ResponsibilityTopology/Audit.lean
