@@ -67,4 +67,5 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.grounded_refresh_idempotence
 #print axioms ResponsibilityTopology.grounded_invalidation_monotonicity
 #print axioms ResponsibilityTopology.grounded_has_bootstrap_chain
+#print axioms ResponsibilityTopology.no_grounded_without_bootstrap
 #print axioms ResponsibilityTopology.groundedAmbient_contextActive_iff
