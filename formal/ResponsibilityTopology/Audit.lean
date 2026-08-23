@@ -9,8 +9,10 @@ import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
 import ResponsibilityTopology.HistoricalObjects
+import ResponsibilityTopology.EvaluationVocabulary
 import ResponsibilityTopology.Reachability
 import ResponsibilityTopology.RootFormation
+import ResponsibilityTopology.EvaluationQualification
 
 /-!
 Proof-audit surface for the current mechanization milestones.
@@ -107,3 +109,15 @@ CI prints the axiom dependencies of the machine-checked declarations.
 #print axioms ResponsibilityTopology.reachable_warrantParentsCanonical
 #print axioms ResponsibilityTopology.reachable_rootWarrantsWellFormed
 #print axioms ResponsibilityTopology.reachable_warrantRootLineageCanonical
+#print axioms ResponsibilityTopology.usable_iff_live_and_placed
+#print axioms ResponsibilityTopology.usable_implies_evaluated
+#print axioms ResponsibilityTopology.usableFromState_true_iff
+#print axioms ResponsibilityTopology.admitRoot_evaluation_exact
+#print axioms ResponsibilityTopology.admitRoot_makes_usable
+#print axioms ResponsibilityTopology.admitRoot_historyReferentsImmutable
+#print axioms ResponsibilityTopology.admitRoot_preserves_existing_warrant_history
+#print axioms ResponsibilityTopology.admitRoot_preserves_evaluationInvariant
+#print axioms ResponsibilityTopology.rootStep_newWarrant_unqualified
+#print axioms ResponsibilityTopology.rootStep_newWarrant_notUsable
+#print axioms ResponsibilityTopology.usable_implies_canonicalHistoricalWarrant
+#print axioms ResponsibilityTopology.reachable_usable_implies_canonical
