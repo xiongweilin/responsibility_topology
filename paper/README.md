@@ -97,8 +97,14 @@ Primary files:
 - `revalidation-submission-draft.md` — first full manuscript.
 - `revalidation-hostile-review.md` — adversarial review.
 - `revalidation-post-review-corrections.md` — terminology/claim corrections.
-- `revalidation-submission-v2.md` — current venue-neutral submission baseline before conceptual normalization.
-- `revalidation-venue-target.md` — venue-specific planning; not part of the semantic claim surface.
+- `revalidation-submission-v2.md` — venue-neutral pre-compression baseline.
+- `revalidation-submission-v3.md` — current conceptually normalized manuscript baseline: four result families and mother claim above hitting-set machinery.
+- `revalidation-figure-spec.md` — frozen two-figure architecture and caption/claim rules.
+- `revalidation-citation-bibliography.md` — verified core prior-art bibliography and claim-pressure matrix.
+- `revalidation-language-polish.md` — venue-neutral wording firewall that must survive later compression.
+- `revalidation-venue-target.md` — historical venue-specific planning; not part of the semantic claim surface.
+
+Repository-root `PAPER3_ARTIFACT.md` owns the Paper 3 semantic/manuscript/artifact freeze. `PAPER_VERSIONS.md` records exact commit identities.
 
 Paper 3 mother distinction:
 
@@ -118,9 +124,9 @@ impact detection
 != ordered execution
 ```
 
-The current formal kernel is frozen at PR #48. Manuscript work should reduce theorem-catalog presentation rather than request more Lean by default.
+The formal kernel is frozen at PR #48 / `190e24e4...`. Manuscript work should reduce theorem-catalog presentation rather than request more Lean by default.
 
-## Paper 3 result hierarchy for future drafts
+## Paper 3 result hierarchy
 
 Use four memorable result families:
 
@@ -142,7 +148,7 @@ Treat these as supporting definitions/lemmas/boundaries rather than peer headlin
 
 ## Figure architecture
 
-Paper 3 should carry two primary figures.
+Paper 3 carries two primary figures.
 
 ### Figure A — persistent history vs typed currentness across change
 
@@ -175,7 +181,7 @@ RepairRealization         semantic effectiveness certificate
 RevalidationTrace         ordered proof-carrying execution
 ```
 
-The hypergraph is a technical representation inside this argument, not the conceptual starting point.
+The hypergraph is a technical representation inside this argument, not the conceptual starting point. `revalidation-figure-spec.md` is authoritative for caption and non-claim rules.
 
 ## Permanent writing rule
 
