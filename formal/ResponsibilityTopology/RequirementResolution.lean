@@ -397,9 +397,9 @@ theorem resolvedLicensingRead_requirement
   | none =>
       simp [hLookup] at hResolved
   | some R =>
-      simp [hLookup] at hResolved
-      cases hResolved
-      change lookupRequirement snapshot ⟨τ, m⟩ = some R
-      exact hLookup
+      have hC : C = U.withRequirement R := by
+        simpa [hLookup] using hResolved.symm
+      subst C
+      simpa [UnresolvedLicensingRead.withRequirement] using hLookup
 
 end ResponsibilityTopology
