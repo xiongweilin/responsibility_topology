@@ -6,13 +6,15 @@ import ResponsibilityTopology.EvaluationVocabulary
 namespace ResponsibilityTopology
 
 /-!
-Reachable canonical-state model including TRANSPORT historical formation.
+Reachable canonical-state model including TRANSPORT historical formation and
+source-context qualification.
 
 The state keeps immutable canonical history distinct from mutable evaluation
 qualification. ROOT, INFER, and TRANSPORT formation write only historical
-warrants. ROOT admission and INFER qualification write only evaluation
-qualification. TRANSPORT qualification, license issuance, revalidation, and
-challenge/revision remain outside this milestone.
+warrants. Qualification writes only evaluation state. TRANSPORT qualification
+reads current responsibility at each stored parent's own formation context;
+target-context activation, license issuance, revalidation, and challenge/revision
+remain outside this milestone.
 -/
 
 structure CanonicalBinding where
@@ -53,6 +55,20 @@ def InferParentsUsable
   ∀ parentId,
     parentId ∈ warrant.parents →
     Usable S ⟨profileDigest, contextId, use, parentId⟩
+
+/-- Current-parent responsibility consumed by TRANSPORT qualification.
+Each stored historical parent is evaluated at its own formation context, not at
+the transported child's target context. No source-context activation premise is
+part of this predicate. -/
+def TransportParentsUsable
+    (S : CanonicalState)
+    (profileDigest use : String)
+    (originalId witnessId : WarrantId)
+    (original witness : HistoricalWarrant) : Prop :=
+  Usable S
+      ⟨profileDigest, original.formationContext, use, originalId⟩ ∧
+    Usable S
+      ⟨profileDigest, witness.formationContext, use, witnessId⟩
 
 private def addFact {α : Type} (P : α → Prop) (x : α) : α → Prop :=
   fun y => y = x ∨ P y
@@ -220,10 +236,14 @@ inductive KernelEvent where
       (warrantId : WarrantId)
       (bindingId contextId use : String)
       (metadata : QualificationMetadata)
+  | qualifyTransport
+      (warrantId : WarrantId)
+      (bindingId targetContextId use : String)
+      (metadata : QualificationMetadata)
 
-/-- Formation and qualification transitions through reachable TRANSPORT
-formation. Ordinary INFER formation deliberately has no parent-usability premise;
-TRANSPORT formation likewise consumes only canonical historical inputs. -/
+/-- Formation and qualification transitions through source-current TRANSPORT
+qualification. Formation does not consume parent usability; qualification does
+not replay formation discipline. -/
 inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop where
   | registerContext
       {S : CanonicalState} {id : String} {context : CanonicalContext}
@@ -355,6 +375,26 @@ inductive Step : CanonicalState → KernelEvent → CanonicalState → Prop wher
       Step S (.qualifyInfer warrantId bindingId contextId use metadata)
         (qualifyEvaluation S
           ⟨binding.profileDigest, contextId, use, warrantId⟩)
+  | qualifyTransport
+      {S : CanonicalState}
+      {warrantId originalId witnessId : WarrantId}
+      {bindingId targetContextId use mapId : String}
+      {metadata : QualificationMetadata}
+      {binding : CanonicalBinding}
+      {warrant original witness : HistoricalWarrant}
+      (bindingCanonical : S.binding bindingId = some binding)
+      (warrantCanonical : S.warrant warrantId = some warrant)
+      (isTransport : warrant.constructor = .transport mapId)
+      (parentsExact : warrant.parents = [originalId, witnessId])
+      (originalCanonical : S.warrant originalId = some original)
+      (witnessCanonical : S.warrant witnessId = some witness)
+      (formationContext : warrant.formationContext = targetContextId)
+      (formationProfile : warrant.formationProfileDigest = binding.profileDigest)
+      (parentsUsable : TransportParentsUsable
+        S binding.profileDigest use originalId witnessId original witness) :
+      Step S (.qualifyTransport warrantId bindingId targetContextId use metadata)
+        (qualifyEvaluation S
+          ⟨binding.profileDigest, targetContextId, use, warrantId⟩)
 
 inductive Reachable : CanonicalState → Prop where
   | initial {S : CanonicalState} : InitialBoundary S → Reachable S
@@ -673,6 +713,10 @@ theorem step_historyReferentsImmutable
         exact h
   | qualifyInfer bindingCanonical warrantCanonical isInfer formationContext
       formationProfile parentsUsable =>
+      constructor <;> intros <;> assumption
+  | qualifyTransport bindingCanonical warrantCanonical isTransport parentsExact
+      originalCanonical witnessCanonical formationContext formationProfile
+      parentsUsable =>
       constructor <;> intros <;> assumption
 
 theorem step_preserves_invariant
@@ -1313,6 +1357,74 @@ theorem step_preserves_invariant
                 ⟨backingId, backing, hBacking, hProfileBacking, hUseBacking⟩
               exact ⟨backingId, backing, hBacking,
                 hProfileBacking, hUseBacking⟩
+        · have hOldRecord : HasEvaluationRecord S key' := by
+            rcases qualifyEvaluation_otherKey_unchanged S hEq with
+              ⟨hEpi, hPlacement⟩
+            rcases hRecord with hStatus | hPlace
+            · rcases hStatus with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, hEpi.symm.trans hStatus⟩
+            · rcases hPlace with ⟨placement, hPlace⟩
+              exact Or.inr ⟨placement, hPlacement.symm.trans hPlace⟩
+          exact hInv.evaluationProfileUseBackedByBinding hOldRecord
+      · exact hInv.transportWarrantWellFormed
+  | @qualifyTransport warrantId originalId witnessId bindingId targetContextId use
+      mapId metadata binding warrant original witness bindingCanonical
+      warrantCanonical isTransport parentsExact originalCanonical witnessCanonical
+      formationContext formationProfile parentsUsable =>
+      let key : EvalKey :=
+        ⟨binding.profileDigest, targetContextId, use, warrantId⟩
+      constructor
+      · exact hInv.bindingReferentsCanonical
+      · exact hInv.activeContextReferentsCanonical
+      · exact hInv.activeContextHasActivationProvenance
+      · exact hInv.adoptedActiveContextHasCanonicalLicense
+      · exact hInv.warrantReferentsCanonical
+      · exact hInv.warrantParentsCanonical
+      · exact hInv.rootWarrantWellFormed
+      · exact hInv.warrantRootLineageCanonical
+      · intro warrantId' warrant' ruleId hWarrant hConstructor
+        rcases hInv.inferWarrantWellFormed hWarrant hConstructor with
+          ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+            hParents, hDiscipline, hExact⟩
+        exact ⟨profile, oldContext, rule, parents, hProfile, hContext, hRule,
+          hParents.preserved (by intro parentId parent hLookup; exact hLookup),
+          hDiscipline, hExact⟩
+      · intro key' hRecord
+        by_cases hEq : key' = key
+        · subst key'
+          exact ⟨warrant, warrantCanonical, formationProfile, formationContext⟩
+        · have hOldRecord : HasEvaluationRecord S key' := by
+            rcases qualifyEvaluation_otherKey_unchanged S hEq with
+              ⟨hEpi, hPlacement⟩
+            rcases hRecord with hStatus | hPlace
+            · rcases hStatus with ⟨status, hStatus⟩
+              exact Or.inl ⟨status, hEpi.symm.trans hStatus⟩
+            · rcases hPlace with ⟨placement, hPlace⟩
+              exact Or.inr ⟨placement, hPlacement.symm.trans hPlace⟩
+          exact hInv.evaluationReferentsCanonical hOldRecord
+      · intro key'
+        by_cases hEq : key' = key
+        · subst key'
+          simp [key, qualifyEvaluation, setOptionAt]
+        · rcases qualifyEvaluation_otherKey_unchanged S hEq with
+            ⟨hEpi, hPlacement⟩
+          rw [hEpi, hPlacement]
+          exact hInv.evaluationPairCoherent key'
+      · intro key' hRecord
+        by_cases hEq : key' = key
+        · subst key'
+          have hOriginalUsable :
+              Usable S
+                ⟨binding.profileDigest, original.formationContext, use,
+                  originalId⟩ := parentsUsable.1
+          have hOriginalRecord :
+              HasEvaluationRecord S
+                ⟨binding.profileDigest, original.formationContext, use,
+                  originalId⟩ :=
+            Or.inl ⟨.live, hOriginalUsable.1⟩
+          rcases hInv.evaluationProfileUseBackedByBinding hOriginalRecord with
+            ⟨backingId, backing, hBacking, hProfileBacking, hUseBacking⟩
+          exact ⟨backingId, backing, hBacking, hProfileBacking, hUseBacking⟩
         · have hOldRecord : HasEvaluationRecord S key' := by
             rcases qualifyEvaluation_otherKey_unchanged S hEq with
               ⟨hEpi, hPlacement⟩
