@@ -10,5 +10,7 @@ import ResponsibilityTopology.RequirementResolution
 import ResponsibilityTopology.PythonConformance
 import ResponsibilityTopology.ContextCurrentness
 import ResponsibilityTopology.CurrentnessConformance
+import ResponsibilityTopology.HistoricalObjects
 import ResponsibilityTopology.Reachability
+import ResponsibilityTopology.RootFormation
 import ResponsibilityTopology.Audit
