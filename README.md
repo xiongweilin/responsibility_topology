@@ -1,73 +1,120 @@
-# Responsibility Topology V0.1.1 — hardened executable proof kernel
+# Responsibility Topology V0.1.2 — semantic-boundary hardening
+
+V0.1.2 is deliberately not a metatheorem release. It hardens the executable
+reference semantics around the four boundaries that must be stable before a
+formal inference sheet is extracted.
 
 Core adversarial criterion:
 
-> Can a caller construct a license that has no canonical, context-valid,
-> typed responsibility path in append-only history H?
+> Can an adversarial caller construct or reuse a license that has no canonical,
+> context-valid, typed responsibility path in append-only history H?
 
-V0.1.1 hardens V0.1 before any metatheorem is attempted.
+## Release invariants
 
-## Hardening changes
+### G1 — Trusted transition state
 
-1. **Canonical-reference integrity**
-   - public proof/licensing APIs accept warrant/binding IDs;
-   - every object is reloaded from canonical `History`;
-   - caller-fabricated objects with reused IDs cannot alter role, claim, scope or binding scope.
+`History` and `EvaluationState` expose read-only views. Canonical stores,
+warrant status, active bindings, active contexts and review sets are mutated
+only through kernel transitions. Python reflection/private-field hacking is
+explicitly outside the V0.1.2 threat model.
 
-2. **Context is a proof boundary**
-   - root claims must belong to the context signature;
-   - ordinary `INFER` is strictly intra-context;
-   - current usability is indexed by `(profile_digest, context, use, warrant)`;
-   - cross-context movement requires `TRANSPORT`.
+### G2 — Candidate context != active context
 
-3. **Immutable profile snapshots**
-   - a binding points to `(profile id, version, sha256 digest)`;
-   - mutating the authoring `Profile` after binding does not mutate the active calculus.
+A context is first registered as a candidate. Candidate contexts may host
+exploratory roots, derived warrants and challenges. Operational `license(...)`
+requires an active context.
 
-4. **Dependency-aware revalidation**
-   - `History` stores reverse derivation edges;
-   - challenge of an ancestor suspends descendants/pends their placement;
-   - licenses depending on any impacted descendant enter `review_required`;
-   - no recursive defeat is performed.
+The first active context for a binding/use is an explicit bootstrap boundary.
+Any later context activation must consume a currently reusable `Adopt` license.
 
-5. **Kernel strengthening gates**
-   - `Act` requires authorization;
-   - `Share` requires selection;
-   - `Suspect/Reopen` require escalation;
-   - `Adopt` requires escalation + selection;
-   - normative licensing is deliberately disabled in V0.1.1.
+This permits exploration of a new distinction space without silently changing
+the map used for operational determination.
 
-6. **Transport target integrity**
-   - bridge witness is bound to `(map, original warrant, target context, exact translated claim)`;
-   - callers cannot use a valid bridge to translate into an arbitrary claim.
+### G3 — Closed move strength
 
-## Tests
+`Move.kind` is a kernel-owned `MoveKind` enum. Unknown move kinds fail closed.
+Profiles may add requirements but cannot introduce a new semantic move by
+renaming `Adopt`, `Act`, `Reopen`, etc.
 
-The current suite has **16 passing tests**: the original four toy models, the eight requested hardening regressions, and additional regressions for canonical-context licensing, use-scoped challenge propagation, malicious action rules, and related boundary checks.
+### G4 — Typed revision depth
 
-- spoofed warrant id cannot change role;
-- spoofed binding id cannot widen scope;
-- cross-context use requires transport;
-- bound profile is immutable snapshot;
-- ancestor challenge revalidates descendants and licenses;
-- `TOP` cannot license `Adopt`;
-- normative licensing is explicitly disabled;
-- transport witness is bound to target claim/context.
+`Suspect`, `Reopen`, and `Adopt` carry a kernel-owned `RevisionDepth`.
+Licensing requires a live escalation warrant whose explicit
+`EscalationDepth(n)` is at least the move depth.
 
-Run:
+Profile inference cannot silently amplify escalation depth.
+
+### G5 — Use-local invalidation
+
+Challenge propagation is use-indexed for both warrant status and affected
+licenses. A challenge in use `u1` does not put a `u2` license into review merely
+because it shares the same historical warrant.
+
+### G6 — Explicit revision reach
+
+Revision transitions declare their reach:
+
+- `USE_LOCAL(use)`
+- `PROFILE_GLOBAL`
+
+There is no ambiguous revision function whose propagation scope depends on an
+omitted condition.
+
+### G7 — Historical license != current capability
+
+`LicenseRecord` is an append-only historical issuance record and now records
+its exact `binding_id`.
+
+`check_license_current(L)` separately checks:
+
+- exact binding still active;
+- profile digest still matches;
+- license context is active for that binding/use;
+- license is not under review;
+- every branch leaf is currently usable.
+
+Any effectful transition that consumes an old license (currently context
+activation) rechecks current reusability first.
+
+### G8 — Provenance guard semantics
+
+V0.1.2 stores both:
+
+- canonical root warrant IDs;
+- external source identities.
+
+They are not conflated.
+
+`distinct_content_sources` is the guard used for evidence-source diversity.
+`distinct_content_roots` is separately available for historical-root identity.
+Both are kernel-known typed transitions from `CONTENT^n` to `PROVENANCE`.
+Unknown kernel guards fail closed.
+
+## Trusted external stopping boundaries
+
+V0.1.2 makes the following external boundaries explicit rather than pretending
+to derive them internally:
+
+- candidate context registration;
+- profile binding;
+- bootstrap activation of the first determination context for a binding/use;
+- root admission.
+
+None of these events asserts truth or ultimate legitimacy. They are auditable
+boundary roots for the executable reference semantics.
+
+## Deliberate non-goal
+
+`LicenseRecord.agents` is still metadata. V0.1.2 does **not** yet claim
+agent-indexed obligation ownership or genuine distributed obligation discharge.
+It only supports licenses whose warrant lineage may come from multiple sources.
+
+## Run
 
 ```bash
 python -m pytest -q
 ```
 
-This is still a reference semantics, not a soundness proof. The next formal step should only begin after adversarial hardening stabilizes.
-
-
-## Deliberate stopping boundaries
-
-V0.1.1 still treats two operations as explicit external boundary events rather than internally self-justifying judgments:
-
-- `admit_root(...)`: admits a sourced root premise into current usability;
-- `bind_profile(...)`: activates an immutable profile snapshot for a scope/use.
-
-Both are recorded and auditable. Neither asserts truth or ultimate legitimacy. A later version may make their challenge/requalification richer, but V0.1.1 does not hide them behind an internal oracle.
+The suite includes the V0.1.1 regressions plus V0.1.2 semantic-boundary attacks.
+The next formal step should begin only after this adversarial gate remains
+stable.
