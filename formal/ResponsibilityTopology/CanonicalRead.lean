@@ -132,7 +132,8 @@ theorem toFloorEnv_lookup_canonical
     {w : WarrantId} {cw : CanonicalWarrant}
     (hLookup : C.warrant w = some cw) :
     (toFloorEnv C fallback).lookup w = floorLeafOf cw := by
-  simp [toFloorEnv, hLookup]
+  unfold toFloorEnv
+  rw [hLookup]
 
 /-- A branch leaf is projection-coherent when both satisfaction-relevant fields
 and the floor leaf are observations of one and the same canonical warrant. -/
@@ -172,11 +173,13 @@ theorem derives_support_canonical
   | @atom a w hSat =>
       intro x hMem
       change x ∈ [w] at hMem
-      have hx : x = w := by simpa using hMem
-      subst x
-      change CanonicalAtomSat C w a at hSat
-      rcases hSat with ⟨cw, hLookup, _⟩
-      exact ⟨cw, hLookup⟩
+      cases hMem with
+      | head =>
+          change CanonicalAtomSat C w a at hSat
+          rcases hSat with ⟨cw, hLookup, _⟩
+          exact ⟨cw, hLookup⟩
+      | tail _ hTail =>
+          cases hTail
   | @both β₁ β₂ R₁ R₂ h₁ h₂ ih₁ ih₂ =>
       intro w hMem
       change w ∈ β₁.support ++ β₂.support at hMem
