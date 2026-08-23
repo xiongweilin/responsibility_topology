@@ -1,12 +1,12 @@
 # Separating Canonical History from Current Usability in a Finite Epistemic Kernel
 
-_Status: full working draft through the paper-freeze claim/literature pass. The theorem surface is frozen at R1–R9; this pass adds paper-facing formal statements and proof sketches without changing the Lean development._
+_Status: full working draft through the paper-facing formal exposition and INFER responsibility-cut pass. The theorem surface remains frozen at R1–R9; this pass changes no Lean or Python semantics._
 
 ## Abstract — revised working version
 
 Finite evidence-processing systems must distinguish at least two questions: whether a warrant has a canonical formation or derivation history, and whether that warrant is currently usable in a particular evaluation environment. We mechanize this distinction in a finite kernel with immutable canonical history and a separate mutable evaluation plane. Historical warrants record formation context, profile, constructor, ordered parents, and role-indexed lineage. Current usability is instead defined by an explicit evaluation key and the conjunction of two mutable statuses. A separate static entitlement calculus then consumes usable canonical warrants together with exact requirement discharge, ambient admissibility, and kernel-floor safety.
 
-The Lean 4 development establishes three result families. First, Relative Branch Conservativity, exact full-move requirement resolution, and canonical projection coherence locate entitlement responsibility on finite observation boundaries. Second, an explicit `InitialBoundary / Step / Reachable` system preserves one shared invariant separating immutable historical referents from mutable evaluation records. Grounded adopted-context currentness is treated as an orthogonal semantic component: it rules out purely self-supporting activation cycles, but the current reachable transition surface does not yet contain an Adopt lifecycle. Third, ROOT and ordinary INFER make the historical/current distinction transition-visible. Fresh formation creates canonical history without creating usability. For ordinary INFER, formation consumes an exact rule and ordered historical parents but not their current usability; later qualification does not replay rule, guard, scope, strength, or lineage formation, and instead requires those historical parents to be usable in the pre-state before making the child usable in the post-state.
+The Lean 4 development establishes three result families. First, Relative Branch Conservativity, exact full-move requirement resolution, and canonical projection coherence locate entitlement responsibility on finite observation boundaries. Second, an explicit `InitialBoundary / Step / Reachable` system preserves one shared invariant separating immutable historical referents from mutable evaluation records. Grounded adopted-context currentness is treated as an orthogonal semantic component: it rules out purely self-supporting activation cycles, but the current reachable transition surface does not yet contain an Adopt lifecycle. Third, ROOT and ordinary INFER make the historical/current distinction transition-visible. Fresh formation creates canonical history without creating usability. For ordinary INFER, formation checks an exact rule and resolves ordered historical parent occurrences without requiring their current usability; later qualification does not replay rule, guard, scope, strength, or lineage formation, and instead requires those historical parent identities to be usable in the pre-state before making the child usable in the post-state.
 
 The contribution is not provenance representation, staged proof checking, proof-carrying authorization, truth maintenance, revocable credential state, or dynamic epistemic/evidential update in general. Rather, it is a particular mechanized responsibility decomposition inside one finite reachable kernel: **canonical history and current usability are distinct state relations; historical formation and current qualification are distinct transitions governing those relations; and, for ordinary INFER, historical derivation and current usable-parent responsibility are distinct relations over the same parent identities.** The artifact does not prove profile adequacy, kernel-floor adequacy, source authenticity, Python operational refinement, or an end-to-end theorem from every reachable state directly to entitlement. The Python V0.1.2.2 implementation is used only for selected differential conformance tests against mechanized projection and currentness semantics.
 
@@ -104,9 +104,9 @@ ROOT\ Formation \not\Rightarrow Current\ Usability.
 }
 \]
 
-Ordinary INFER makes the responsibility split more substantive. Historical formation consumes an exact immutable rule and ordered historical parents, checks structural typing and guards, enforces same-context/same-profile formation, scope non-widening, and formal strength constraints, and constructs lineage. It deliberately does **not** consume parent usability.
+Ordinary INFER makes the responsibility split more substantive. Historical formation checks an exact immutable rule and ordered historical parent occurrences, checks structural typing and guards, enforces same-context/same-profile formation, scope non-widening, and formal strength constraints, and constructs lineage. It deliberately does **not** require parent usability.
 
-Qualification has a different contract. It starts from the already formed historical child, does not replay the formation proof, and requires every historical parent to be usable in the selected pre-state environment. It then establishes child usability in the post-state:
+Qualification has a different contract. It starts from the already formed historical child, does not replay the formation proof, and requires every historical parent identity to be usable in the selected pre-state environment. It then establishes child usability in the post-state:
 
 \[
 \boxed{
@@ -146,7 +146,7 @@ The paper has three contribution families.
 
 **(2) Reachable canonical history/evaluation state.** We define an explicit transition-generated state space and prove preservation of a shared canonical invariant that separates immutable historical referents from mutable evaluation. Grounded adopted-context currentness is included as a separate semantic component that rules out purely self-supporting activation cycles, without claiming a completed reachable Adopt lifecycle.
 
-**(3) Historical formation/current qualification separation.** ROOT formation produces history without usability and admission later establishes usability. Ordinary INFER goes further: formation consumes historical parents but not their current usability; qualification later consumes pre-state parent usability over those same parent identities without replaying historical formation obligations. The composed lifecycle theorem exposes the intermediate state in which the child is historically present but non-usable.
+**(3) Historical formation/current qualification separation.** ROOT formation produces history without usability and admission later establishes usability. Ordinary INFER goes further: formation resolves and records ordered historical parent occurrences without requiring their current usability; qualification later requires pre-state parent usability over those parent identities without replaying historical formation obligations. The composed lifecycle theorem exposes the intermediate state in which the child is historically present but non-usable.
 
 A Python V0.1.2.2 implementation accompanies the formalization as an executable reference and differential conformance target. It is not a fourth theoretical contribution and is not claimed to be verified.
 
@@ -679,27 +679,60 @@ This is another instance of the paper's discipline: record what the transition a
 
 INFER separates historical derivation from current responsibility more sharply than ROOT because the same parent graph participates in two different relations.
 
-## 6.1 Exact historical rule discipline — R7
+## 6.1 Exact historical formation — R7
 
-A canonical profile contains an immutable rule table. Ordinary INFER resolves the exact profile selected by the binding and then performs exact `ruleId` lookup. Rule-table order is not a priority mechanism.
+A canonical profile contains an immutable rule table. Ordinary INFER resolves the exact profile selected by the binding, performs exact `ruleId` lookup, resolves ordered historical parent occurrences, and checks one `InferFormationDiscipline`. Rule-table order is not a priority mechanism.
 
-Formation resolves parent identifiers in list order and preserves duplicates. This is important because the rule input roles are compared to the ordered parent-role list. Parent identity is therefore not the same semantic object as lineage: parent lists are ordered derivational input; lineage is extensional ancestry.
+The paper-facing formation result is deliberately a **local `Step` theorem**. Unlike the later fresh-child non-usability result, it does not require the pre-state to be reachable.
 
-The formation discipline requires, among other things:
+**Theorem R7 (Exact historical INFER formation).** Let `S,S'` be canonical states, `w` a fresh child identifier, `b,c,r` the formation binding/context/rule identifiers, `P` the ordered parent-ID list, and `s` the output scope. If
 
-```text
-exact bound rule
-ordered parent roles = rule input roles
-same formation context
-same formation profile snapshot
-output accepted by context
-scope non-widening
-known structural guard
-protected-role discipline
-formal escalation non-amplification
-```
+\[
+Step(S,\operatorname{infer}(w,b,c,r,P,s),S'),
+\]
 
-The result creates the exact historical derived object and role-wise unions both root and source lineage from all parents.
+then there exist a canonical binding `B`, profile `\Pi`, context `C`, exact rule `R`, and ordered resolved parent objects `\bar W` such that
+
+\[
+S.binding(b)=some\;B,
+\qquad
+S.profile(B.profileDigest)=some\;\Pi,
+\]
+
+\[
+lookupRule(\Pi,r)=some\;R,
+\qquad
+S.context(c)=some\;C,
+\]
+
+\[
+ResolvesParents(S,P,\bar W),
+\]
+
+\[
+InferFormationDiscipline(C,B.profileDigest,c,R,\bar W,s),
+\]
+
+and
+
+\[
+\boxed{
+S'.warrant(w)
+=
+some\;\operatorname{inferHistoricalWarrant}
+(r,B.profileDigest,c,P,\bar W,s,R).
+}
+\]
+
+The Lean witness is `inferStep_newWarrant_exact`.
+
+**Proof sketch.** Invert the single `Step.infer` constructor. Its premises directly provide the canonical binding, profile, exact rule lookup, canonical context, ordered parent resolution, and formation discipline. The post-state updates the historical warrant lookup with `putCanonical`, so the fresh child identifier denotes exactly the displayed `inferHistoricalWarrant`. No reachability invariant is used in this proof.
+
+At the paper level we unfold only the formation obligations needed for the contribution claim. `InferFormationDiscipline` fixes: (i) ordered parent roles against the exact rule inputs; (ii) the parents' formation context/profile identity; (iii) scope non-widening and escalation-strength non-amplification; and (iv) structural typing, output acceptance, and the selected kernel guard. These are formation responsibilities, not qualification-time checks.
+
+Formation is occurrence-sensitive. `ResolvesParents(S,P,\bar W)` preserves list order and duplicate occurrences, and `inferStep_orderedParentRoles_exact` compares the resulting ordered parent-role list with the rule's ordered input-role list.
+
+**Corollary (Exact lineage construction).** Under the same formation step, the new historical object's root lineage and source lineage are the independent role-wise unions of the resolved parents' corresponding lineage relations. This is the paper-facing role of `inferStep_lineage_union`; it is supporting structure for R7 rather than a separate headline result.
 
 ## 6.2 Why two lineage relations matter
 
@@ -707,9 +740,9 @@ The model keeps root lineage and source lineage distinct. This is not decorative
 
 The INFER formation theorem shows that both are preserved by independent role-wise union rather than collapsed into one generic provenance set.
 
-## 6.3 Formation does not consume parent usability
+## 6.3 Formation does not require parent usability
 
-The ordinary INFER constructor has no `Usable` premise for parents. Formation consumes canonical historical parent objects.
+The ordinary INFER constructor has no `Usable` premise for parents. Formation requires canonical historical parent objects and the formation discipline above; current parent qualification is a different boundary.
 
 This yields:
 
@@ -731,14 +764,67 @@ historical derivation relation
 current usable-parent responsibility
 ```
 
-## 6.4 Fresh INFER history is non-usable
+## 6.4 Transition responsibility cut
 
-Like ROOT formation, INFER formation changes historical state but leaves evaluation unchanged. Freshness plus evaluation referent coherence proves that the new child has no evaluation position under any profile/context/use key.
+The two INFER transitions expose different responsibility boundaries. The distinction is better stated in terms of what each boundary checks and establishes than in terms of resource consumption.
 
-Thus:
+| Boundary | Requires / checks now | Establishes | Does not re-check |
+| --- | --- | --- | --- |
+| **INFER formation** | fresh child ID; exact binding/profile/rule; canonical context; ordered canonical parent occurrences; `InferFormationDiscipline` | exact immutable historical child; ordered parent identities; root/source lineage | current parent usability |
+| **INFER qualification** | existing historical INFER child; recorded formation context/profile identity; pre-state current usability of the historical parent identities | exact child `LIVE/PLACED` evaluation at the selected profile/context/use key | rule lookup; structural typing; formation guard; output acceptance; scope/strength discipline; lineage construction |
+
+“Does not re-check” does not mean that the historical obligations are irrelevant. In the reachable-state interpretation they are carried by the immutable historical warrant and the shared invariant. Qualification's responsibility is not to discharge formation a second time.
+
+The machine-checked write sets make the cut visible. `inferStep_evaluationTopology_unchanged` proves that ordinary INFER formation preserves, pointwise, active-context facts, activation provenance, review requirements, represented licenses, and both evaluation axes. Conversely, `qualifyInfer_historyReferentsImmutable` proves that qualification preserves every immutable historical referent, while `qualifyInfer_evaluation_exact` writes the selected child evaluation key.
+
+Thus the transition cut can be summarized as
 
 \[
-\boxed{INFER\ Formation \not\Rightarrow Current\ Usability.}
+\boxed{
+\begin{array}{rcl}
+INFER\ formation
+&:&
+History\ changes,\ represented\ evaluation/currentness\ topology\ unchanged,
+\\[2mm]
+INFER\ qualification
+&:&
+Historical\ referents\ unchanged,\ exact\ evaluation\ qualification\ changes.
+\end{array}
+}
+\]
+
+This is stronger than observing that formation happens not to make the fresh child usable: the formation transition does not write the represented evaluation/currentness plane at all.
+
+## 6.5 Fresh INFER history is non-usable
+
+R7 itself needs only one formation `Step`. The stronger statement that the fresh child has **no** evaluation position at any profile/context/use key needs reachability.
+
+Like ROOT formation, INFER formation leaves evaluation unchanged. Reachability supplies `EvaluationReferentsCanonical(S)`; together with warrant-ID freshness this rules out a pre-existing evaluation record referring to the fresh child, and `inferStep_evaluationTopology_unchanged` carries that absence into the post-state.
+
+Thus, from
+
+\[
+Reachable(S)
+\land
+Step(S,\operatorname{infer}(w,b,c,r,P,s),S'),
+\]
+
+we obtain for every profile/context/use environment
+
+\[
+\boxed{\neg Usable(S',(\pi,c',u,w)).}
+\]
+
+through `inferStep_newWarrant_unqualified` and `inferStep_newWarrant_notUsable`.
+
+The proof-responsibility split is therefore:
+
+\[
+\boxed{
+\text{exact historical formation is a local Step theorem;}
+\quad
+\text{fresh-child non-usability additionally uses reachable-state coherence.}
+}
 \]
 
 In the running trace this is the defining fact of `S3`:
@@ -749,7 +835,7 @@ Hist_{S_3}(d,W_d)
 \neg Usable(S_3,k_d).
 \]
 
-## 6.5 Qualification consumes a different responsibility — R8
+## 6.6 Qualification requires a different responsibility — R8
 
 The current-parent predicate used by qualification is explicit.
 
@@ -761,7 +847,19 @@ InferParentsUsable(S,\pi,c,u,W)
 \forall p\in W.parents,\;Usable(S,(\pi,c,u,p)).
 \]
 
-The membership relation is over the warrant's stored ordered parent list; the universal predicate is evaluated in the qualification **pre-state**.
+The membership relation is over the warrant's stored parent-ID list; the universal predicate is evaluated in the qualification **pre-state**.
+
+There is an intentional occurrence/identity asymmetry between formation and qualification:
+
+\[
+\boxed{
+\text{formation is occurrence-sensitive;}
+\qquad
+\text{qualification currentness is identity-sensitive.}
+}
+\]
+
+Formation preserves ordered parent occurrences and duplicates because they occupy ordered derivational input positions and participate in occurrence-sensitive formation checks. Qualification instead asks whether each parent identifier appearing in that stored list is currently usable at one exact evaluation key. If the same identifier occurs repeatedly, the present `InferParentsUsable` predicate does not create a multiplicity-sensitive or use-once obligation: propositionally it asks for the same `Usable(S,(\pi,c,u,p))` fact. Current usability in this kernel is therefore an idempotent predicate of a warrant identity at an exact evaluation key, **not** a linear, consumable, or use-once capability resource.
 
 **Theorem R8 (Exact INFER qualification boundary).** Suppose
 
@@ -815,7 +913,7 @@ hence
 
 The exact Lean witness for the preconditions and two-axis postcondition is `qualifyInfer_evaluation_exact`; `qualifyInfer_requires_usableParents` exposes the pre-state responsibility directly, and `qualifyInfer_makes_usable` gives the usability corollary.
 
-**Proof sketch.** Invert the `qualifyInfer` constructor. Its premises already contain the canonical binding/warrant lookup, INFER constructor witness, exact historical formation context/profile, and `InferParentsUsable` in `S`. No rule lookup, typing, guard, context-acceptance, scope, strength, or lineage premise occurs in this transition. The post-state is `qualifyEvaluation` at `k_w`, so the generic exact-setter theorem yields `LIVE/PLACED` and therefore usability.
+**Proof sketch.** Invert the `qualifyInfer` constructor. Its premises already contain the canonical binding/warrant lookup, INFER constructor witness, exact historical formation context/profile, and `InferParentsUsable` in `S`. No rule lookup, typing, guard, context-acceptance, scope, strength, or lineage-construction premise occurs in this transition. Those obligations belong to historical formation; qualification does not discharge them a second time. The post-state is `qualifyEvaluation` at `k_w`, so the generic exact-setter theorem yields `LIVE/PLACED` and therefore usability.
 
 For the running example, the pre-state obligation is exactly
 
@@ -825,7 +923,7 @@ Usable(S_3,k_{p_1})
 Usable(S_3,k_{p_2}).
 \]
 
-## 6.6 Pre-state, not permanent, responsibility
+## 6.7 Pre-state, not permanent, responsibility
 
 The parent-usability obligation is explicitly indexed by the qualification pre-state:
 
@@ -839,7 +937,7 @@ ChildUsable(S_{post}).
 
 The current model does not assert the converse as a permanent invariant. A future revision/invalidation transition may change a parent's current status after the child was qualified. How such dependency invalidation should propagate is deliberately left to later work.
 
-## 6.7 Qualification does not invent an unbacked use
+## 6.8 Qualification does not invent an unbacked use
 
 The executable `qualify_derived()` boundary does not repeat the ROOT-style check `binding.use = use`. The formalization does not silently add one.
 
@@ -853,7 +951,7 @@ EvaluationProfileUseBackedByBinding
 UseAdequacy.
 \]
 
-## 6.8 Lifecycle separation — R9
+## 6.9 Lifecycle separation — R9
 
 R9 composes the historical formation boundary with the current qualification boundary, but its exact temporal scope matters.
 
@@ -939,7 +1037,40 @@ The Lean witness is `inferFormationQualification_boundary`.
 
 **Proof sketch.** Invert the qualification step using `qualifyInfer_requires_usableParents` to obtain `B`, `W`, the INFER constructor witness, the historical formation context/profile equalities, and the pre-state parent-usability obligation. Because `S_0` is reachable and the immediately preceding step is a fresh INFER formation of `w`, `inferStep_newWarrant_notUsable` gives non-usability of `w` in `S_1` at **every** profile/context/use key, hence at `k_w`. Finally, `qualifyInfer_makes_usable` gives usability at the same exact key in `S_2`; functional lookups identify its binding and warrant witnesses with those already recovered from the qualification step.
 
-Two scope points are important. First, the formation call-site identifiers `(b_f,c_f)` and qualification call-site identifiers `(b_q,c_q)` are quantified separately; the theorem recovers the qualification environment through the immutable warrant's recorded formation context/profile and the qualification premises rather than by assuming syntactic equality of the two calls. Second, R9 is a **two-step adjacent trace theorem**. It does not state that the same conclusion holds after an arbitrary sequence of intervening transitions. Such a temporal-closure theorem would require additional preservation/invalidation premises and is not claimed here.
+Two scope points are important. First, the formation call-site identifiers `(b_f,c_f)` and qualification call-site identifiers `(b_q,c_q)` are quantified separately; the theorem recovers the qualification environment through the immutable warrant's recorded formation context/profile and the qualification premises rather than by assuming syntactic equality of the two calls. Second, R9 is a **two-step adjacent trace theorem**. It does not state that the same conclusion holds after an arbitrary sequence of intervening transitions.
+
+**Remark 6.2 (Separation is weaker than persistence, and deliberately so).** The adjacent theorem discharges a separation obligation: it exhibits a machine-checked boundary in which the same historical child is present but non-usable in `S_1`, and becomes usable only after the explicit qualification transition to `S_2`. Schematically,
+
+\[
+\begin{aligned}
+\textbf{Separation:}\quad
+&Hist_{S_1}(w,W)
+\land
+\neg Usable(S_1,k_w)
+\land
+Usable(S_2,k_w).
+\end{aligned}
+\]
+
+A stronger temporal-persistence theorem would quantify over states reached through arbitrary intervening transitions and would have to state which historical/current properties are preserved, which transitions may suspend or invalidate them, and under what revalidation obligations they can be restored. Schematically,
+
+\[
+\begin{aligned}
+\textbf{Temporal persistence:}\quad
+&\text{for arbitrary admissible intervening transitions,}\
+&\text{specified properties persist until an explicit invalidator, subject to stated preservation rules.}
+\end{aligned}
+\]
+
+The current `Step` surface has no challenge/revision/invalidation theory from which those premises could be derived. The stronger statement is therefore not silently assumed and is not required to establish relation-level separation:
+
+\[
+\boxed{
+\text{A witnessed boundary proves separability;}
+\quad
+\text{arbitrary temporal persistence requires an invalidation theory.}
+}
+\]
 
 The machine-checked distinction is therefore not merely that history and status are stored in different fields, nor merely that one phase checks proofs while another checks mutable state. The same persistent parent identities participate in two relations at different responsibility boundaries:
 
@@ -951,7 +1082,7 @@ The machine-checked distinction is therefore not merely that history and status 
 
 Formation establishes and preserves the first relation while carrying the already-discharged rule/guard/context/scope/strength/lineage obligations. Qualification later evaluates the second relation without replaying the first set of obligations.
 
-## 6.9 Stopping before entitlement
+## 6.10 Stopping before entitlement
 
 At `S4`, the running example establishes `Usable(S_4,k_d)`. It does not establish that any particular licensing move is entitled.
 
@@ -1060,7 +1191,7 @@ Our historical parents and lineage play a provenance-like role, but the central 
 
 Justification Logic internalizes proof/evidence objects through assertions such as `t : F`, read as “t is a justification for F” [Artemov 2008]. It therefore provides a mature proof-relevant epistemic framework. Dynamic descendants go further. Bucheli, Kuznets, and Studer combine public-announcement dynamics with explicit justifications [2014]. Baltag, Renne, and Smets combine tools from Dynamic Epistemic Logic, Justification Logic, and Belief Revision to model evidence introduction, inference, evidential upgrade/update, and defeasible justified belief; related work treats evidence availability, admissibility, goodness, explicit knowledge, and conclusive evidence [2012; 2014].
 
-Our warrants should therefore not be presented as the first explicit justification objects, nor should the paper claim novelty for dynamically revisable explicit evidence. The narrower object is a kernel invariant separating immutable historical warrant identities from a mutable evaluation relation over those same identities. The main result concerns how one formation transition and one later qualification transition consume different predicates over a persistent parent graph.
+Our warrants should therefore not be presented as the first explicit justification objects, nor should the paper claim novelty for dynamically revisable explicit evidence. The narrower object is a kernel invariant separating immutable historical warrant identities from a mutable evaluation relation over those same identities. The main result concerns how one formation transition and one later qualification transition have distinct responsibility premises over a persistent parent graph.
 
 ## 9.4 Proof-carrying and stateful authorization
 
@@ -1078,7 +1209,7 @@ In schematic form:
 \underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
 \]
 
-The present claim is thus not that proof material has never coexisted with mutable authorization state. It is the specific machine-checked separation between immutable derivation-parent structure and a later qualification transition whose premise is current usability of those same historical parents.
+The present claim is thus not that proof material has never coexisted with mutable authorization state. It is the specific machine-checked separation between immutable derivation-parent structure and a later qualification transition whose premise is current usability of those same historical parents. The current usability predicate is not a use-once or multiplicity-sensitive credential resource; repeated historical parent occurrences remain an occurrence-sensitive formation fact rather than repeated consumption rights at qualification time.
 
 ## 9.5 Belief revision and dynamic epistemic logic
 
@@ -1090,7 +1221,7 @@ Our problem is complementary. The first-paper kernel does not yet model general 
 
 The novelty claim should therefore be phrased positively and narrowly:
 
-> **We mechanize a finite reachable kernel in which canonical history, current qualification, and branch-local entitlement observations are separate interfaces. ROOT and INFER make the split transition-visible. Ordinary INFER formation permanently records exact historical parent identities and discharges rule/typing/guard/context/scope/strength/lineage obligations without consuming parent usability; later qualification applies pre-state current usability to those same historical parents without replaying formation.**
+> **We mechanize a finite reachable kernel in which canonical history, current qualification, and branch-local entitlement observations are separate interfaces. ROOT and INFER make the split transition-visible. Ordinary INFER formation permanently records exact ordered historical parent occurrences and discharges rule/typing/guard/context/scope/strength/lineage obligations without requiring parent usability; later qualification applies pre-state current usability to those parent identities without replaying formation.**
 
 This is not a priority claim over provenance, truth maintenance, justification logic, dynamic evidence logics, proof-carrying/stateful authorization, revocable credentials, or belief dynamics. It is a specific machine-checked decomposition of responsibilities inside one finite kernel.
 
