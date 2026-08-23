@@ -30,6 +30,32 @@ with:
 - \(m\): a kernel-recognized judgment move;
 - \(\beta\): the recorded discharge branch for the exact profile requirement attached to \(m\).
 
+### Current-fragment agent status
+
+The symbol \(X\) is retained in the judgment because future work on \(Q_{\mathrm{close}}\) will make agent-indexed responsibility proof-relevant. In the current fragment, however, \(X\) is only an attribution index.
+
+\[
+oxed{
+	extbf{Agent irrelevance in the current calculus}
+}
+\]
+
+For fixed \(\mathbb K_0,\kappa,c,u,	au,eta,m\),
+
+\[
+oxed{
+\mathbb K_0;\kappa;c;X;udash_	au^eta m
+\iff
+\mathbb K_0;\kappa;c;X';udash_	au^eta m.
+}
+\]
+
+Thus:
+
+> \(X\) is an attribution index in the current fragment, not yet an obligation-discharge index.
+
+This is a deliberate limitation. Agent-indexed obligation ownership and distributed discharge remain part of \(Q_{\mathrm{close}}\).
+
 The **entitlement judgment** is the theoretical object. A runtime `LicenseRecord` is an executable certificate that a concrete derivation of this judgment was issued at a particular historical state. Therefore:
 
 \[
@@ -115,7 +141,7 @@ Equivalently, the core judgment is derived only when:
 1. **Ambient admissibility** holds: the binding is active, the exact profile snapshot is fixed, the context is active for the use, and the move is within binding scope.
 2. **Profile obligation** is explicit: the current regime declares the exact finite requirement \(R\) for the exact move identity, including type, kind, arguments, revision depth, and scope.
 3. **Requirement discharge** is proof-relevant: \(\beta\) records the actual positive branch and its immediate warrant support.
-4. **Kernel floor** passes: kernel-owned type/scope/provenance/authorization/revision invariants are satisfied independently of profile generosity.
+4. **Kernel licensing floor** passes: kernel-owned licensing constraints on type, scope, authorization/selection, and revision strength hold independently of profile generosity. Additional kernel-owned **formation discipline** — including provenance guards, transport conservation, scope preservation, and revision-depth non-amplification — has already constrained which warrants can enter the branch.
 
 Thus the current system implements
 
@@ -133,7 +159,7 @@ A profile may declare what it currently demands for a move, but the present calc
 
 ## 4. Responsibility Topology
 
-The proof calculus and responsibility topology are distinct but coupled.
+The entitlement calculus and responsibility topology are distinct but coupled.
 
 > **Calculus studies derivability; topology studies the dependency and currentness of derivability under challenge and revision.**
 
