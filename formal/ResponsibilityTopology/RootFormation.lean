@@ -5,10 +5,9 @@ namespace ResponsibilityTopology
 /-!
 ROOT historical formation laws.
 
-The transition is intentionally formation-only.  It creates one immutable
+The transition is intentionally formation-only. It creates one immutable
 historical warrant and does not activate contexts, mutate activation provenance,
-mark licenses for review, create licenses, or otherwise qualify the new warrant
-for evaluation/use.
+mark licenses for review, create licenses, or write evaluation qualification.
 -/
 
 /-- Pointwise evaluation topology preserved by a ROOT formation step. -/
@@ -20,8 +19,10 @@ structure RootEvaluationTopologyUnchanged
   reviewRequired : ∀ licenseId,
     S'.reviewRequired licenseId ↔ S.reviewRequired licenseId
   license : ∀ licenseId, S'.license licenseId = S.license licenseId
+  epi : ∀ key, S'.epi key = S.epi key
+  placement : ∀ key, S'.placement key = S.placement key
 
-/-- Exact post-state object produced by ROOT.  No active/evaluation premise is
+/-- Exact post-state object produced by ROOT. No active/evaluation premise is
 present: only canonical binding/context, signature acceptance, and freshness
 can have justified the step. -/
 theorem rootStep_newWarrant_exact
@@ -63,8 +64,9 @@ theorem rootStep_historyReferentsImmutable
     HistoryReferentsImmutable S S' :=
   step_historyReferentsImmutable hStep
 
-/-- Machine-checked formation/admission boundary for the evaluation topology
-currently represented by the canonical-state skeleton. -/
+/-- Machine-checked formation/admission boundary: ROOT formation does not write
+any represented evaluation/currentness field, including the new epi/placement
+axes introduced by #13. -/
 theorem rootStep_evaluationTopology_unchanged
     {S S' : CanonicalState}
     {warrantId : WarrantId}
@@ -82,6 +84,10 @@ theorem rootStep_evaluationTopology_unchanged
       · intro licenseId
         rfl
       · intro licenseId
+        rfl
+      · intro key
+        rfl
+      · intro key
         rfl
 
 /-- ROOT preservation specialized to canonical warrant formation referents. -/
