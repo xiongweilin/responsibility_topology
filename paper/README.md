@@ -16,7 +16,13 @@ Paper 2 — Environment
 Paper 3 — Change
   preserved history != invalidated/restored current responsibility
 
-Next — Regime adequacy / Q_open
+Next — Cross-domain falsification
+  candidate structures must survive heterogeneous-domain attacks
+  before any cross-domain invariant claim
+
+Then — Observation/refinement bridge
+
+Then — Regime adequacy / Q_open
   correct repair inside a model != knowing the model is adequate
 
 Later — Multi-agent regime / Q_close
@@ -25,7 +31,7 @@ Later — Multi-agent regime / Q_close
 The three completed paper lines should be described as:
 
 ```text
-identity -> environment -> change
+Object -> Environment -> Change
 ```
 
 not as:
@@ -57,7 +63,12 @@ state-indexed current usable-parent responsibility
 
 ## Paper 2 — cross-environment responsibility
 
-Primary files use the `transport-*` prefix, including:
+Current environment-synthesis files:
+
+- `transport-environment-submission-v2.md` — current Paper 2 manuscript baseline before hostile consistency pass; integrates final TRANSPORT + Adopt/License/Grounded formal scope.
+- `transport-environment-claim-map.md` — current two-block E1/E2 claim map and end-to-end firewall.
+
+Historical TRANSPORT-only files remain preserved, including:
 
 - `transport-paper-checkpoint.md`
 - `transport-theorem-map.md`
@@ -73,18 +84,47 @@ TRANSPORT historical formation
 +
 source-context current qualification
 +
-Adopt-license BaseCurrent
+Adopt-license record / BaseCurrent
 +
 reachable Adopt activation
 +
 Grounded reachable currentness
 ```
 
-The historical TRANSPORT manuscript line predates the final Adopt/License/Grounded formal closure. Treat the current Paper 2 submission draft as a frozen writing baseline, not as proof that every later Paper 2 formal result is already integrated into that manuscript. Any future Paper 2 submission pass should be paper-only synchronization unless writing exposes a genuine theorem gap.
+Reader-facing Paper 2 result blocks are now exactly:
+
+```text
+E1  cross-context historical transport
+    != source-indexed current qualification
+
+E2  recorded activation provenance
+    != license BaseCurrent
+    != context Groundedness
+```
+
+The old P2-R1–P2-R4 labels remain an artifact-level decomposition of the TRANSPORT half of E1. They are not four additional headline contributions on top of E1/E2.
+
+Permanent Paper 2 firewall:
+
+```text
+There is no current end-to-end theorem
+TRANSPORT qualification
+  -> Adopt license issuance/recording
+  -> Adopt activation
+  -> Grounded target.
+```
+
+The paper must not reopen Lean merely to fill that narrative joint. `AdoptLicenseRecordDiscipline` is explicitly not entitlement-backed issuance, and no theorem derives an Adopt license from a transported child.
+
+Paper 2 formal semantic baseline remains PR #41 merge:
+
+```text
+4dfa0c19e6fb40947e3fe5dd5b8600c55e1ad424
+```
 
 Paper 2 mother question:
 
-> When responsibility crosses an environment boundary, which facts remain attached to historical objects and which current responsibilities must be discharged in the relevant source/target environment?
+> When responsibility crosses an environment boundary, which facts remain attached to historical objects and which current responsibilities must be discharged in source, issuer, or target environment coordinates?
 
 ## Paper 3 — dependency-sensitive revision
 
