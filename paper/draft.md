@@ -8,7 +8,7 @@ Finite evidence-processing systems must distinguish at least two questions: whet
 
 The Lean 4 development establishes three result families. First, Relative Branch Conservativity, exact full-move requirement resolution, and canonical projection coherence locate entitlement responsibility on finite observation boundaries. Second, an explicit `InitialBoundary / Step / Reachable` system preserves one shared invariant separating immutable historical referents from mutable evaluation records. Grounded adopted-context currentness is treated as an orthogonal semantic component: it rules out purely self-supporting activation cycles, but the current reachable transition surface does not yet contain an Adopt lifecycle. Third, ROOT and ordinary INFER make the historical/current distinction transition-visible. Fresh formation creates canonical history without creating usability. For ordinary INFER, formation consumes an exact rule and ordered historical parents but not their current usability; later qualification does not replay rule, guard, scope, strength, or lineage formation, and instead requires those historical parents to be usable in the pre-state before making the child usable in the post-state.
 
-The contribution is not provenance representation, proof-carrying authorization, truth maintenance, or dynamic epistemic update in general. Rather, it is a particular mechanized responsibility decomposition inside one finite reachable kernel: **canonical historical formation and current usability are distinct state relations, and historical derivation and current usable-parent responsibility are distinct relations.** The artifact does not prove profile adequacy, kernel-floor adequacy, source authenticity, Python operational refinement, or an end-to-end theorem from every reachable state directly to entitlement. The Python V0.1.2.2 implementation is used only for selected differential conformance tests against mechanized projection and currentness semantics.
+The contribution is not provenance representation, staged proof checking, proof-carrying authorization, truth maintenance, revocable credential state, or dynamic epistemic/evidential update in general. Rather, it is a particular mechanized responsibility decomposition inside one finite reachable kernel: **canonical history and current usability are distinct state relations; historical formation and current qualification are distinct transitions governing those relations; and, for ordinary INFER, historical derivation and current usable-parent responsibility are distinct relations over the same parent identities.** The artifact does not prove profile adequacy, kernel-floor adequacy, source authenticity, Python operational refinement, or an end-to-end theorem from every reachable state directly to entitlement. The Python V0.1.2.2 implementation is used only for selected differential conformance tests against mechanized projection and currentness semantics.
 
 ---
 
@@ -18,13 +18,15 @@ A system that stores evidence or derived judgments eventually faces two differen
 
 The two questions are related, but they need not have the same answer. A derived object may remain part of an auditable historical graph even when it is no longer eligible for current use. Conversely, a current qualification decision should not silently rewrite the historical reason why the object exists. Collapsing these relations into one field such as `valid`, `trusted`, or `accepted` makes it difficult to tell which responsibility was discharged at which stage.
 
-This paper studies a deliberately finite kernel in which the distinction is explicit and machine checked. The theorem-facing thesis is:
+This paper studies a deliberately finite kernel in which the distinction is explicit and machine checked. The theorem-facing state thesis is:
 
 \[
 \boxed{
-\text{Canonical historical formation and current usability are distinct state relations.}
+\text{Canonical history and current usability are distinct state relations.}
 }
 \]
+
+The transitions governing those relations are likewise separated: historical formation creates or extends canonical history, while current admission/qualification changes the evaluation relation without rewriting historical identity.
 
 For ordinary inference the result is sharper:
 
@@ -122,19 +124,19 @@ The derived object exists in the intermediate state while remaining non-usable t
 
 ## 1.4 What is and is not new
 
-Several mature literatures already cover neighboring ideas. Assumption-based truth maintenance preserves justification/assumption structure while supporting context-sensitive reasoning. Database provenance records how results depend on inputs. Justification Logic places justification objects inside the object language. Proof-carrying authentication makes authorization depend on checkable proofs. Stateful and explicit-time authorization logics, including the Proof-Carrying File System, make authorization depend on mutable time and system state. Belief revision and dynamic epistemic logic study transformations of epistemic states.
+Several mature literatures already cover neighboring ideas. Assumption-based truth maintenance preserves justification/assumption structure while supporting context-sensitive reasoning. Database provenance records how results depend on inputs. Justification Logic places justification objects inside the object language, and dynamic justification/evidence logics combine explicit reasons with epistemic change. Proof-carrying authentication makes authorization depend on checkable proofs. Stateful and explicit-time authorization logics, including the Proof-Carrying File System and its revocable/use-once extension, combine persistent proof/certificate material with mutable time, system, revocation, or certificate-use state. Belief revision and dynamic epistemic logic study transformations of epistemic states.
 
-Accordingly, this paper does **not** claim novelty for provenance, proof-relevant evidence, retraction, state-dependent authorization, or epistemic update in general. Its narrower contribution is the combination of three interfaces in one mechanized finite kernel:
+Accordingly, this paper does **not** claim novelty for provenance, proof-relevant evidence, dynamically revisable explicit evidence, staged proof/state checking, revocable credential state, retraction, state-dependent authorization, or epistemic update in general. Its narrower contribution is the combination of three interfaces in one mechanized finite kernel:
 
 ```text
-immutable canonical formation history
+immutable canonical history
         ≠
 mutable current qualification
         ≠
 branch-local entitlement observation
 ```
 
-and, specifically for ordinary INFER, a theorem-level split between obligations consumed at formation and obligations consumed later at current qualification.
+and, specifically for ordinary INFER, a theorem-level split over the same ordered parent identities: formation permanently records `ParentOf(p,d)` and discharges rule/guard/context/scope/strength/lineage obligations, while later qualification applies the time-indexed predicate `Usable(S_pre,k_p)` to those historical parents.
 
 ## 1.5 Contributions
 
@@ -144,7 +146,7 @@ The paper has three contribution families.
 
 **(2) Reachable canonical history/evaluation state.** We define an explicit transition-generated state space and prove preservation of a shared canonical invariant that separates immutable historical referents from mutable evaluation. Grounded adopted-context currentness is included as a separate semantic component that rules out purely self-supporting activation cycles, without claiming a completed reachable Adopt lifecycle.
 
-**(3) Historical formation/current qualification separation.** ROOT formation produces history without usability and admission later establishes usability. Ordinary INFER goes further: formation consumes historical parents but not their current usability; qualification later consumes pre-state parent usability without replaying historical formation obligations. The composed lifecycle theorem exposes the intermediate state in which the child is historically present but non-usable.
+**(3) Historical formation/current qualification separation.** ROOT formation produces history without usability and admission later establishes usability. Ordinary INFER goes further: formation consumes historical parents but not their current usability; qualification later consumes pre-state parent usability over those same parent identities without replaying historical formation obligations. The composed lifecycle theorem exposes the intermediate state in which the child is historically present but non-usable.
 
 A Python V0.1.2.2 implementation accompanies the formalization as an executable reference and differential conformance target. It is not a fourth theoretical contribution and is not claimed to be verified.
 
@@ -256,6 +258,20 @@ This layer separation prevents the formal results from being misread as a univer
 
 ## 2.5 Running trace
 
+Fix one evaluation environment
+
+\[
+q=(\pi,c,u),
+\]
+
+with exact warrant-indexed keys
+
+\[
+k_{p_1}=(\pi,c,u,p_1),\qquad
+k_{p_2}=(\pi,c,u,p_2),\qquad
+k_d=(\pi,c,u,d).
+\]
+
 The paper uses one minimal trace throughout Sections 5 and 6.
 
 ```text
@@ -263,18 +279,18 @@ S0
  │ form ROOT p1
  │ form ROOT p2
  ▼
-S1    p1,p2 historical; neither usable
- │ admit p1
- │ admit p2
+S1    p1,p2 historical; neither usable at k_p1,k_p2
+ │ admit p1 at k_p1
+ │ admit p2 at k_p2
  ▼
-S2    p1,p2 usable
+S2    Usable(S2,k_p1) ∧ Usable(S2,k_p2)
  │ INFER d from [p1,p2]
  ▼
-S3    d historical; d NOT usable
- │ qualifyInfer d
- │ requires p1,p2 usable in S3
+S3    d historical; ¬Usable(S3,k_d)
+ │ qualifyInfer d at k_d
+ │ requires Usable(S3,k_p1) ∧ Usable(S3,k_p2)
  ▼
-S4    d usable
+S4    Usable(S4,k_d)
 ```
 
 At `S3` the crucial conjunction is:
@@ -301,7 +317,7 @@ pre-state qualification condition at S3
 Usable(S3,k_p1) ∧ Usable(S3,k_p2)
 ```
 
-The edges `p1,p2 → d` are part of immutable history. The usability condition is a predicate of a particular state and evaluation environment.
+The edges `p1,p2 → d` are part of immutable history. The usability condition is a predicate of a particular state and the exact evaluation environment `q`; usability is not a warrant-global property.
 
 The chosen trace admits the parents before forming `d` because it is easy to read. That ordering is **not** a formation premise. Ordinary INFER formation has no parent-usability requirement, so a different legal trace can form the historical child while the parents are themselves still unqualified. The later `qualifyInfer` transition is where current parent usability becomes a responsibility obligation.
 
@@ -509,7 +525,7 @@ Hence R6 contains the explicit negative theorem:
 \boxed{ROOT\ Formation \not\Rightarrow Usable.}
 \]
 
-In the running example, this is the state of `p1` and `p2` at `S1`.
+In the running example, this is the state of `p1` and `p2` at `S1`: neither `Usable(S_1,k_{p_1})` nor `Usable(S_1,k_{p_2})` holds.
 
 ## 5.3 Explicit admission
 
@@ -591,7 +607,7 @@ CurrentParentUsability.
 }
 \]
 
-In the main running trace the parents happen to be usable at `S2` before `d` is formed. That is not required by R7. The steps can be reordered so that `d` is historically formed before either root is admitted, provided the historical formation premises hold.
+In the main running trace the parents happen to satisfy `Usable(S_2,k_{p_1})` and `Usable(S_2,k_{p_2})` before `d` is formed. That is not required by R7. The steps can be reordered so that `d` is historically formed before either root is admitted, provided the historical formation premises hold.
 
 This is the first half of the distinction:
 
@@ -633,6 +649,14 @@ all historical parents usable in the pre-state
   at the same (profile, context, use)
 ```
 
+For the running example, that pre-state obligation is exactly
+
+\[
+Usable(S_3,k_{p_1})
+\land
+Usable(S_3,k_{p_2}).
+\]
+
 It deliberately does **not** replay:
 
 ```text
@@ -647,7 +671,7 @@ lineage construction
 
 Those obligations were discharged when immutable history was formed and are recoverable from the reachable historical invariant.
 
-Qualification's new responsibility is current parent usability.
+Qualification's new responsibility is current parent usability over the same historical parent identities.
 
 ## 6.6 Pre-state, not permanent, responsibility
 
@@ -706,11 +730,19 @@ with the intermediate negative fact:
 \boxed{HistoricalDerived \not\Rightarrow CurrentUsability.}
 \]
 
-The machine-checked distinction is therefore not merely that history and status are stored in different fields. The formation and qualification transitions consume different premises over the same historical graph.
+The machine-checked distinction is therefore not merely that history and status are stored in different fields, nor merely that one phase checks proofs while another checks mutable state. The same persistent parent identities participate in two relations at different responsibility boundaries:
+
+\[
+\underbrace{ParentOf(p,d)}_{\text{persistent historical relation}}
+\qquad\text{and}\qquad
+\underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
+\]
+
+Formation establishes and preserves the first relation while carrying the already-discharged rule/guard/context/scope/strength/lineage obligations. Qualification later evaluates the second relation without replaying the first set of obligations.
 
 ## 6.9 Stopping before entitlement
 
-At `S4`, the running example establishes that `d` is usable. It does not establish that any particular licensing move is entitled.
+At `S4`, the running example establishes `Usable(S_4,k_d)`. It does not establish that any particular licensing move is entitled.
 
 The static layer still requires exact requirement resolution, branch discharge, ambient admissibility, and floor safety. This is why the paper's title stops at current usability rather than claiming a complete transition from historical formation to entitlement.
 
@@ -734,7 +766,7 @@ This design keeps the adapter boundary visible: executable parsing, transition e
 
 ## 7.3 Current empirical boundary
 
-At the present artifact revision, repository CI runs the existing Python regression/conformance surface as 63 tests alongside the Lean build and theorem audit. This count is an artifact metric, not a theorem count and not a coverage proof.
+At the artifact commit accompanying this draft, the repository regression and differential-conformance suite contains 63 tests alongside the Lean build and theorem audit. The exact count is an artifact metric that may change; it is not a theorem count and not a coverage proof. A submission version may move the numeric count to the artifact appendix while retaining the qualitative claim here.
 
 The defensible implementation claim is:
 
@@ -811,25 +843,35 @@ Our result is not that such a distinction had never been represented. The narrow
 
 Database provenance, especially provenance semirings, provides a systematic algebraic account of how query outputs depend on inputs [Green, Karvounarakis, Tannen 2007]. That literature makes it untenable to present “recording derivation provenance” as the novelty of this work.
 
-Our historical parents and lineage play a provenance-like role, but the central theorem concerns a second relation not supplied by provenance alone: whether an already formed historical object is currently qualified for use. The paper's contribution is the explicit separation and transition contract between these relations, not the existence of provenance annotations.
+Our historical parents and lineage play a provenance-like role, but the central theorem concerns a second relation: whether an already formed historical object is currently qualified for use. The paper's contribution is the explicit separation and transition contract between these relations, not the existence of provenance annotations. The comparison is intentionally limited to the cited core provenance result; it is not an absence claim about the broader provenance literature.
 
-## 9.3 Justification Logic
+## 9.3 Justification Logic and dynamic evidence logics
 
-Justification Logic internalizes proof/evidence objects through assertions such as `t : F`, read as “t is a justification for F” [Artemov 2008]. It therefore provides a mature proof-relevant epistemic framework.
+Justification Logic internalizes proof/evidence objects through assertions such as `t : F`, read as “t is a justification for F” [Artemov 2008]. It therefore provides a mature proof-relevant epistemic framework. Dynamic descendants go further. Bucheli, Kuznets, and Studer combine public-announcement dynamics with explicit justifications [2014]. Baltag, Renne, and Smets combine tools from Dynamic Epistemic Logic, Justification Logic, and Belief Revision to model evidence introduction, inference, evidential upgrade/update, and defeasible justified belief; related work treats evidence availability, admissibility, goodness, explicit knowledge, and conclusive evidence [2012; 2014].
 
-Our warrants should not be presented as the first explicit justification objects. They are operationally different: the first-paper kernel records finite canonical formation objects and maintains a mutable evaluation plane outside the historical object. The main result concerns how formation and later qualification consume different state predicates, not a new object language for epistemic justification.
+Our warrants should therefore not be presented as the first explicit justification objects, nor should the paper claim novelty for dynamically revisable explicit evidence. The narrower object is a kernel invariant separating immutable historical warrant identities from a mutable evaluation relation over those same identities. The main result concerns how one formation transition and one later qualification transition consume different predicates over a persistent parent graph.
 
 ## 9.4 Proof-carrying and stateful authorization
 
 Proof-Carrying Authentication requires clients to submit checkable proofs with requests [Appel & Felten 1999]. Later authorization work moves even closer to our current-state boundary. Explicit-time authorization logic reasons about time and mutable state [DeYoung, Garg, Pfenning 2008]. The Proof-Carrying File System supports policies whose consequences depend on time and system state and separates proof/certificate verification from later checks of extracted time/state conditions through conditional capabilities [Garg & Pfenning 2010]. Stateful Authorization Logic gives a proof-theoretic treatment of policies depending on externally verified state predicates [Garg & Pfenning 2012].
 
-These systems are the strongest reason not to claim that our work is the first to separate proof construction from current-state authorization checks. PCFS in particular explicitly verifies proof structure off-line and checks state/time conditions at access time.
+The 2011 revocable/use-once PCFS extension strengthens this neighboring pattern further: authorization still uses explicit proof objects, while revocation lists and use-once certificate state are stored in a database consulted during file access [Morgenstern, Garg, Pfenning 2011]. Persistent proof material combined with mutable access-time credential state is therefore not a novelty claim available to this paper.
 
-Our narrower result differs in emphasis and formal object. The reachable kernel preserves one immutable warrant graph while maintaining a separate evaluation relation. ROOT and INFER are historical formation constructors; admission/qualification are explicit evaluation transitions. For ordinary INFER, the formal theorem identifies exactly which obligations remain historical—rule lookup, typing, guards, context acceptance, scope/strength, lineage—and exactly which new obligation is consumed later—pre-state usability of every historical parent. Qualification therefore does not simply “check current state”; it checks a different responsibility predicate over a persistent historical parent relation while relying on immutable history to carry formation validity.
+Nor is the claimed distinction merely staged proof checking. PCFS already gives a close example of proof/certificate verification separated from later state/time checks. The narrower theorem-level distinction here is the **dependency object to which the later state predicate is applied**. Ordinary INFER permanently records an ordered historical parent relation. Later qualification evaluates `Usable` over those same parent identities in a particular pre-state, while immutable reachable history carries the already-discharged rule lookup, typing, guard, context acceptance, scope, strength, and lineage obligations.
+
+In schematic form:
+
+\[
+\underbrace{ParentOf(p,d)}_{\text{persistent historical relation}}
+\qquad\text{versus}\qquad
+\underbrace{Usable(S_{pre},k_p)}_{\text{time-indexed evaluation predicate}}.
+\]
+
+The present claim is thus not that proof material has never coexisted with mutable authorization state. It is the specific machine-checked separation between immutable derivation-parent structure and a later qualification transition whose premise is current usability of those same historical parents.
 
 ## 9.5 Belief revision and dynamic epistemic logic
 
-AGM belief revision studies rational transformations of belief sets under contraction, expansion, and revision [Alchourrón, Gärdenfors, Makinson 1985]. Classical belief-set presentations often abstract away explicit derivational reasons, although foundational approaches and truth-maintenance traditions retain richer support structure. Dynamic Epistemic Logic studies model-transforming epistemic actions and broader belief change [van Ditmarsch, van der Hoek, Kooi 2007].
+AGM belief revision studies rational transformations of belief sets under contraction, expansion, and revision [Alchourrón, Gärdenfors, Makinson 1985]. Classical belief-set presentations often abstract away explicit derivational reasons, although foundational approaches and truth-maintenance traditions retain richer support structure. Dynamic Epistemic Logic studies model-transforming epistemic actions and broader belief change [van Ditmarsch, van der Hoek, Kooi 2007]. As §9.3 notes, dynamic justification/evidence logics already connect explicit reasons with such change.
 
 Our problem is complementary. The first-paper kernel does not yet model general revision of the historical/evaluation graph. Instead it deliberately keeps canonical formation history immutable and asks which current evaluation transition may qualify an already formed object. Challenge/revision/revalidation will eventually connect the work more directly to belief-change semantics, but those transitions are outside the present theorem surface.
 
@@ -837,23 +879,27 @@ Our problem is complementary. The first-paper kernel does not yet model general 
 
 The novelty claim should therefore be phrased positively and narrowly:
 
-> **We mechanize a finite reachable kernel in which canonical formation history, current qualification, and branch-local entitlement observations are separate interfaces. ROOT and INFER make the split transition-visible. Ordinary INFER formation consumes exact historical rule/parent obligations without consuming parent usability; later qualification consumes pre-state current usability of those same historical parents without replaying formation.**
+> **We mechanize a finite reachable kernel in which canonical history, current qualification, and branch-local entitlement observations are separate interfaces. ROOT and INFER make the split transition-visible. Ordinary INFER formation permanently records exact historical parent identities and discharges rule/typing/guard/context/scope/strength/lineage obligations without consuming parent usability; later qualification applies pre-state current usability to those same historical parents without replaying formation.**
 
-This is not a priority claim over provenance, truth maintenance, justification logic, proof-carrying authorization, or belief dynamics. It is a specific machine-checked decomposition of responsibilities inside one finite kernel.
+This is not a priority claim over provenance, truth maintenance, justification logic, dynamic evidence logics, proof-carrying/stateful authorization, revocable credentials, or belief dynamics. It is a specific machine-checked decomposition of responsibilities inside one finite kernel.
 
 ### Bibliographic anchors for this draft
 
 - Johan de Kleer. “An assumption-based TMS.” *Artificial Intelligence* 28(2):127–162, 1986. DOI `10.1016/0004-3702(86)90080-9`.
 - Todd J. Green, Grigoris Karvounarakis, Val Tannen. “Provenance Semirings.” *PODS 2007*, 31–40. DOI `10.1145/1265530.1265535`.
 - Sergei Artemov. “The Logic of Justification.” *The Review of Symbolic Logic* 1(4):477–513, 2008. DOI `10.1017/S1755020308090060`.
+- Samuel Bucheli, Roman Kuznets, Thomas Studer. “Realizing Public Announcements by Justifications.” *Journal of Computer and System Sciences* 80(6):1046–1066, 2014. DOI `10.1016/j.jcss.2014.04.001`.
+- Alexandru Baltag, Bryan Renne, Sonja Smets. “The Logic of Justified Belief Change, Soft Evidence and Defeasible Knowledge.” *WoLLIC 2012*, LNCS 7456, 168–190. DOI `10.1007/978-3-642-32621-9_13`.
+- Alexandru Baltag, Bryan Renne, Sonja Smets. “The Logic of Justified Belief, Explicit Knowledge, and Conclusive Evidence.” *Annals of Pure and Applied Logic* 165(1):49–81, 2014. DOI `10.1016/j.apal.2013.07.005`.
 - Andrew W. Appel, Edward W. Felten. “Proof-Carrying Authentication.” *CCS 1999*, 52–62. DOI `10.1145/319709.319718`.
 - Henry DeYoung, Deepak Garg, Frank Pfenning. “An Authorization Logic with Explicit Time.” *CSF 2008*. DOI `10.1109/CSF.2008.15`.
 - Deepak Garg, Frank Pfenning. “A Proof-Carrying File System.” *IEEE Symposium on Security and Privacy 2010*, 349–364. DOI `10.1109/SP.2010.28`.
+- Jamie Morgenstern, Deepak Garg, Frank Pfenning. “A Proof-Carrying File System with Revocable and Use-Once Certificates.” *STM 2011*, LNCS.
 - Deepak Garg, Frank Pfenning. “Stateful Authorization Logic—Proof Theory and a Case Study.” *Journal of Computer Security* 20(4):353–391, 2012.
 - Carlos E. Alchourrón, Peter Gärdenfors, David Makinson. “On the Logic of Theory Change: Partial Meet Contraction and Revision Functions.” *Journal of Symbolic Logic* 50(2):510–530, 1985. DOI `10.2307/2274239`.
 - Hans van Ditmarsch, Wiebe van der Hoek, Barteld Kooi. *Dynamic Epistemic Logic*. Springer, 2007. DOI `10.1007/978-1-4020-5839-4`.
 
-The submission bibliography should expand descendant work where needed; the current matrix is a positioning baseline, not an exhaustive literature survey.
+The submission bibliography may still expand descendant work where needed; the current matrix is a positioning baseline, not an exhaustive literature survey. Negative comparisons in this section are scoped to the cited results rather than to entire research traditions.
 
 ---
 
