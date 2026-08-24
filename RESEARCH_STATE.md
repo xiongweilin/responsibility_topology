@@ -245,11 +245,57 @@ ProvisionalSharedReliance: NOT EARNED
 QC Lean: NO
 ```
 
-Source acquisition may continue only when source viability is independently high. There is no obligation to collect another case for momentum.
+Source acquisition may continue only when source viability is independently high. There is no obligation to collect another case merely for momentum; this is a governance rule against performative case accumulation, **not** a claim that QC search is saturated.
 
 See `QC_SOURCE_QUEUE.md` and `QC_EVIDENCE_REAUDIT.md`.
 
-## 6. Shared formal gate
+## 6. Search-scope provenance and freeze semantics
+
+Existing freezes have now been re-audited in `SEARCH_SCOPE_PROVENANCE.md`.
+
+The mandatory separation is:
+
+```text
+TheoryGate
+!= SearchState
+!= RealityHypothesis
+```
+
+The current repository-wide interpretation is:
+
+```text
+construction/formalization freeze: JUSTIFIED UNDER CURRENT EVIDENCE
+QX empirical search saturation: NOT ESTABLISHED
+QC search saturation: NOT ESTABLISHED
+QX/QC SearchExhaustion: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
+```
+
+This means the repository has enough evidence to withhold new theory construction and Lean formalization, but **not** enough search-scope provenance to claim that empirical reality has been searched sufficiently or that positive cases are absent.
+
+The current QX empirical state is therefore:
+
+```text
+TheoryGate: CLOSED
+SearchState: DORMANT / EXTERNALLY-WAKEABLE
+SearchClosureEntitlement based on saturation: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
+```
+
+The current QC state is:
+
+```text
+TheoryGate: CLOSED
+SearchState: EVIDENCE-LIMITED / DORMANT unless a source-viable event appears
+SearchClosureEntitlement based on saturation: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
+```
+
+Candidate-cycle and theoretical-family closures remain valid where their scope was preregistered or explicitly bounded. They do not become claims about exhaustive reality search.
+
+Any future stop/freeze that relies on search sufficiency must include a recorded `SearchScopeRecord`; without one, the strongest allowed language is a governance/resource pause with unresolved reality.
+
+## 7. Shared formal gate
 
 Neither QX nor QC formalizes by default.
 
@@ -270,7 +316,7 @@ QX Lean: NO
 QC Lean: NO
 ```
 
-## 7. Research progress metric
+## 8. Research progress metric
 
 ```text
 progress
@@ -294,7 +340,7 @@ multi-party revalidation work -> orphaned revalidation;
 violation of assigned responsibility -> missing responsibility relation.
 ```
 
-## 8. Current execution status
+## 9. Current execution status
 
 ```text
 Strict-L6 technical track: FROZEN / CLOSED
@@ -305,9 +351,12 @@ QX-5 A/B unification: REJECTED
 QX overall: DORMANT / OPEN / PRE-FORMAL
 QX E-WAKE: OPEN / NOT ACTIVELY SEARCHED
 QX T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
+QX empirical search saturation: NOT ESTABLISHED
 QC: EVIDENCE-LIMITED / PRE-FORMAL
+QC search saturation: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
 QX Lean: NO
 QC Lean: NO
 ```
 
-Do not restart theory construction because further clean predicates can be written. New work must be forced by independently strong evidence or a genuinely new wake mechanism.
+Do not restart theory construction because further clean predicates can be written. New work must be forced by independently strong evidence or a genuinely new wake mechanism. Do not infer ontological absence or empirical saturation from research dormancy.
