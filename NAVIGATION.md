@@ -2,13 +2,13 @@
 
 This file is the stable logical index for the repository.
 
-`RESEARCH_STATE.md` is authoritative for current research governance. `SEARCH_SCOPE.md` is the authoritative companion for search provenance, blind spots, stopping bases, and wake conditions. Historical research documents are grouped under `research/` to keep the repository root readable while preserving their Git history and exact filenames.
+`RESEARCH_STATE.md` is authoritative for current research governance. `SEARCH_SCOPE_PROVENANCE.md` is the authoritative companion for search provenance, blind spots, stopping bases, and wake conditions. Historical research documents are grouped under `research/` to keep the repository root readable while preserving their Git history and exact filenames.
 
 ## Read first
 
 - [`README.md`](README.md) — public entry point and compact status summary.
 - [`RESEARCH_STATE.md`](RESEARCH_STATE.md) — **authoritative current research-governance state**.
-- [`SEARCH_SCOPE.md`](SEARCH_SCOPE.md) — **bounded search provenance and search-suspension semantics**.
+- [`SEARCH_SCOPE_PROVENANCE.md`](SEARCH_SCOPE_PROVENANCE.md) — **bounded search provenance and search-suspension semantics**.
 - [`PROGRAM_ROADMAP.md`](PROGRAM_ROADMAP.md) — frozen architecture and global stop rules.
 - [`RESEARCH_DEBT.md`](RESEARCH_DEBT.md) — evidence-gated research debt ledger.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — admissible Maintenance, Correction, Absorption, and EvidenceEvent contributions.
@@ -80,7 +80,7 @@ No `ProvisionalSharedReliance`, generic QC object, or QC Lean module is currentl
 
 ## Search-scope governance
 
-Use [`SEARCH_SCOPE.md`](SEARCH_SCOPE.md) whenever a claim depends on negative search, search suspension, or a future wake event.
+Use [`SEARCH_SCOPE_PROVENANCE.md`](SEARCH_SCOPE_PROVENANCE.md) whenever a claim depends on negative search, search suspension, or a future wake event.
 
 Permanent distinctions:
 
@@ -94,7 +94,7 @@ SearchExhaustion
 != SearchSuspensionEntitlement
 ```
 
-A search-sufficiency claim without a recorded `SearchScopeRecord` is inadmissible. Unrecorded historical query/database fields must remain marked `UNRECORDED`, not reconstructed after the fact.
+A search-sufficiency claim without a recorded `SearchScopeRecord` is inadmissible. Unrecorded historical query/database/budget fields must remain marked `UNRECORDED`, not reconstructed after the fact.
 
 ## Cross-domain lineage
 
@@ -127,4 +127,4 @@ The `research/` grouping is a repository-maintenance move only. It does not chan
 
 Future path moves require an independent maintenance reason; directory aesthetics alone are not sufficient.
 
-When any summary conflicts with `RESEARCH_STATE.md`, treat `RESEARCH_STATE.md` as authoritative and file a documentation-drift issue. When a negative-search or stopping claim lacks a scope record, treat `SEARCH_SCOPE.md` as the governing correction surface.
+When any summary conflicts with `RESEARCH_STATE.md`, treat `RESEARCH_STATE.md` as authoritative and file a documentation-drift issue. When a negative-search or stopping claim lacks a scope record, treat `SEARCH_SCOPE_PROVENANCE.md` as the governing correction surface.
