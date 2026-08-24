@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: >-
+  If you use this repository or its formal artifact, please cite this repository-level artifact and, when applicable, the paper-specific publication or frozen paper artifact that supports the result you rely on.
+title: Responsibility Topology
+type: software
+authors:
+  - family-names: Lin
+    given-names: Xiongwei
+repository-code: https://github.com/xiongweilin/responsibility_topology
+url: https://github.com/xiongweilin/responsibility_topology
+license: Apache-2.0
+version: research-freeze-2026-08-24
+date-released: 2026-08-24
+keywords:
+  - Lean 4
+  - formal methods
+  - formal verification
+  - provenance
+  - responsibility
+  - invalidation
+  - repair
+  - research artifact
+abstract: >-
+  A Lean-centered formal research artifact separating canonical historical responsibility from state-indexed current qualification, extending the distinction across environments and change, and recording evidence-gated higher-order research questions. Papers 1–3 and Strict Technical Level 6 are frozen; QX and QC remain pre-formal and do not currently authorize new Lean modules.

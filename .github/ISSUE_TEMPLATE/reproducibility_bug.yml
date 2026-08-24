@@ -1,0 +1,63 @@
+name: Reproducibility bug
+description: Report a build, CI, conformance, or frozen-artifact reproduction failure.
+title: "[repro] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for failures that prevent reproduction of the frozen formal/technical artifact. Do not use it to request new research features.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - Lean build / audit
+        - Python reference tests
+        - Python-Lean conformance
+        - Strict-L6 raw-artifact bridge
+        - GitHub Actions / tooling
+        - Documentation reproduction command
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or tag
+      description: Exact commit SHA or frozen tag used.
+      placeholder: 40-character SHA or tag
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact reproduction command
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed result
+      description: Include the minimal relevant error/log excerpt.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Lean/Lake version, Python version, and any other relevant tool versions.
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: Scope check
+      options:
+        - label: This report concerns reproduction/maintenance and does not request a new QX/QC theory object.
+          required: true

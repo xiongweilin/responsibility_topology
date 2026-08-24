@@ -1,0 +1,57 @@
+name: Documentation drift
+description: Report stale status, incorrect claim wording, broken links, citation errors, or licensing metadata drift.
+title: "[docs] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        `RESEARCH_STATE.md` is authoritative for current research governance. Use this form when README/navigation/other summaries drift from it or when a citation/license/source statement is wrong.
+  - type: dropdown
+    id: drift_type
+    attributes:
+      label: Drift type
+      options:
+        - Research status mismatch
+        - Claim wording / boundary error
+        - Broken or stale link
+        - Citation / source reconstruction error
+        - Licensing / citation metadata error
+        - Navigation / provenance issue
+        - Other documentation correction
+    validations:
+      required: true
+  - type: input
+    id: file
+    attributes:
+      label: Affected file or URL
+      placeholder: README.md or repository URL
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current statement
+      description: Quote or summarize the material that appears wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: authoritative
+    attributes:
+      label: Authoritative correction basis
+      description: Point to `RESEARCH_STATE.md`, a theorem/audit file, primary source, license text, or other controlling record.
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Minimal correction
+      description: Prefer the smallest wording/path correction that removes the drift.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This issue is a correction/maintenance report and does not create a new research checkpoint.
+          required: true
