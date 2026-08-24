@@ -54,7 +54,9 @@ QX-D1 finite-system / distinction-space / task objects -> RESOLVED
 QX-D2 anomaly != representation-insufficiency certificate -> RESOLVED AS FIREWALL
 QX-D3 prior-art attack -> RESOLVED
 QX-D4 exact residual after strongest-neighbor readings -> RESOLVED
+QX-D6 Candidate-B finitude contribution -> RESOLVED NEGATIVELY
 QX-D7 preregister domain falsification before promotion -> RESOLVED
+QX-D10 A/B certificate-provenance non-unification -> RESOLVED: NO MERGE
 ```
 
 ### Candidate A — frozen mechanism-specific residual
@@ -83,32 +85,9 @@ policy input vocabulary != full task-relevant system representation;
 one survivor != generic theorem family.
 ```
 
-Deferred evidence debt:
+Candidate A is frozen. Do not add rescue/support cases to the completed cycle.
 
-```text
-QX-D9 determine whether the Web-PKI provenance mechanism has mechanism-distinct support
-      or stronger representation-independent justification
-      -> OPEN BUT EVIDENCE-DEFERRED.
-```
-
-This does not authorize adding rescue cases to the completed QX-4A cycle.
-
-### Candidate B — resolved negatively
-
-QX-D6:
-
-```text
-determine whether finiteness contributes a distinct exhaustive representation-insufficiency certificate
--> RESOLVED NEGATIVELY.
-```
-
-Preliminary control:
-
-```text
-beta decay / Pauli-neutrino history: ELIMINATED
-```
-
-Active cycle:
+### Candidate B — archived negative result
 
 ```text
 incomplete-model diagnosis: ELIMINATED
@@ -130,58 +109,57 @@ failed identification != failed safe task response.
 
 No fourth Candidate-B domain is authorized.
 
-### QX-5 — non-unification debt resolved
+### QX wake debt
 
-QX-D10:
-
-```text
-compare Candidate-A and Candidate-B certificate provenance without merging by logical shape
--> RESOLVED: NO MERGE.
-```
-
-The audit compared:
+QX default state is:
 
 ```text
-candidate/policy-class definition;
-boundary authority;
-independent task-constraint provenance;
-failure evidence;
-pre-refinement knowledge;
-remaining unknowns;
-licensed conclusion.
+DORMANT / OPEN / PRE-FORMAL
 ```
 
-Result:
+The only legal wake condition is:
 
 ```text
-Candidate A burden:
-  pre-refinement evidence that a task-required discriminator is unavailable
-  without importing the later refinement.
-
-Candidate B burden:
-  authority/completeness of a finite candidate boundary
-  plus a non-native meaning for its exhaustion.
+E-WAKE OR T-WAKE
 ```
 
-These are not the same provenance problem.
+`E-WAKE` requires a new mechanism-distinct source-backed residual. It is evidence-deferred and is not an active search mandate.
 
-Rejected unification bases:
+`T-WAKE` requires a representation-independent, non-definitional theoretical residual. The current audit obligation is:
 
 ```text
-forall c in C_V, Fail_T(c)                 -> definition-level commonality only;
-independent task criterion                 -> too general;
-pre-refinement evaluation                  -> insufficient;
-unknown correct refinement                 -> too weak;
-all current options fail                   -> common across mature neighboring theories.
+QX-TW:
+Does any impossibility remain after ordinary
+observability / diagnosability / non-identifiability /
+task infeasibility / model-class rejection /
+abstraction-refinement explanations are removed?
 ```
 
-Therefore:
+The required firewall is:
 
 ```text
-A/B unified object: NOT EARNED
-A/B unified theorem family: NOT EARNED
-QX-5 verdict: NO MERGE
+cannot distinguish states
+!= cannot diagnose a critical property
+!= cannot satisfy task T
+!= cannot certify that the current representation is the source of failure.
 ```
+
+Decisive provenance question:
+
+```text
+Who has the ground distinction?
+```
+
+If the proof assumes an analyst-visible concrete state space or correct finer decomposition, it is analyst-side non-observability unless a separate system-accessible pre-refinement certificate is established.
+
+Allowed QX-TW verdicts:
+
+```text
+CLOSED
+CANDIDATE
+```
+
+Even `CANDIDATE` does not open Lean.
 
 ### Shared QX formal gate
 
@@ -190,29 +168,26 @@ QX-D8 keep Lean closed until a non-definitional theorem/countermodel obligation 
       -> STILL OPEN AS A GATE; current state NO.
 ```
 
-Current QX formal status:
+Current formal status:
 
 ```text
 Generic QX object: NOT EARNED
 InsufficiencyCertificate: NOT EARNED
 QX Lean: NO
-QX overall: EVIDENCE-DEFERRED / PRE-FORMAL
 ```
-
-The only positive surviving structure is the single-mechanism Candidate-A pre-refinement discriminator-unavailability residual.
 
 ## QC — Provisional Shared Determination debt
 
-Existing obligations remain:
+Existing conceptual obligations remain:
 
 ```text
 QC-D1 local determination != provisional shared determination != shared reliance != global truth != final authority;
 QC-D2 agreement != semantic identity;
 QC-D3 attack ordinary consensus/FBA/heterogeneous quorum explanations;
-QC-D4 build native failure corpus before calculus;
-QC-D5 acquire source-backed failures with responsibility-relevant disagreement or related QC-specific structure;
+QC-D4 build native evidence corpus before calculus;
+QC-D5 acquire source-backed cases with responsibility-relevant currentness/reliance structure;
 QC-D6 distinguish evidence ownership, decision authority, delegation, revalidation, and discharge;
-QC-D7 compute native residual after consensus + authority + semantic translation + versioning/revocation/ownership;
+QC-D7 compute native residual after ordinary rivals;
 QC-D8 keep Lean closed until non-eliminable multi-agent responsibility structure survives.
 ```
 
@@ -225,16 +200,92 @@ generic QC object: NOT EARNED
 QC Lean: NO
 ```
 
-QC-3A Web-PKI calibration remains:
+### QC methodology debt — active
+
+Before further case promotion, freeze this order:
 
 ```text
-QX narrow residual: nonempty
-QC native residual: empty
+RawSources
+-> MaterialFactsFreeze
+-> NativeDecomposition
+-> RivalFit
+-> SharedDeterminationExistenceGate
+-> Residual
+-> SharedRelianceConsequence
 ```
 
-This is evidence for track independence, not a theorem.
+`MaterialFactsFreeze` must record at least:
 
-QC may continue slow source acquisition independently. QX completion does not accelerate QC.
+```text
+who determined what;
+who actually relied;
+what evidence each actor owned;
+what changed;
+who could revise locally;
+who could revise the shared state;
+which downstream action depended on continued validity;
+what counterfactual consequence follows from withdrawal/change.
+```
+
+An ordinary rival counts as sufficient only if it preserves material facts across:
+
+```text
+descriptive
++ causal
++ normative
++ counterfactual
+```
+
+fit. Merely retelling the case in ordinary vocabulary is insufficient.
+
+### SharedDeterminationExistenceGate — active
+
+The following are insufficient:
+
+```text
+same object;
+same label;
+local agreement;
+coordinated action;
+no central authority.
+```
+
+A case must establish source-backed:
+
+```text
+exists d:
+multiple parties actually rely on d as a common bounded basis.
+```
+
+It must also distinguish this from coincident local determinations `d_A` and `d_B`.
+
+For the relevant shared determination, `no final arbiter` means:
+
+```text
+no single actor can unilaterally settle the continued validity of shared d.
+```
+
+### QC source priorities
+
+Post-QC3A reprioritization:
+
+```text
+F8 local qualification changes after shared determination: FIRST
+F5 delegation followed by orphaned revalidation: SECOND
+F7 shared abstraction erases disagreement: DOWNGRADED because QX/semantic-mapping rivals are too strong
+```
+
+This reprioritization is new and must not be rewritten as the original protocol.
+
+The corpus may include:
+
+```text
+FailureCases + SuccessCases + NegativeControls
+```
+
+All case types use the same material-facts and shared-determination gates.
+
+RPKI/IRR is admitted only as a source-rich negative/stress queue item, not a presumed QC positive case.
 
 ## Cross-track debt
 
@@ -244,7 +295,7 @@ Do not assume:
 RepresentationInsufficiency -> FalseSharedDetermination
 ```
 
-No QX/QC unification object is earned.
+QX and QC remain orthogonal unless independently earned structure survives both tracks.
 
 ## Restart / escalation rule
 

@@ -1,6 +1,6 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after completed QX Candidate-A/B falsification and QX-5 non-unification audit.**
+Status: **governance checkpoint after QX Candidate-A/B falsification, QX-5 non-unification, and dual-wake clarification.**
 
 This file separates frozen technical evidence, archived negative-control research, and evidence-gated open questions. It is not a theorem manifest.
 
@@ -113,24 +113,40 @@ Unknown-as-response != Unknown-as-candidate.
 A/B certificate-provenance unification: NO MERGE
 ```
 
-The shared skeleton
+The shared skeleton `forall c in C_V, Fail_T(c)` is common elimination syntax, not a theory contribution. No nontrivial common provenance object survived.
+
+### QX wake governance
+
+QX is now:
 
 ```text
-forall c in C_V, Fail_T(c)
+QX: DORMANT / OPEN / PRE-FORMAL
 ```
 
-is definition-level/common elimination syntax, not a theory contribution.
-
-Candidate A and Candidate B place the evidential burden in different locations:
+It has no active construction ladder. The only legal wake condition is:
 
 ```text
-A: provenance of pre-refinement discriminator unavailability;
-B: authority/completeness of finite candidate boundary + meaning of exhaustion.
+E-WAKE OR T-WAKE
 ```
 
-No nontrivial common provenance object survived the audit.
+`E-WAKE` requires a new mechanism-distinct, source-backed residual. It is not permission to add rescue cases to completed Candidate-A/B cycles.
 
-### QX promotion state
+`T-WAKE` requires a representation-independent, non-definitional theoretical residual not already absorbed by ordinary observability, diagnosability, non-identifiability, task infeasibility, model-class rejection, or abstraction refinement.
+
+T-WAKE must preserve:
+
+```text
+cannot distinguish states
+!= cannot diagnose a critical property
+!= cannot satisfy task T
+!= cannot certify that the current representation is the source of failure
+```
+
+An analyst-side theorem that assumes the correct hidden state space does not by itself wake QX. The audit must ask who possesses the ground distinction and whether the system has a certificate accessible before the missing refinement is known.
+
+See `QX_WAKE_GOVERNANCE.md`.
+
+Current promotion state:
 
 ```text
 Generic QX object: NOT EARNED
@@ -138,16 +154,6 @@ InsufficiencyCertificate: NOT EARNED
 A/B unified theorem family: NOT EARNED
 QX Lean: NO
 ```
-
-QX has no automatic next construction step.
-
-Default state:
-
-```text
-QX: EVIDENCE-DEFERRED / PRE-FORMAL
-```
-
-A future action requires genuinely new source-backed evidence, not further constructor/theorem design and not rescue-case accumulation inside the completed Candidate-A/B cycles.
 
 ## 5. QC — Provisional Shared Determination
 
@@ -175,7 +181,7 @@ QC Lean: NO
 
 The Web-PKI event provides a useful cross-track calibration: a narrow QX residual may survive while the independently audited QC residual is empty. This supports track independence empirically; it is not a theorem.
 
-QC remains a low-speed source-acquisition track. No `ProvisionalSharedReliance` object is authorized.
+QC is the primary active empirical track. No `ProvisionalSharedReliance` object is authorized.
 
 ## 6. Shared formal gate
 
@@ -229,10 +235,11 @@ QO standing/closure: ARCHIVED NEGATIVE CONTROL
 QX Candidate A: FROZEN / ONE MECHANISM-SPECIFIC SURVIVOR
 QX Candidate B: ELIMINATED / ARCHIVED NEGATIVE RESULT
 QX-5 A/B unification: REJECTED
-QX overall: EVIDENCE-DEFERRED / PRE-FORMAL
-QC: ACTIVE / PRE-FORMAL / LOW-SPEED SOURCE ACQUISITION
+QX overall: DORMANT / OPEN / PRE-FORMAL
+QX wake: E-WAKE OR T-WAKE only
+QC: ACTIVE / PRE-FORMAL / EVIDENCE ACQUISITION
 QX Lean: NO
 QC Lean: NO
 ```
 
-Do not restart QX formalization merely because a generic predicate or theorem can now be written compactly. The current evidence earns only the narrow Candidate-A residual and the negative constraints accumulated by the falsification program.
+Do not restart QX formalization merely because a compact impossibility statement can be written. T-WAKE itself is an elimination audit, not a theorem program.
