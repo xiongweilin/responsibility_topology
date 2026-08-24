@@ -1,0 +1,82 @@
+name: Evidence event
+description: Submit a source-backed event that may qualify for QX E-WAKE or QC evidence acquisition.
+title: "[evidence] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form records a possible evidence event. Opening the issue does not wake QX, create a QC residual, or authorize formalization.
+  - type: dropdown
+    id: track
+    attributes:
+      label: Track
+      options:
+        - QX — Representation Inadequacy / E-WAKE
+        - QC — Provisional Shared Determination
+    validations:
+      required: true
+  - type: textarea
+    id: primary_sources
+    attributes:
+      label: Primary sources
+      description: Provide authoritative first-party/primary sources and stable links. Distinguish contemporaneous from post-hoc sources.
+    validations:
+      required: true
+  - type: textarea
+    id: mechanism
+    attributes:
+      label: Mechanism
+      description: Describe the native domain mechanism without QX/QC terminology first.
+    validations:
+      required: true
+  - type: textarea
+    id: material_facts
+    attributes:
+      label: Material facts available now
+      description: Who determined what, who relied, what evidence/authority existed, what changed, and when?
+    validations:
+      required: true
+  - type: textarea
+    id: ordinary_rival
+    attributes:
+      label: Strongest ordinary explanation
+      description: What existing mechanism/theory would normally explain the case, and why might it be insufficient? Do not use a remediation proposal as an explanation.
+    validations:
+      required: true
+  - type: textarea
+    id: state_change
+    attributes:
+      label: What frozen claim or state could this change?
+      description: Name the exact current survivor, wake condition, evidence gate, or research-state sentence potentially affected.
+    validations:
+      required: true
+  - type: dropdown
+    id: selection_origin
+    attributes:
+      label: How was this evidence encountered?
+      options:
+        - Independently/naturally encountered; not selected to rescue a theory
+        - Found during a source-viability search with criteria fixed in advance
+        - Selected after seeing the current theory gap
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: qx_access
+    attributes:
+      label: QX access/timing burden (if QX)
+      description: Who could access the evidence at the relevant time — Analyst, Institution, DecisionSystem, AutonomousAgent, or PostHocHistorian? What later-refinement information is excluded?
+  - type: textarea
+    id: qc_shared
+    attributes:
+      label: QC shared-determination/reliance burden (if QC)
+      description: Identify the bounded common basis d, actual relying parties, authority/revalidation path, and why the strongest RivalAdmissible mechanism might lose a descriptive/causal/normative/counterfactual material fact.
+  - type: checkboxes
+    id: gates
+    attributes:
+      label: Gate acknowledgement
+      options:
+        - label: I understand that a source-backed event is not automatically a positive residual or theory object.
+          required: true
+        - label: I understand that QX E-WAKE requires a mechanism-distinct, source-backed, non-eliminable residual and that QC requires the full evidence pipeline.
+          required: true
