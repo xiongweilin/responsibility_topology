@@ -1,6 +1,6 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after QX Candidate-A/B falsification, QX-5 non-unification, dual-wake clarification, and QX-TW theoretical-wake elimination.**
+Status: **governance checkpoint after QX theoretical-wake elimination and hardened QC F8/F5 source audits.**
 
 This file separates frozen technical evidence, archived negative-control research, and evidence-gated open questions. It is not a theorem manifest.
 
@@ -102,7 +102,7 @@ Candidate B is an archived negative result. No fourth rescue domain is authorize
 A/B certificate-provenance unification: NO MERGE
 ```
 
-The shared skeleton `forall c in C_V, Fail_T(c)` is common elimination syntax, not a theory contribution. No nontrivial common provenance object survived.
+No nontrivial common provenance object survived.
 
 ### QX wake governance
 
@@ -111,18 +111,9 @@ QX: DORMANT / OPEN / PRE-FORMAL
 legal wake: E-WAKE OR T-WAKE
 ```
 
-`E-WAKE` requires a new mechanism-distinct, source-backed residual. It is not an active search mandate and does not reopen the completed Candidate-A cycle.
+`E-WAKE` requires a new mechanism-distinct, source-backed residual. It is open but not actively searched and does not reopen the completed Candidate-A cycle.
 
 `T-WAKE` was audited against finite-state observability/diagnosability, active diagnosis, interaction-level observational equivalence, and model invalidation.
-
-The decisive four-level firewall remains:
-
-```text
-cannot distinguish states
-!= cannot diagnose a critical property
-!= cannot satisfy task T
-!= cannot certify that the current representation is the source of failure
-```
 
 The current theoretical candidate family was eliminated by the ground-distinction dilemma:
 
@@ -144,10 +135,6 @@ T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
 E-WAKE: OPEN BUT NOT ACTIVELY SEARCHED
 ```
 
-A future T-WAKE would require a materially different provenance mechanism, not a reformulation of the absorbed families.
-
-See `QX_WAKE_GOVERNANCE.md` and `QX_TW_THEORETICAL_WAKE_ELIMINATION.md`.
-
 Current promotion state:
 
 ```text
@@ -157,33 +144,110 @@ A/B unified theorem family: NOT EARNED
 QX Lean: NO
 ```
 
+See `QX_WAKE_GOVERNANCE.md` and `QX_TW_THEORETICAL_WAKE_ELIMINATION.md`.
+
 ## 5. QC — Provisional Shared Determination
 
 Mother question:
 
 > **How can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?**
 
-Current evidence status:
+### Hardened evidence method
+
+Current mandatory pipeline:
 
 ```text
-QC-0 conceptual firewalls: ESTABLISHED
-QC-1 broad prior-art claims: ELIMINATED
-QC-2 failure corpus: SEEDED
-QC-3A source-viability calibration: COMPLETE
+RawSources
+-> MaterialFactsFreeze
+-> NativeDecomposition
+-> RivalFit
+-> SharedDeterminationExistenceGate
+-> Residual
+-> SharedRelianceConsequence
+```
 
-source-backed negative controls:
-  Stellar halt
-  Mars Climate Orbiter
-  Web PKI / Symantec distrust calibration
+Ordinary rivals must preserve frozen material facts across:
 
+```text
+descriptive + causal + normative + counterfactual
+```
+
+fit. Same object, same label, local agreement, coordinated action, distributed trust data, or lack of one global operator do not establish a shared determination.
+
+See `QC_EVIDENCE_PROTOCOL.md`.
+
+### Existing controls
+
+Earlier source-backed negative controls remain:
+
+```text
+Stellar 2019 halt:
+  quorum/consensus/liveness explanation sufficient;
+
+Mars Climate Orbiter:
+  semantic/interface/V&V explanation sufficient;
+
+Web PKI / Symantec distrust:
+  local root-program authority + credential lifecycle explanation sufficient.
+```
+
+New hardened-method controls:
+
+```text
+QC-NEG-RPKI:
+  F8 stress / source-rich negative control;
+  distributed signed source material + currentness changes do not establish one common QC determination d;
+  SharedDeterminationExistenceGate: NOT ESTABLISHED;
+  QC residual: NONE.
+
+QC-SRC-F5-DNSSEC-DELEGATION:
+  F5 stress / source-backed standards negative-success control;
+  parent DS RRset is a plausible common bounded basis;
+  bounded parent-side final authority and explicit consistency/revalidation ownership exist;
+  QC residual: NONE.
+```
+
+These two controls bracket two major false positives:
+
+```text
+shared/distributed source data
+-/-> shared determination;
+
+shared bounded determination
+-/-> QC residual when ordinary authority/revalidation ownership is explicit.
+```
+
+### QC evidence re-audit
+
+No source-backed positive QC residual has survived.
+
+A future positive case must establish at least:
+
+```text
+one bounded common determination d;
+actual multi-party reliance on d;
+a material local qualification/evidence/authority change;
+no single actor able to settle continued validity of d;
+the local change cannot be treated as irrelevant to other parties' continued reliance;
+strongest ordinary decomposition loses a frozen material fact;
+the loss is descriptive, causal, normative, or counterfactual rather than terminological.
+```
+
+No current case satisfies this conjunction.
+
+Therefore:
+
+```text
+QC: EVIDENCE-LIMITED / PRE-FORMAL
 source-backed positive QC residuals: 0
-generic QC object: NOT EARNED
+Generic QC object: NOT EARNED
+ProvisionalSharedReliance: NOT EARNED
 QC Lean: NO
 ```
 
-The Web-PKI event provides a useful cross-track calibration: a narrow QX residual may survive while the independently audited QC residual is empty. This supports track independence empirically; it is not a theorem.
+Source acquisition may continue only when source viability is independently high. There is no obligation to collect another case for momentum.
 
-QC is the primary active empirical track. No `ProvisionalSharedReliance` object is authorized.
+See `QC_SOURCE_QUEUE.md` and `QC_EVIDENCE_REAUDIT.md`.
 
 ## 6. Shared formal gate
 
@@ -194,7 +258,7 @@ A Lean phase may open only after the relevant track has all of:
 ```text
 stable objects;
 strong prior-art elimination;
-pre-registered kill protocol;
+pre-registered kill/evidence protocol;
 non-eliminable native structure in heterogeneous evidence;
 a theorem/countermodel obligation that is not definition expansion.
 ```
@@ -216,19 +280,18 @@ deleted freedom
 + independently surviving structure.
 ```
 
-Recent QX cycles deleted at least:
+Recent deleted freedoms include:
 
 ```text
-post-refinement hindsight -> earlier certificate;
-ignored signal -> absent distinction;
-measurement aliasing -> representation inadequacy;
-one survivor -> generic theorem family;
-finite list -> justified candidate universe;
-complete finite exhaustion -> representation inadequacy;
-model-class rejection -> QX certificate;
-shared A/B elimination syntax -> one generic theory;
 observational impossibility -> QX-specific theoretical wake;
-model invalidation without a replacement -> task-relative distinction-space certificate.
+model invalidation without replacement -> task-relative distinction-space certificate;
+ordinary model can retell case -> ordinary model automatically sufficient;
+shared source object -> shared determination;
+distributed trust/currentness -> shared reliance;
+no global operator -> no final arbiter over the bounded determination;
+shared bounded state -> QC residual;
+multi-party revalidation work -> orphaned revalidation;
+violation of assigned responsibility -> missing responsibility relation.
 ```
 
 ## 8. Current execution status
@@ -242,9 +305,9 @@ QX-5 A/B unification: REJECTED
 QX overall: DORMANT / OPEN / PRE-FORMAL
 QX E-WAKE: OPEN / NOT ACTIVELY SEARCHED
 QX T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
-QC: ACTIVE / PRE-FORMAL / EVIDENCE ACQUISITION
+QC: EVIDENCE-LIMITED / PRE-FORMAL
 QX Lean: NO
 QC Lean: NO
 ```
 
-Do not restart QX formalization merely because a compact impossibility statement can be written. Current QX work stops here unless a genuinely new wake mechanism appears.
+Do not restart theory construction because further clean predicates can be written. New work must be forced by independently strong evidence or a genuinely new wake mechanism.
