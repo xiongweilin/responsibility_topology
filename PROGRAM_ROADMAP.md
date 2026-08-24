@@ -134,7 +134,7 @@ Mother question:
 
 > **How can a finite system become entitled to suspect that its current space of distinctions is inadequate for a relied-upon responsibility task without already knowing the correct refinement?**
 
-The executed research sequence is now:
+Completed research sequence:
 
 ```text
 QX-1 ProblemKernel
@@ -143,13 +143,10 @@ QX-1 ProblemKernel
 -> QX-4A Candidate-A DomainKill
 -> QX-4B Candidate-B DomainKill
 -> QX-5 Certificate-Provenance Non-Unification Audit
+-> QX-TW Theoretical-Wake Elimination Audit
 ```
 
-All six checkpoints above are complete.
-
 ## 4.1 Candidate A — frozen mechanism-specific survivor
-
-Three-domain result:
 
 ```text
 Web PKI: SURVIVES WITH EXACT RESIDUAL
@@ -163,113 +160,68 @@ Preferred provisional name:
 pre-refinement discriminator-unavailability witness
 ```
 
-The positive residual is not elementary aliasing. It is the provenance problem:
-
-> **Can pre-refinement evidence establish that a task-required discriminator is unavailable at the relied-upon decision boundary without already possessing the later correct refinement?**
-
-Current evidence strength:
-
-```text
-one source-backed mechanism only
-MECHANISM-SPECIFIC
-```
-
-Permanent firewalls:
-
-```text
-post-refinement hindsight != earlier certificate provenance;
-ignored signal != absent distinction;
-measurement aliasing != representation inadequacy;
-policy input vocabulary != full task-relevant system representation;
-one survivor != generic theorem family.
-```
-
-Candidate A is frozen. A new domain is not an automatic next step.
+The positive residual remains one mechanism-specific provenance problem. It has not earned a generic certificate object.
 
 ## 4.2 Candidate B — eliminated
 
-Preliminary negative control:
-
 ```text
-beta-decay / Pauli-neutrino history: ELIMINATED
-```
-
-Active preregistered three-domain cycle:
-
-```text
-incomplete-model diagnosis / hidden interaction faults: ELIMINATED
+incomplete-model diagnosis: ELIMINATED
 TLS finite negotiation: ELIMINATED
 spacecraft fault-protection catalogue: ELIMINATED
+Candidate B aggregate: ELIMINATED
 ```
 
-Aggregate:
+No fourth Candidate-B domain is permitted.
 
-```text
-Candidate B: ELIMINATED
-```
-
-The domain cycle removes the following shortcuts:
-
-```text
-finite enumeration != complete candidate universe;
-complete finite exhaustion != representation inadequacy;
-model-class rejection != QX certificate;
-institutional catalogue authority != world/task-space completeness;
-Unknown-as-response != Unknown-as-candidate.
-```
-
-No fourth Candidate-B domain is permitted as a rescue attempt.
-
-## 4.3 QX-5 — non-unification result
-
-Candidate A and Candidate B were compared along:
-
-```text
-candidate/policy-class definition;
-boundary authority;
-independent task-constraint provenance;
-failure evidence;
-pre-refinement knowledge;
-remaining unknowns;
-licensed conclusion.
-```
-
-Verdict:
+## 4.3 A/B non-unification
 
 ```text
 A/B certificate-provenance unification: NO MERGE
 ```
 
-The shared skeleton
+Shared elimination syntax is not a common theory.
+
+## 4.4 Dual wake governance
+
+QX is not an active construction track.
 
 ```text
-forall c in C_V, Fail_T(c)
+QX: DORMANT / OPEN / PRE-FORMAL
+legal wake: E-WAKE OR T-WAKE
 ```
 
-is common elimination syntax, not a theory contribution.
+`E-WAKE` requires a new mechanism-distinct source-backed residual and is not actively searched.
 
-The evidential burdens remain different:
+`T-WAKE` was tested against observability/diagnosability, active diagnosis, interaction-level indistinguishability, and model invalidation.
+
+Current verdict:
 
 ```text
-A: establish pre-refinement discriminator unavailability without hindsight/refinement circularity;
-B: establish candidate-boundary authority/completeness and show exhaustion means more than native model/option failure.
+T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
 ```
 
-No nontrivial common provenance object survived.
+The key negative result is:
 
-## 4.4 QX state
+```text
+analyst-known hidden distinction
+-> ordinary non-observability / diagnosability / non-identifiability;
+
+system-accessible model/data contradiction
+-> model invalidation;
+
+claim of specifically missing task-required discriminator
+-> reintroduces Candidate-A provenance debt.
+```
+
+Current state:
 
 ```text
 Generic QX object: NOT EARNED
 InsufficiencyCertificate: NOT EARNED
-A/B unified theorem family: NOT EARNED
 QX Lean: NO
-QX: EVIDENCE-DEFERRED / PRE-FORMAL
 ```
 
-There is no automatic QX construction step after QX-5.
-
-Future QX work requires genuinely new source-backed evidence or a stronger representation-independent argument for Candidate A's provenance structure. It must not reopen Candidate A/B simply because clean predicates can be written.
+No QX work is owed until a genuinely new wake mechanism appears.
 
 ---
 
@@ -279,36 +231,119 @@ Mother question:
 
 > **How can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?**
 
-Current status:
+## 5.1 Hardened evidence method
+
+Current mandatory pipeline:
 
 ```text
-QC-0 conceptual firewalls: ESTABLISHED
-QC-1 broad prior-art claims: ELIMINATED
-QC-2 failure corpus: SEEDED
-QC-3A source-viability calibration: COMPLETE
+RawSources
+-> MaterialFactsFreeze
+-> NativeDecomposition
+-> RivalFit
+-> SharedDeterminationExistenceGate
+-> Residual
+-> SharedRelianceConsequence
+```
+
+Ordinary rivals must preserve:
+
+```text
+descriptive + causal + normative + counterfactual
+```
+
+material facts.
+
+The following are not sufficient to establish a shared determination:
+
+```text
+same object;
+same label;
+local agreement;
+coordinated action;
+distributed trust data;
+absence of one global operator.
+```
+
+See `QC_EVIDENCE_PROTOCOL.md`.
+
+## 5.2 Post-QC3A source priority
+
+This is a later reprioritization and does not rewrite the original QC-2 corpus:
+
+```text
+F8 local qualification changes after shared determination: first
+F5 delegation followed by orphaned revalidation: second
+F7 shared abstraction erases disagreement: downgraded
+```
+
+Use evidence IDs rather than new theory ladder numbers.
+
+## 5.3 Completed hardened controls
+
+### RPKI — `QC-NEG-RPKI`
+
+```text
+shared signed source material: yes
+multiple independent relying parties: yes
+currentness changes with downstream effect: yes
+one common QC determination d: not established
+ordinary rival: sufficient
+QC residual: none
+```
+
+Lesson:
+
+```text
+distributed trust/currentness
+-/->
+shared determination.
+```
+
+### DNSSEC delegation — `QC-SRC-F5-DNSSEC-DELEGATION`
+
+```text
+bounded common basis (parent DS RRset): plausible
+multi-provider/local qualification changes: yes
+bounded parent-side final authority: yes
+explicit consistency/revalidation owner: yes
+ordinary rival: sufficient
+QC residual: none
+```
+
+Lesson:
+
+```text
+shared bounded determination
+-/->
+QC residual when ordinary authority and revalidation ownership are explicit.
+```
+
+Together these controls establish a two-sided false-positive firewall:
+
+```text
+shared source object != shared determination;
+shared determination != novel shared-responsibility relation.
+```
+
+## 5.4 Current QC state
+
+No source-backed positive QC residual has survived.
+
+A future positive case must establish one bounded common determination, real multi-party reliance, a material local currentness/authority change, no bounded final arbiter, and a frozen material fact lost by the strongest ordinary decomposition.
+
+Current result:
+
+```text
+QC: EVIDENCE-LIMITED / PRE-FORMAL
 source-backed positive residuals: 0
 Generic QC object: NOT EARNED
+ProvisionalSharedReliance: NOT EARNED
 QC Lean: NO
 ```
 
-Source-backed negative controls currently include:
+Source acquisition may continue only when source viability is independently high. There is no obligation to collect another case for momentum.
 
-```text
-Stellar 2019 halt;
-Mars Climate Orbiter;
-Web PKI / Symantec distrust calibration.
-```
-
-The Web-PKI event demonstrates track independence at the evidence level:
-
-```text
-QX residual: narrowly nonempty
-QC residual: empty
-```
-
-This is not a theorem.
-
-QC remains a low-speed native source-acquisition track. Ordinary explanations in consensus, authority, semantic translation, versioning, revocation, service ownership, and revalidation must be exhausted before any generic shared-reliance object is proposed.
+See `QC_SOURCE_QUEUE.md` and `QC_EVIDENCE_REAUDIT.md`.
 
 ---
 
@@ -336,18 +371,22 @@ deleted freedom
 + independently surviving structure
 ```
 
-not:
+not theorem count, constructor count, or number of cases.
 
-```text
-theorem count
-constructor count
-number of domains
-number of repositories
-```
-
-The controlling question is:
+The controlling question remains:
 
 > **What freedom did this research cycle remove?**
+
+Recent removals include:
+
+```text
+observational impossibility -> QX-specific wake;
+model invalidation -> task-relative representation certificate;
+shared source object -> shared determination;
+no global operator -> no final arbiter;
+shared bounded state -> QC residual;
+multi-party revalidation -> orphaned revalidation.
+```
 
 ---
 
@@ -363,8 +402,10 @@ Current global state:
 Paper 1-3 formal semantics: FROZEN
 Strict-L6 technical consolidation: FROZEN
 QO standing/closure: ARCHIVED NEGATIVE CONTROL
-QX: EVIDENCE-DEFERRED / PRE-FORMAL
-QC: PRE-FORMAL / LOW-SPEED SOURCE ACQUISITION
+QX: DORMANT / OPEN / PRE-FORMAL
+QX E-WAKE: OPEN / NOT ACTIVELY SEARCHED
+QX T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
+QC: EVIDENCE-LIMITED / PRE-FORMAL
 QX Lean: NO
 QC Lean: NO
 ```
