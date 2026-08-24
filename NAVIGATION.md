@@ -10,6 +10,8 @@ This file is the stable logical index for the repository.
 - [`RESEARCH_STATE.md`](RESEARCH_STATE.md) — **authoritative current research-governance state**.
 - [`PROGRAM_ROADMAP.md`](PROGRAM_ROADMAP.md) — frozen architecture and global stop rules.
 - [`RESEARCH_DEBT.md`](RESEARCH_DEBT.md) — evidence-gated research debt ledger.
+- [`SEARCH_SCOPE_PROVENANCE.md`](SEARCH_SCOPE_PROVENANCE.md) — recorded search scope, blind spots, and corrected freeze semantics.
+- [`SEARCH_SUSPENSION_ENTITLEMENT_AUDIT.md`](SEARCH_SUSPENSION_ENTITLEMENT_AUDIT.md) — exact entitlement audit for construction freeze, candidate-family closure, and search dormancy.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — admissible Maintenance, Correction, Absorption, and EvidenceEvent contributions.
 - [`research/README.md`](research/README.md) — grouped research-lineage index.
 
