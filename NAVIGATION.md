@@ -13,6 +13,8 @@ This file is the stable logical index for the repository.
 - [`SEARCH_SCOPE_PROVENANCE.md`](SEARCH_SCOPE_PROVENANCE.md) — recorded search scope, blind spots, and corrected freeze semantics.
 - [`SEARCH_SUSPENSION_ENTITLEMENT_AUDIT.md`](SEARCH_SUSPENSION_ENTITLEMENT_AUDIT.md) — exact entitlement audit for construction freeze, candidate-family closure, and search dormancy.
 - [`THEORY_GATE_SEMANTICS.md`](THEORY_GATE_SEMANTICS.md) — clarifies that `TheoryGate: CLOSED` blocks positive theory promotion/formalization, not theoretical inquiry itself.
+- [`FREEZE_GOVERNANCE.md`](FREEZE_GOVERNANCE.md) — current interpretation of `FROZEN/STOP`: baseline lock, milestone closure, and default no-expansion do not establish architecture optimality/canonicality/path uniqueness.
+- [`SUCCESSOR_FORMAL_LINE_GATE.md`](SUCCESSOR_FORMAL_LINE_GATE.md) — evidence and `SelectionProvenance` gate for any future formal lineage; no successor line is currently authorized.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — admissible Maintenance, Correction, Absorption, and EvidenceEvent contributions.
 - [`research/README.md`](research/README.md) — grouped research-lineage index.
 
@@ -78,29 +80,49 @@ No `ProvisionalSharedReliance`, generic QC object, or QC Lean module is currentl
 
 ## Kill-first meta-architecture audit
 
-This is theoretical inquiry under the existing closed promotion gate; it is **not** a new positive theory track and does not alter the authoritative QX/QC states above.
+This was theoretical inquiry under the existing closed promotion gate; it was **not** a new positive theory track and did not alter the authoritative QX/QC states above.
 
-- [`META_ARCHITECTURE_P0_AUDIT.md`](META_ARCHITECTURE_P0_AUDIT.md) — tests whether architecture competition changes research behavior at all; current P0 verdict: `AUDIT-WORTHY`, not architecture adequacy.
-- [`META_ARCHITECTURE_P1_CORPUS.md`](META_ARCHITECTURE_P1_CORPUS.md) — freezes endogenous and native-language exogenous corpora; explicitly not an out-of-sample or saturation claim.
-- [`META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md`](META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md) — reconstructs `ELIMINATED / ABSORBED / BRACKETED / UNOWNED / UNKNOWN` narrowing behavior across Q_open/QX and Q_close/QC lineage.
-- [`META_ARCHITECTURE_P3_P7_PROTOCOL.md`](META_ARCHITECTURE_P3_P7_PROTOCOL.md) — freezes A0/A1/A2/null competition, blind-test packet, hostile partial order, residual promotion gate, and meta-stop rules.
-- [`META_ARCHITECTURE_HELDOUT_UNIVERSE.md`](META_ARCHITECTURE_HELDOUT_UNIVERSE.md) — freezes an externally indexed RAIB source universe, deterministic #125-seeded primary/reserve selection, and reserve activation rules before case analysis.
-- [`META_ARCHITECTURE_EVALUATOR_PROTOCOL.md`](META_ARCHITECTURE_EVALUATOR_PROTOCOL.md) — freezes evaluator provenance, three-layer blindness, pre-literature predictions, neutral `A_D` construction, and P5 failure modes.
-- [`META_ARCHITECTURE_EXPERIMENT_BUDGET.md`](META_ARCHITECTURE_EXPERIMENT_BUDGET.md) — freezes the `3 evaluator lineages + 2 held-out cases + 1 adjudication` maximum budget and post-experiment wake rule.
+Protocol/preregistration:
 
-Current meta-audit checkpoint:
+- [`META_ARCHITECTURE_P0_AUDIT.md`](META_ARCHITECTURE_P0_AUDIT.md) — P0 `AUDIT-WORTHY`, not architecture adequacy.
+- [`META_ARCHITECTURE_P1_CORPUS.md`](META_ARCHITECTURE_P1_CORPUS.md) — endogenous/native-language exogenous corpus freeze.
+- [`META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md`](META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md) — `ELIMINATED / ABSORBED / BRACKETED / UNOWNED / UNKNOWN` narrowing audit.
+- [`META_ARCHITECTURE_P3_P7_PROTOCOL.md`](META_ARCHITECTURE_P3_P7_PROTOCOL.md) — A0/A1/A2/null competition, hostile partial order, promotion gate, and stop rules.
+- [`META_ARCHITECTURE_HELDOUT_UNIVERSE.md`](META_ARCHITECTURE_HELDOUT_UNIVERSE.md) — deterministic RAIB held-out source universe and primary/reserve selection.
+- [`META_ARCHITECTURE_EVALUATOR_PROTOCOL.md`](META_ARCHITECTURE_EVALUATOR_PROTOCOL.md) — evaluator blindness/provenance, prediction freeze, neutral `A_D`, and failure modes.
+- [`META_ARCHITECTURE_EXPERIMENT_BUDGET.md`](META_ARCHITECTURE_EXPERIMENT_BUDGET.md) — fixed `3 evaluator lineages + 2 held-out cases + 1 adjudication` budget.
+
+Frozen P4/P5 results:
+
+- `E1_RAW.md`, `E2_RAW.md`, `E3_RAW.md` — frozen blind raw outputs.
+- [`META_ARCHITECTURE_P4_PROVENANCE.md`](META_ARCHITECTURE_P4_PROVENANCE.md) — distinct-lineage verdict and qualified post-hoc provenance reconstruction.
+- [`META_ARCHITECTURE_AD_FREEZE.md`](META_ARCHITECTURE_AD_FREEZE.md) — neutral D1-D5 data-driven architecture freeze before held-out adjudication.
+- [`META_ARCHITECTURE_P5_VIABILITY.md`](META_ARCHITECTURE_P5_VIABILITY.md) — Helpston and Bookham Tunnel primary cases locked; no reserve activation.
+- [`META_ARCHITECTURE_P5_PREDICTIONS.md`](META_ARCHITECTURE_P5_PREDICTIONS.md) — frozen architecture × held-out pre-literature prediction matrix.
+- [`META_ARCHITECTURE_P5_NATIVE_OUTCOMES.md`](META_ARCHITECTURE_P5_NATIVE_OUTCOMES.md) — railway-native reconstruction; both locked held-outs absorbed by ordinary mechanisms on the frozen source surface.
+- [`META_ARCHITECTURE_P5_ADJUDICATION.md`](META_ARCHITECTURE_P5_ADJUDICATION.md) — single authorized adjudication and STOP.
+
+Final meta-audit checkpoint:
 
 ```text
 P0: AUDIT-WORTHY
 P1: CORPORA FROZEN
 P2: PROVENANCE AUDITED
-P3: CANDIDATES FROZEN; NO WINNER
-P4: PROTOCOL + HOLDOUT SELECTION FROZEN; EVALUATOR OUTPUTS NOT COLLECTED
-P5: BLOCKED ON FROZEN P4 OUTPUTS; HELD-OUT CASES ALREADY SELECTED
-R-U1/R-U2 ACTIVE DEVELOPMENT: PAUSED UNTIL P5
+P3: CANDIDATES FROZEN
+P4: COMPLETE; DistinctEvaluatorLineages = YES
+    AntiPathDependenceEvidence = ESTABLISHED (QUALIFIED)
+P4.5: A_D = D1-D5 FROZEN
+P5-A: BOTH PRIMARY CASES LOCKED
+P5-B: PREDICTION MATRIX FROZEN
+P5-C: BOTH HELD-OUT RESIDUAL SETS EMPTY ON FROZEN SOURCE SURFACE
+P5-D: COMPLETE / STOP
+VERDICT: No architecture dominance established
+GlobalPartition: NOT EARNED
 ```
 
-Do not infer a third Q-track, a small global partition, architecture completeness, or a formalization entitlement from this meta-audit.
+The experiment budget is exhausted. No fourth evaluator, third held-out case, A3, or repeated adjudication is authorized. The only experiment wake condition remains the preregistered naturally occurring high-cost architecture-conflict case.
+
+Do not infer a third Q-track, a small global partition, architecture completeness, architecture optimality, or a formalization entitlement from this meta-audit.
 
 ## Cross-domain lineage
 
