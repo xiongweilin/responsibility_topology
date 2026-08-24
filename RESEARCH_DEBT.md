@@ -50,42 +50,42 @@ The negative-control lineage remains evidence, not active theory construction.
 ### Resolved through QX-1/QX-3
 
 ```text
-QX-D1  finite-system / distinction-space / task objects without old standing vocabulary
-       -> RESOLVED at QX-1 problem kernel
+QX-D1 finite-system / distinction-space / task objects without old standing vocabulary
+      -> RESOLVED at QX-1
 
-QX-D2  anomaly != representation-insufficiency certificate
-       -> RESOLVED as a firewall / provenance obligation, not a positive generic object
+QX-D2 anomaly != representation-insufficiency certificate
+      -> RESOLVED as firewall/provenance obligation, not as generic object
 
-QX-D3  attack unawareness, open-world/open-set, aliasing/aggregation, POMDP, CEGAR, model criticism
-       -> RESOLVED at QX-2 prior-art kill
+QX-D3 prior-art attack against unawareness, open-set/open-world, aliasing/aggregation, POMDP, CEGAR, model criticism
+      -> RESOLVED at QX-2
 
-QX-D4  determine whether an exact residual survives prior art
-       -> RESOLVED: narrow certificate-provenance residual remains
+QX-D4 determine whether a residual survives strongest-neighbor readings
+      -> RESOLVED: narrow certificate-provenance residual remains
 
-QX-D7  preregister domain falsification before evidence-driven promotion
-       -> RESOLVED at QX-3
+QX-D7 preregister domain falsification before evidence-driven promotion
+      -> RESOLVED at QX-3
 ```
 
-### Candidate A — resolved to mechanism-specific residual
+### Candidate A — mechanism-specific residual only
 
 QX-4A result:
 
 ```text
 A-D1 Web PKI: SURVIVES WITH EXACT RESIDUAL
-A-D2 737 MAX: ELIMINATED by existing-channel / policy-vs-representation distinction
-A-D3 pulse oximetry: ELIMINATED by measurement/calibration localization
+A-D2 737 MAX: ELIMINATED
+A-D3 pulse oximetry: ELIMINATED
 ```
 
-Candidate A earns only:
+Preferred provisional name:
 
 ```text
-mechanism-specific pre-refinement certificate candidate
+pre-refinement discriminator-unavailability witness
 ```
 
-Permanent negative constraints:
+Permanent constraints:
 
 ```text
-post-refinement hindsight cannot supply earlier certificate provenance;
+post-refinement hindsight cannot supply E_pre provenance;
 ignored existing signal != absent distinction;
 measurement aliasing != representation inadequacy;
 policy input vocabulary != full task-relevant system representation;
@@ -95,130 +95,146 @@ one survivor != generic theorem family.
 Open Candidate-A debt:
 
 ```text
-QX-D9  determine whether the Web-PKI provenance mechanism survives a mechanism-distinct domain
-       or admits a stronger representation-independent justification
-       -> OPEN; do not reopen the completed QX-4A cycle with rescue cases
+QX-D9 determine whether the Web-PKI provenance mechanism has mechanism-distinct support
+      or a stronger representation-independent justification
+      -> OPEN BUT DEFERRED; do not reopen the completed QX-4A cycle with rescue cases.
 ```
 
-### Candidate B — first falsifier complete, aggregate debt open
+Candidate A is frozen at the current evidence level.
+
+### Candidate B — QX-D6 resolved negatively
 
 Original debt:
 
 ```text
-QX-D6  determine whether finiteness contributes a genuine exhaustive-certificate result rather than decorative notation
+QX-D6 determine whether finiteness contributes a genuine exhaustive-certificate result rather than decorative notation.
 ```
 
-B-D1 historical beta-decay / Pauli-neutrino audit result:
+Preliminary negative control:
 
 ```text
-ELIMINATED AS CANDIDATE-B EVIDENCE
+beta decay / Pauli-neutrino history:
+ELIMINATED — no justified finite complete historical H_V.
 ```
 
-Decisive reasons:
+Active preregistered cycle:
 
 ```text
-B-K1 fake exhaustiveness;
-B-K4 decorative finitude;
-B-K5 ordinary model-class / anomaly-driven hypothesis revision;
-B-K8 no source-backed V -> complete finite H_V boundary.
+B-D1 incomplete-model diagnosis / hidden interaction faults:
+ELIMINATED — B-K5 mature incomplete-model diagnosis + B-K8 no distinct QX residual.
+
+B-D2 TLS finite negotiation:
+ELIMINATED — B-K8 exact finite exhaustion still means negotiation/policy incompatibility, not V inadequacy.
+
+B-D3 spacecraft fault-protection catalogue:
+ELIMINATED — B-K1/B-K4/B-K8 finite catalogue lacks justified task-universe completeness.
 ```
 
-Supporting pressure:
+Aggregate:
 
 ```text
-no historically demonstrated complete finite hypothesis catalogue;
-retrospective lists of famous alternatives do not establish H_V completeness;
-energy conservation itself was contested as a governing constraint, weakening any post-hoc common C;
-open-ended formation of a new hypothesis undermines a closed-catalogue reading.
+Candidate B: ELIMINATED
+QX-D6: RESOLVED NEGATIVELY
 ```
 
-Therefore QX-D6 remains **OPEN**, but it is now sharper:
+The domain cycle demonstrates that finiteness can be operationally substantive without yielding a distinct representation-inadequacy certificate.
 
-> Find a domain in which the finite candidate boundary is operationally real, source-backed, task-relative, and complete enough that finitude itself performs exhaustive-certificate work rather than merely describing a convenient model list.
-
-A later B-domain should not be another historical anomaly reconstructed from a handful of named hypotheses.
-
-Candidate B status:
+Permanent Candidate-B constraints:
 
 ```text
-PREREGISTERED
-B-D1: ELIMINATED
-aggregate verdict: NOT EARNED
+finite enumeration != complete candidate universe;
+complete finite exhaustion != representation inadequacy;
+model-class rejection != QX certificate;
+institutional catalogue authority != world/task-space completeness;
+Unknown-as-response != Unknown-as-candidate;
+failed explanatory identification != failed safe task response.
 ```
+
+No fourth Candidate-B domain is authorized. Candidate B is an archived negative result.
+
+### QX-5 — non-unification debt
+
+Open obligation:
+
+```text
+QX-D10 compare Candidate-A and Candidate-B certificate provenance without merging them by logical shape.
+```
+
+Audit only:
+
+```text
+what defines the candidate/policy class;
+who certifies its boundary;
+where the independent task constraint comes from;
+what evidence establishes failure;
+what is known before refinement;
+what remains unknown;
+what conclusion is licensed.
+```
+
+Default verdict:
+
+```text
+NO MERGE
+```
+
+A shared skeleton such as
+
+```text
+forall c in C_V, Fail_T(c)
+```
+
+is not a theory contribution by itself. Only a nontrivial common provenance constraint could survive QX-5.
 
 ### Shared QX formal gate
 
 ```text
-QX-D8  keep Lean closed until a non-definitional theorem/countermodel obligation is earned
-       -> OPEN AS A GATE; current state remains NO
+QX-D8 keep Lean closed until a non-definitional theorem/countermodel obligation is earned
+      -> OPEN AS A GATE; current state remains NO.
 ```
 
-High-risk shortcuts permanently prohibited:
+Current formal status:
 
 ```text
-alpha_V(x)=alpha_V(y) + post-hoc Resp(x)!=Resp(y) -> representation inadequate;
-failed list of historically known hypotheses -> finite exhaustive H_V.
+Generic QX object: NOT EARNED
+InsufficiencyCertificate: NOT EARNED
+QX Lean: NO
 ```
 
 ## QC — Provisional Shared Determination debt
 
-Original obligations remain:
+Existing obligations remain:
 
 ```text
-QC-D1  keep local determination, provisional shared determination, shared reliance, global truth, and final authority distinct;
-QC-D2  separate agreement from semantic identity;
-QC-D3  attack ordinary consensus/FBA/heterogeneous quorum explanations before proposing a new relation;
-QC-D4  build a native failure corpus before a calculus;
-QC-D5  include failures where shared abstraction erases real disagreement;
-QC-D6  distinguish evidence ownership, decision authority, delegation, revalidation, and discharge;
-QC-D7  determine which failure facts survive consensus + authority + semantic-translation decomposition;
-QC-D8  keep Lean closed until a non-eliminable multi-agent responsibility structure survives.
+QC-D1 keep local determination, provisional shared determination, shared reliance, global truth, and final authority distinct;
+QC-D2 separate agreement from semantic identity;
+QC-D3 attack ordinary consensus/FBA/heterogeneous quorum explanations;
+QC-D4 build native failure corpus before calculus;
+QC-D5 acquire source-backed cases where shared abstraction erases responsibility-relevant disagreement;
+QC-D6 distinguish evidence ownership, decision authority, delegation, revalidation, and discharge;
+QC-D7 compute residuals after consensus + authority + semantic translation + versioning/revocation/ownership;
+QC-D8 keep Lean closed until non-eliminable multi-agent responsibility structure survives.
 ```
 
-Resolved / sharpened through QC-3A:
+QC-3A Web-PKI calibration:
 
 ```text
-QC-D1/QC-D2: firewalls established
-QC-D3: broad prior-art kill executed
-QC-D4: corpus seeded; source-viability method applied to a third source-backed negative control
-QC-D8: Lean gate strengthened by zero source-backed positive residuals
-```
-
-Web-PKI QC calibration:
-
-```text
-source chain: SUFFICIENT FOR NATIVE DECOMPOSITION
-ordinary decomposition: SUFFICIENT AT CURRENT EVIDENCE LEVEL
-QC residual: NONE
+source chain: sufficient for native decomposition
+ordinary decomposition: sufficient
+QC residual: none
 classification: REJECTED AS QC EVIDENCE
 ```
 
-Ordinary decomposition currently sufficient:
+Current evidence:
 
 ```text
-CA qualification
-+ local root-program authority
-+ credential lifecycle
-+ staged distrust / revalidation
-+ compatibility / interoperability
-+ actor-indexed ownership.
+source-backed QC negative controls: 3
+source-backed positive QC residuals: 0
+generic QC object: NOT EARNED
+QC Lean: NO
 ```
 
-Open QC debt:
-
-```text
-QC-D5  acquire source-backed F7-like cases where shared abstraction erases responsibility-relevant disagreement
-       -> OPEN / HIGH PRIORITY
-
-QC-D6  find source-backed cases where evidence ownership, authority, delegation, revalidation, and discharge
-       cannot be preserved by ordinary role/contract models
-       -> OPEN
-
-QC-D7  compute residuals after consensus + authority + semantic translation + versioning/revocation/ownership
-       -> OPEN; all source-backed cases so far have empty QC residual
-```
-
-F2–F8 remain source targets. Do not define `ProvisionalSharedReliance` and do not open Lean.
+QC remains a separate low-speed source-acquisition track. QX results provide zero automatic QC evidence.
 
 ## Cross-track debt
 
@@ -228,18 +244,18 @@ Do not assume:
 RepresentationInsufficiency -> FalseSharedDetermination
 ```
 
-The Web-PKI event is a direct empirical negative control for this shortcut:
+Web PKI remains the direct empirical calibration:
 
 ```text
-QX Candidate-A residual survives narrowly;
+narrow Candidate-A QX residual survives;
 QC native residual = empty.
 ```
 
-This is research evidence for track independence, not a formal theorem.
+This is research evidence for track independence, not a theorem.
 
 ## Restart / escalation rule
 
-A debt item may justify a new formal object only if ordinary/native decomposition cannot express the relevant responsibility fact without loss.
+A debt item may justify a formal object only if ordinary/native decomposition cannot preserve the relevant responsibility fact without loss.
 
 When a candidate object appears, first ask:
 
