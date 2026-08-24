@@ -126,6 +126,8 @@ QO-3 Lean: BLOCKED
 
 Do not revive this lineage through renamed predicates without new non-eliminable evidence.
 
+This is closure of the tested QO construction, not a claim that all real-world gate/review mechanisms were exhaustively searched. See `SEARCH_SCOPE_PROVENANCE.md`.
+
 ---
 
 # 4. QX — Representation Inadequacy
@@ -162,6 +164,8 @@ pre-refinement discriminator-unavailability witness
 
 The positive residual remains one mechanism-specific provenance problem. It has not earned a generic certificate object.
 
+The three-domain cycle was a preregistered falsification protocol, not a representative survey of all real mechanisms.
+
 ## 4.2 Candidate B — eliminated
 
 ```text
@@ -171,7 +175,7 @@ spacecraft fault-protection catalogue: ELIMINATED
 Candidate B aggregate: ELIMINATED
 ```
 
-No fourth Candidate-B domain is permitted.
+No fourth Candidate-B domain is permitted inside the completed candidate cycle. This eliminates Candidate B as proposed; it does not establish empirical exhaustion of every possible finite-exhaustion mechanism.
 
 ## 4.3 A/B non-unification
 
@@ -221,7 +225,16 @@ InsufficiencyCertificate: NOT EARNED
 QX Lean: NO
 ```
 
-No QX work is owed until a genuinely new wake mechanism appears.
+No QX construction work is owed until a genuinely new wake mechanism appears. This is not a search-saturation claim.
+
+Current empirical-search semantics:
+
+```text
+QX E-WAKE SearchState: DORMANT / EXTERNALLY-WAKEABLE
+QX empirical SearchSaturation: NOT ESTABLISHED
+QX empirical SearchExhaustion: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
+```
 
 ---
 
@@ -341,9 +354,19 @@ ProvisionalSharedReliance: NOT EARNED
 QC Lean: NO
 ```
 
-Source acquisition may continue only when source viability is independently high. There is no obligation to collect another case for momentum.
+Source acquisition may continue only when source viability is independently high. There is no obligation to collect another case merely for momentum. That sentence is a governance rule, not a claim that current QC search is sufficiently saturated.
 
-See `QC_SOURCE_QUEUE.md` and `QC_EVIDENCE_REAUDIT.md`.
+Current search semantics:
+
+```text
+QC SearchState: EVIDENCE-LIMITED / DORMANT unless a source-viable event appears
+QC SearchSaturation: NOT ESTABLISHED
+QC SearchExhaustion: NOT ESTABLISHED
+QC SearchClosureEntitlement based on saturation: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
+```
+
+See `QC_SOURCE_QUEUE.md`, `QC_EVIDENCE_REAUDIT.md`, and `SEARCH_SCOPE_PROVENANCE.md`.
 
 ---
 
@@ -396,6 +419,25 @@ Do not open or expand a formal program merely because a clean predicate, structu
 
 A new formal phase requires evidence that ordinary/native representations have been tried and cannot preserve the relevant responsibility facts without loss.
 
+Separately, do not claim that active empirical search was sufficiently completed unless a `SearchScopeRecord` exists. A theory/construction gate may close without empirical search saturation.
+
+The governing separation is:
+
+```text
+TheoryGate
+!= SearchState
+!= RealityHypothesis
+```
+
+Without a sufficient search-scope record, the strongest allowed interpretation is:
+
+```text
+TheoryGate: CLOSED under current evidence
+SearchState: DORMANT / PAUSED for governance or resource reasons
+SearchSaturation: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
+```
+
 Current global state:
 
 ```text
@@ -405,7 +447,12 @@ QO standing/closure: ARCHIVED NEGATIVE CONTROL
 QX: DORMANT / OPEN / PRE-FORMAL
 QX E-WAKE: OPEN / NOT ACTIVELY SEARCHED
 QX T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
+QX empirical search saturation: NOT ESTABLISHED
 QC: EVIDENCE-LIMITED / PRE-FORMAL
+QC search saturation: NOT ESTABLISHED
+RealityHypothesis: UNRESOLVED
 QX Lean: NO
 QC Lean: NO
 ```
+
+`SEARCH_SCOPE_PROVENANCE.md` is the owning record for what existing freeze actions are and are not entitled to mean.
