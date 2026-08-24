@@ -1,8 +1,8 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after Strict-L6, QO negative falsification, QX Candidate-A domain kill, QC-3A source-viability calibration, and completed Candidate-B domain kill.**
+Status: **governance checkpoint after completed QX Candidate-A/B falsification and QX-5 non-unification audit.**
 
-This file separates frozen technical evidence, archived negative-control research, and currently open evidence-gated research tracks. It is not a theorem manifest.
+This file separates frozen technical evidence, archived negative-control research, and evidence-gated open questions. It is not a theorem manifest.
 
 ## 1. Frozen technical baseline
 
@@ -12,24 +12,11 @@ scope: actual serialized selected runtime transition artifact
        -> Lean-computed restricted B0 contract
 ```
 
-Paper 1–3 semantics and the Strict-L6 technical consolidation remain frozen. No new bridge fragment, runtime refinement, or cross-domain universal claim is authorized.
+Paper 1–3 semantics and Strict-L6 remain frozen. No new bridge fragment, runtime refinement, or cross-domain universal claim is authorized.
 
 ## 2. Archived QO negative-control lineage
 
 The old standing/closure operationalization remains rejected.
-
-Durable corrections include:
-
-```text
-Admissible_K(item,use) replaces unindexed A_K(e) as the forward default;
-review != standing;
-different admissibility by use != standing;
-reviewability != closure qualification;
-gate review / preserved challenge != closure defeater;
-syntactic/procedural scope != adequate localization.
-```
-
-Current verdict:
 
 ```text
 generic ChallengeStanding: NOT EARNED
@@ -37,7 +24,7 @@ generic closure-defeater relation: NOT EARNED
 QO-3 formalization: BLOCKED
 ```
 
-Do not rescue this lineage with renamed substitute predicates without new non-eliminable evidence.
+Durable firewalls remain in force, including `review != standing`, `reviewability != closure qualification`, and indexed admissibility by item/use.
 
 ## 3. Parallel research architecture
 
@@ -64,23 +51,23 @@ Mother question:
 
 > **How can a finite system become entitled to suspect that its current space of distinctions is inadequate for a relied-upon responsibility task without already knowing the correct refinement?**
 
-Current checkpoint:
+Completed sequence:
 
 ```text
 QX-1 problem kernel: COMPLETE
 QX-2 prior-art kill: COMPLETE
 QX-3 candidate preregistration: COMPLETE
-QX-4A Candidate-A three-domain kill: COMPLETE
-QX-4B Candidate-B active three-domain kill: COMPLETE
-QX-5 non-unification audit: NEXT / ONLY LEGAL SYNTHESIS STEP
+QX-4A Candidate-A domain kill: COMPLETE
+QX-4B Candidate-B domain kill: COMPLETE
+QX-5 certificate-provenance non-unification audit: COMPLETE
 ```
 
 ### Candidate A
 
 ```text
-A-D1 Web PKI: SURVIVES WITH EXACT RESIDUAL
-A-D2 737 MAX: ELIMINATED
-A-D3 pulse oximetry: ELIMINATED
+Web PKI: SURVIVES WITH EXACT RESIDUAL
+737 MAX: ELIMINATED
+pulse oximetry: ELIMINATED
 ```
 
 Candidate A is frozen under the provisional name:
@@ -92,29 +79,25 @@ pre-refinement discriminator-unavailability witness
 Evidence strength:
 
 ```text
-MECHANISM-SPECIFIC ONLY
-one source-backed surviving mechanism
+one source-backed mechanism only
+MECHANISM-SPECIFIC
 no generic certificate object
-no new Candidate-A rescue domain in the completed cycle
 ```
 
-The residual is the provenance problem of establishing, before the later correct refinement is known, that a task-required discriminator is unavailable at the relied-upon decision boundary rather than merely ignored, hidden, noisy, or miscalibrated.
+The surviving question is whether pre-refinement evidence can establish that a task-required discriminator is unavailable at the relied-upon boundary without deriving that judgment from the later refinement, a hidden existing channel, or a measurement/calibration artifact.
 
 ### Candidate B
 
-The earlier beta-decay/Pauli audit remains a preliminary negative control. The active preregistered cycle produced:
-
 ```text
-B-D1 incomplete-model diagnosis / hidden interaction faults: ELIMINATED
-B-D2 TLS finite negotiation: ELIMINATED
-B-D3 spacecraft fault catalogue: ELIMINATED
-
-Candidate B aggregate: ELIMINATED
+incomplete-model diagnosis: ELIMINATED
+TLS finite negotiation: ELIMINATED
+spacecraft fault catalogue: ELIMINATED
+aggregate Candidate B: ELIMINATED
 ```
 
-Candidate B is closed as an independent QX candidate. No fourth domain may be added to rescue it.
+Candidate B is an archived negative result. No fourth rescue domain is authorized.
 
-The completed cycle permanently establishes the following research firewalls:
+Permanent constraints include:
 
 ```text
 finite enumeration != complete candidate universe;
@@ -124,15 +107,47 @@ institutional catalogue authority != world/task-space completeness;
 Unknown-as-response != Unknown-as-candidate.
 ```
 
+### QX-5 result
+
+```text
+A/B certificate-provenance unification: NO MERGE
+```
+
+The shared skeleton
+
+```text
+forall c in C_V, Fail_T(c)
+```
+
+is definition-level/common elimination syntax, not a theory contribution.
+
+Candidate A and Candidate B place the evidential burden in different locations:
+
+```text
+A: provenance of pre-refinement discriminator unavailability;
+B: authority/completeness of finite candidate boundary + meaning of exhaustion.
+```
+
+No nontrivial common provenance object survived the audit.
+
 ### QX promotion state
 
 ```text
-generic QX object: NOT EARNED
+Generic QX object: NOT EARNED
 InsufficiencyCertificate: NOT EARNED
+A/B unified theorem family: NOT EARNED
 QX Lean: NO
 ```
 
-Candidate B's elimination does not promote Candidate A. Logical resemblance between A and B does not authorize a unified theorem family.
+QX has no automatic next construction step.
+
+Default state:
+
+```text
+QX: EVIDENCE-DEFERRED / PRE-FORMAL
+```
+
+A future action requires genuinely new source-backed evidence, not further constructor/theorem design and not rescue-case accumulation inside the completed Candidate-A/B cycles.
 
 ## 5. QC — Provisional Shared Determination
 
@@ -158,9 +173,9 @@ generic QC object: NOT EARNED
 QC Lean: NO
 ```
 
-The Web-PKI event survives narrowly in QX while producing no QC residual under an independent native decomposition. This is empirical support for track independence, not a theorem.
+The Web-PKI event provides a useful cross-track calibration: a narrow QX residual may survive while the independently audited QC residual is empty. This supports track independence empirically; it is not a theorem.
 
-QC remains in low-speed source acquisition. No `ProvisionalSharedReliance` object is authorized.
+QC remains a low-speed source-acquisition track. No `ProvisionalSharedReliance` object is authorized.
 
 ## 6. Shared formal gate
 
@@ -193,30 +208,31 @@ deleted freedom
 + independently surviving structure.
 ```
 
-Important freedoms deleted by the recent QX cycles include:
+Recent QX cycles deleted at least:
 
 ```text
-post-refinement hindsight may not serve as E_pre provenance;
-policy omission may not be redescribed as representation absence;
-measurement aliasing may not be redescribed as representation inadequacy;
-one Candidate-A survivor may not be generalized into a theorem family;
-retrospective hypothesis menus may not be redescribed as finite exhaustive H_V;
-finite model/protocol exhaustion may not be promoted directly into representation inadequacy;
-finite engineering catalogues may not be treated as justified candidate universes without enumeration authority.
+post-refinement hindsight -> earlier certificate;
+ignored signal -> absent distinction;
+measurement aliasing -> representation inadequacy;
+one survivor -> generic theorem family;
+finite list -> justified candidate universe;
+complete finite exhaustion -> representation inadequacy;
+model-class rejection -> QX certificate;
+shared A/B elimination syntax -> one generic theory.
 ```
 
 ## 8. Current execution status
 
 ```text
 Strict-L6 technical track: FROZEN / CLOSED
-QO standing/closure operationalization: ARCHIVED NEGATIVE CONTROL
-QX Candidate A: FROZEN / MECHANISM-SPECIFIC SURVIVOR ONLY
+QO standing/closure: ARCHIVED NEGATIVE CONTROL
+QX Candidate A: FROZEN / ONE MECHANISM-SPECIFIC SURVIVOR
 QX Candidate B: ELIMINATED / ARCHIVED NEGATIVE RESULT
-QX-5: NEXT / NON-UNIFICATION AUDIT ONLY
+QX-5 A/B unification: REJECTED
+QX overall: EVIDENCE-DEFERRED / PRE-FORMAL
 QC: ACTIVE / PRE-FORMAL / LOW-SPEED SOURCE ACQUISITION
-Q_close as old linear successor to Q_open: RETIRED
 QX Lean: NO
 QC Lean: NO
 ```
 
-The next QX action may compare A/B provenance structures but defaults to `NO MERGE`. It may not create a generic formal object from a shared elimination skeleton.
+Do not restart QX formalization merely because a generic predicate or theorem can now be written compactly. The current evidence earns only the narrow Candidate-A residual and the negative constraints accumulated by the falsification program.
