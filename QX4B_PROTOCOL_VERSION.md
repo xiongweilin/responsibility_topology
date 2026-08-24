@@ -1,0 +1,1 @@
+Active Candidate-B domain-kill protocol is frozen by `QX4B_DOMAIN_KILL_FREEZE.md` on branch `research/qx4b-domain-freeze-v2` before active-domain evidence review. The earlier beta-decay audit is retained as a preliminary negative control and does not define the active three-domain cycle.
