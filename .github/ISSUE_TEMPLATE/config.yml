@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Read the authoritative research state
+    url: https://github.com/xiongweilin/responsibility_topology/blob/main/RESEARCH_STATE.md
+    about: Check current QX/QC governance before opening an issue.
+  - name: Read the contribution policy
+    url: https://github.com/xiongweilin/responsibility_topology/blob/main/CONTRIBUTING.md
+    about: Review admissible Maintenance, Correction, Absorption, and EvidenceEvent contributions.
