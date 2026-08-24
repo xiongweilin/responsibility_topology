@@ -1,0 +1,33 @@
+Responsibility Topology — Documentation License Policy
+
+Copyright 2026 Xiongwei Lin
+
+1. Research documentation
+
+Except for the exclusions in Section 2, Markdown and other documentation files in this repository that are not source code are licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0).
+
+License summary:
+https://creativecommons.org/licenses/by/4.0/
+
+Legal code:
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+You may share and adapt covered documentation, including for commercial use, provided that you give appropriate credit, provide a link to the license, and indicate if changes were made, subject to the terms of CC BY 4.0.
+
+2. Manuscript exclusion
+
+Files under `paper/` are NOT licensed under CC BY 4.0 by this repository-level notice unless an individual manuscript file explicitly states otherwise.
+
+No permission beyond applicable law and the GitHub Terms of Service is granted for excluded manuscript text by this file. This separation is intentional so that repository-level documentation licensing does not silently determine future publication or publisher-license terms.
+
+3. Source code
+
+Source code, Lean files, Python files, tests, workflow/configuration code, and other software components are licensed under the Apache License 2.0 in `LICENSE`.
+
+4. Mixed files and uncertainty
+
+If a file contains both substantial code and substantial research prose, or if its licensing category is unclear, do not infer broader rights from this policy. Open a documentation/correction issue so the scope can be clarified explicitly.
+
+5. Citation is separate from licensing
+
+Permission to reuse material does not replace scholarly citation. Use `CITATION.cff` for repository-level citation metadata and cite paper-specific publications/artifacts when relying on paper-specific results.
