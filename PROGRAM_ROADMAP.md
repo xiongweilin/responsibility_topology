@@ -4,22 +4,35 @@ This roadmap is theory-level. It is not a constructor backlog.
 
 ## Unifying question
 
-> **How can a finite system preserve historical structure while repeatedly re-establishing what may be relied on now?**
+> **How can finite systems preserve responsibility-bearing structure while determining what may be relied on under changing representations, environments, and agents?**
 
-The theory sequence remains:
-
-```text
-Object -> Environment -> Change -> Regime -> Multi-agent regime
-```
-
-The execution sequence is intentionally different. After Paper 3, the program first consolidated cross-domain abstraction and the runtime/formal bridge before returning to Regime theory.
+The completed formal lineage remains:
 
 ```text
-Technical consolidation track
-  -> Regime theory track
+Object -> Environment -> Change
 ```
 
-This distinction prevents “the next theory axis” from being confused with “the next engineering/research task.”
+The post-Paper-3 technical consolidation is frozen at Strict technical Level 6.
+
+The current research architecture is **parallel**, not the old linear:
+
+```text
+Q_open -> Q_close
+```
+
+Instead:
+
+```text
+Frozen Strict-L6
++
+QX  Representation Inadequacy
++
+QC  Provisional Shared Determination
+```
+
+Neither QX nor QC is a prerequisite for the other.
+
+---
 
 ## 1. Object — Paper 1
 
@@ -27,7 +40,7 @@ Question:
 
 > For one object, how are immutable historical formation and current qualification kept distinct?
 
-Formal instance:
+Formal lesson:
 
 ```text
 historical warrant / parent identity
@@ -35,7 +48,7 @@ historical warrant / parent identity
 state-indexed Usable
 ```
 
-Core lesson: formation does not silently establish current usability; qualification does not replay all historical formation responsibility.
+Status: frozen.
 
 ## 2. Environment — Paper 2
 
@@ -43,7 +56,7 @@ Question:
 
 > When responsibility crosses contexts, which facts stay with historical objects and which must be re-established in the relevant environment?
 
-Formal instances include:
+Formal lessons include:
 
 ```text
 TRANSPORT historical formation
@@ -61,7 +74,7 @@ license BaseCurrent
 context Groundedness
 ```
 
-Core lesson: cross-environment migration preserves some historical structure while current environment responsibility remains explicit.
+Status: frozen.
 
 ## 3. Change — Paper 3
 
@@ -69,7 +82,7 @@ Question:
 
 > When dependencies change, how can current responsibility be withdrawn and repaired without rewriting canonical history?
 
-Formal instances:
+Formal lessons include:
 
 ```text
 history continuity
@@ -87,242 +100,369 @@ impact
 != execution
 ```
 
-Core lesson: repair is meaningful only after separating what was affected, what is selected, what actually works, what cuts are necessary relative to a model, whether the model is complete, and how repair is executed.
+Status: frozen.
 
 ---
 
-# Technical consolidation track after Paper 3
+# Technical consolidation — completed and frozen
 
-This track does not insert a new theory axis between Change and Regime. It tests whether the existing distinctions survive heterogeneous domains and whether a restricted part can be connected to executable observations.
+The technical consolidation tested cross-domain portability and a restricted runtime/formal bridge.
 
-## T1. Cross-domain falsification
-
-Discovery/falsification domains:
+Evidence stack:
 
 ```text
-D1 physical-operational
-D2 normative-institutional
-D3 empirical-scientific
-```
-
-Software is D4 regression, not a fourth discovery source.
-
-The audit rejected the broad candidate:
-
-```text
-persistent relation != current responsibility
-```
-
-because historical trace persistence and persistence of the operative relation are not the same cross-domain claim.
-
-Only two candidates were promoted, both at `FORMAL SIMILARITY`:
-
-```text
-CI-2
-Affectedness does not by itself constitute sufficient discharge.
-
-CI-3
-Conformance within a represented regime does not by itself settle
-higher-order adequacy / validity / fitness for the relied-upon purpose.
-```
-
-Neither mechanism similarity nor universality is claimed.
-
-## T2. D4 software regression
-
-D4 asks whether CI-2/CI-3 can restate the existing formal kernel and `portable-runtime` boundaries without reintroducing warrant/license/challenge/repair-specific nouns as generic primitives.
-
-The regression passed while explicitly rejecting generic transitive impact, generic repair hypergraphs, generic recursive groundedness, universal history immutability, and an adequacy Boolean.
-
-## T3. Minimal parametric cores
-
-After D4, a narrow formal opening introduced two isolated calculi:
-
-```text
-ImpactDischargeCore
-EvaluationLayerCore
-```
-
-They include finite countermodels showing respectively that the following universal shortcuts are not valid in the bare calculi:
-
-```text
-Affected -> Discharged
-LocalConformance -> HigherAccepted
-```
-
-The calculi do not import Paper 1–3 object vocabulary and do not define Q_open adequacy.
-
-## T4. Executable O0 / B0 bridge
-
-REF-2 implements a neutral finite observation contract with first-class information-loss classes:
-
-```text
-EXACT-SHAPE
-ABSTRACTION
-PARTIAL
-SEMANTIC-MISMATCH
-NOT-REPRESENTED
-```
-
-The runtime/formal adapters discovered a non-empty first common fragment from fixture output:
-
-```text
-B0 = {
-  historicalTrace:trace.referent-present,
-  operativeStatus:qualification.current
-}
-```
-
-for the first certified fragment.
-
-The impact coordinate is excluded because:
-
-```text
-runtime direct typed impact
-!=
-formal transitive historical challenge impact
-```
-
-## T5. Restricted certified observational bridge
-
-The first certified fragment is:
-
-```text
-history-retaining qualification withdrawal
-```
-
-Trust boundary:
-
-```text
-raw runtime state/events
-  -> Python O0 adapter/certificate extraction
-  | verified boundary begins
-  -> Lean certificate checker
-  -> abstract B0 transition contract
-```
-
-The verified result is about the certificate presented to the checker, not the entire Python runtime.
-
-The formal kernel independently proves that a challenge step can realize the same B0 pattern at the challenged target: exact historical referent retained, pre-state usable, post-state not usable.
-
-No theorem currently states:
-
-```text
-RuntimeStep -> FormalStep*
-```
-
-and no impact-semantics equivalence is claimed.
-
-## T6. Level-6 audit
-
-The integration target is:
-
-```text
-CrossDomainCore
+DomainParametricCore
 +
-DomainInstances
+ExplicitDomainInterpretations
 +
-CertifiedRuntimeBridge
+EndToEndB0RuntimeCorrespondence
 ```
 
-`LEVEL6_TECHNICAL_AUDIT.md` owns the exact evidence and trust boundary.
+Strict bridge scope:
 
-After this checkpoint, technical feature expansion stops by default. The next major research effort returns to Regime theory rather than adding another lifecycle constructor or broadening the runtime bridge opportunistically.
+```text
+actual serialized selected runtime transition artifact
+-> Lean-computed restricted B0 contract
+```
+
+Cross-domain strength remains:
+
+```text
+FORMAL SIMILARITY
+```
+
+not mechanism similarity or universal invariance.
+
+Technical feature expansion is closed by default.
 
 ---
 
-## 4. Regime — Q_open
+# Archived negative-control lineage — QO standing/closure
 
-This remains the next theory-level upgrade, but it was deliberately parked while technical consolidation was executed.
+The old Q_open operationalization asked whether evidence could acquire `ChallengeStanding` and defeat `UnqualifiedClosure`.
 
-Question:
+That line is now an archived negative-control lineage after prior-art attack, hostile audit, preregistered falsification, and post-falsification synthesis.
 
-> **When is a finite system defeasibly entitled to reopen its current responsibility vocabulary, dependency cuts, or governing regime as itself insufficient?**
-
-Paper 3 solves repair inside a supplied responsibility model. Cross-domain CI-3 preserves the higher-order evaluation boundary. The O0 bridge intentionally excludes an adequacy Boolean. None of those results answers the entitlement question.
-
-A future Q_open theory must distinguish at least:
+Permanent corrections:
 
 ```text
-anomaly / failure signal
-!=
-inadequacy evidence
-!=
-reopen entitlement
-!=
-replacement proposal
-!=
-replacement validation
+Admissible_K(item,use) is the forward admissibility baseline;
+review != standing;
+different admissibility by use != standing;
+reviewability != closure qualification;
+gate review / preserved challenge != closure defeater;
+syntactic/procedural scope != adequate localization.
 ```
 
-It must address both:
+Current verdict:
 
 ```text
-false reopen
+generic ChallengeStanding: NOT EARNED
+generic closure-defeater object: NOT EARNED
+QO-3 Lean: BLOCKED
+```
+
+The lineage must not be rescued by renamed substitute predicates without new non-eliminable evidence.
+
+Its value is methodological: it permanently removes shortcuts from later research.
+
+---
+
+# Parallel track QX — Representation Inadequacy
+
+Mother question:
+
+> **How can a finite system become entitled to suspect that its current space of distinctions is inadequate for a relied-upon responsibility task without already knowing the correct refinement?**
+
+QX intentionally returns to the broader representation problem that survived the rejection of the old standing/closure operationalization.
+
+## QX-1 — Problem kernel
+
+First analytical distinction:
+
+```text
+Anomaly
+!=
+SuspectInadequacy
+!=
+AuthorizedRevision
+```
+
+Initial objects must remain conceptual and pre-formal:
+
+```text
+finite system
+finite distinction space V
+relied-upon responsibility task T
+representation alpha_V
+responsibility-relevant difference relative to T
+```
+
+Freeze the non-shortcuts:
+
+```text
+SuspectInadequacy
+-/-> know the missing distinction
+-/-> know a better representation
+-/-> AuthorizedRevision
+-/-> RegimeFailure
+```
+
+No `standing`, `closure`, or `reopen` vocabulary is permitted as a default QX primitive.
+
+## QX-2 — Prior-art kill
+
+Strong neighbors must be attacked before any kernel promotion:
+
+```text
+unawareness / partial-state-space refinement
+awareness of unawareness
+open-set / open-world recognition
+unknown-unknown discovery
+state aliasing / state aggregation
+POMDP representation learning
+CEGAR / abstraction refinement
+model misspecification / criticism
+```
+
+Each candidate QX claim receives only:
+
+```text
+ELIMINATED
+DOMAIN-SPECIFIC
+SURVIVES WITH EXACT RESIDUAL
+```
+
+No vague “related but different” verdict is allowed.
+
+If no exact residual remains, QX stops.
+
+## QX-3 — Kernel preregistration, only if earned
+
+Two candidate theorem surfaces may be preregistered only after QX-2 leaves a residual.
+
+### Candidate A — task-relevant aliasing
+
+Conceptual shape:
+
+```text
+alpha_V : X -> V
+alpha_V(x) = alpha_V(y)
+```
+
+while an independently justified accountability specification requires incompatible responses.
+
+The hard obligation is **not** the elementary incompatibility proof. It is the provenance of the accountability witness without assuming the correct finer representation in advance.
+
+### Candidate B — finite candidate exhaustion
+
+Conceptual shape:
+
+```text
+H_V = {h1,...,hn}
+forall h in H_V, Fail(h,C)
+```
+
+Safe conclusion only:
+
+```text
+current represented candidate space exhausted relative to C
+```
+
+Do not infer:
+
+```text
+reality has no explanation
+the missing distinction is known
+V should be expanded in a particular way
+```
+
+## QX-4 — Domain kill, only after preregistration
+
+Domain work begins only after the candidate kernel and kill criteria are frozen.
+
+The goal is to eliminate the candidate, not gather supportive examples.
+
+## QX Lean gate
+
+Closed until all are true:
+
+```text
+stable objects;
+independent accountability witness or equivalent certificate source;
+nonempty prior-art residual;
+pre-registered domain kill protocol;
+non-definitional theorem/countermodel obligation.
+```
+
+Current status:
+
+```text
+QX Lean: NO
+```
+
+---
+
+# Parallel track QC — Provisional Shared Determination
+
+Mother question:
+
+> **How can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?**
+
+QC is not defined as consensus without a central node.
+
+## QC-0 — Conceptual firewalls
+
+Freeze:
+
+```text
+local determination
+!= provisional shared determination
+!= shared reliance
+!= global truth
+!= final authority
 ```
 
 and:
 
 ```text
-closure blindness
+agreement != semantic identity
 ```
 
-without granting a system authority to rewrite its regime merely because the regime failed to produce a desired result.
+The absence of a final arbiter is not itself a novelty axis.
 
-Existing QO-1 formulation work remains a parked research checkpoint until Level-6 consolidation is frozen.
+## QC-1 — Prior-art scouting
 
-## 5. Multi-agent regime — Q_close
-
-Later question:
-
-> How can responsibility be represented and discharged across heterogeneous agents without collapsing joint representation into joint responsibility completion?
-
-Expected distinctions include:
+Strong neighbors include:
 
 ```text
-shared representation
-!= distributed evidence ownership
-!= authority to decide
-!= responsibility discharge
+Byzantine consensus
+federated Byzantine agreement
+heterogeneous / personalized quorum systems
+judgment aggregation
+multi-agent epistemic agreement
+semantic interoperability / translation
+institutional delegation and authority models
 ```
 
-This stage should follow, not precede, a clearer Q_open theory.
-
-## Remaining cross-cutting research gaps
-
-### A. Cross-domain strength
-
-CI-2/CI-3 currently have formal similarity and finite case-model encodings. Mechanism similarity and universal invariance remain open and should not be inferred from common notation.
-
-### B. Stronger runtime correspondence
-
-The current certified bridge checks a restricted observation certificate. A stronger refinement would have to reduce the unverified extraction boundary and choose additional B0 coordinates only where executable adapters show genuine semantic compatibility.
-
-### C. Responsibility-model adequacy
-
-This remains the deepest theoretical gap:
+The residual question, if any, must involve the joint pressure of:
 
 ```text
-correctness inside model
-!= adequacy of model
+heterogeneous semantics
++
+local qualification
++
+distributed evidence/authority
++
+revocable shared reliance
 ```
 
-and:
+## QC-2 — Failure corpus before calculus
+
+Collect native failures before proposing a generic structure.
+
+Priority failures:
 
 ```text
-verified correspondence
-!= adequate regime
+shared representation but no responsibility owner;
+agreement with incompatible semantics;
+distributed evidence separated from centralized decision authority;
+delegation whose later revalidation becomes orphaned;
+joint approval mistaken for joint discharge;
+agents agree because a shared abstraction erased their real disagreement.
 ```
 
-## Stop rule
+The last class may eventually connect to QX, but no QX->QC theorem or unified theory is assumed.
 
-Do not reopen or expand the formal program merely because a new constructor, optimization, algorithm, mapping, or correspondence theorem is available.
+## QC native-decomposition gate
 
-A new formal phase must address either:
+For every failure, first attempt elimination through ordinary models of:
 
-- a responsibility boundary that survived falsification and cannot be expressed honestly by the current core;
-- a bridge fragment discovered from executable observations rather than stipulated by analogy;
-- Q_open regime-entitlement theory;
-- later Q_close distributed responsibility.
+```text
+consensus state
+quorum/trust structure
+authority/delegation
+evidence ownership
+semantic translation
+revocation/revalidation
+```
 
-The program is measured by sharper responsibility boundaries, explicit countermodels, visible trust boundaries, and stronger but narrower bridges—not theorem count.
+Only non-eliminable responsibility structure may enter a future QC problem kernel.
+
+## QC Lean gate
+
+Closed until there is:
+
+```text
+a real multi-agent failure not honestly expressible as ordinary consensus/authority/translation;
+a stable local-entitlement interface;
+a non-eliminable shared-reliance responsibility relation;
+a non-definitional theorem/countermodel obligation.
+```
+
+Current status:
+
+```text
+QC Lean: NO
+```
+
+---
+
+# Cross-track discipline
+
+Do not assume a unification law such as:
+
+```text
+RepresentationInsufficiency -> FalseSharedDetermination
+```
+
+QX and QC may exchange empirical cases, but any common abstraction must be earned independently after both tracks survive their own elimination protocols.
+
+---
+
+# Research progress metric
+
+The project measures research progress by:
+
+```text
+deleted freedom
++
+resolved research debt
++
+independently surviving structure
+```
+
+not by:
+
+```text
+theorem count
+constructor count
+number of domains
+number of repositories
+```
+
+The controlling review question is:
+
+> **What freedom did this research cycle remove?**
+
+See `RESEARCH_STATE.md` and `RESEARCH_DEBT.md`.
+
+---
+
+# Global stop rule
+
+Do not open or expand a formal program merely because a clean predicate, structure, theorem, algorithm, or bridge can be written.
+
+A new formal phase requires evidence that ordinary/native representations have been tried and cannot preserve the relevant responsibility facts without loss.
+
+Current global state:
+
+```text
+Paper 1-3 formal semantics: FROZEN
+Strict-L6 technical consolidation: FROZEN
+QO standing/closure operationalization: ARCHIVED NEGATIVE CONTROL
+QX: PRE-FORMAL
+QC: PRE-FORMAL
+QX Lean: NO
+QC Lean: NO
+```
