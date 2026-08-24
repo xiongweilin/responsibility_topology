@@ -76,6 +76,28 @@ Current state: **EVIDENCE-LIMITED / PRE-FORMAL** with zero source-backed positiv
 
 No `ProvisionalSharedReliance`, generic QC object, or QC Lean module is currently earned.
 
+## Kill-first meta-architecture audit
+
+This is theoretical inquiry under the existing closed promotion gate; it is **not** a new positive theory track and does not alter the authoritative QX/QC states above.
+
+- [`META_ARCHITECTURE_P0_AUDIT.md`](META_ARCHITECTURE_P0_AUDIT.md) — tests whether architecture competition changes research behavior at all; current P0 verdict: `AUDIT-WORTHY`, not architecture adequacy.
+- [`META_ARCHITECTURE_P1_CORPUS.md`](META_ARCHITECTURE_P1_CORPUS.md) — freezes endogenous and native-language exogenous corpora; explicitly not an out-of-sample or saturation claim.
+- [`META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md`](META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md) — reconstructs `ELIMINATED / ABSORBED / BRACKETED / UNOWNED / UNKNOWN` narrowing behavior across Q_open/QX and Q_close/QC lineage.
+- [`META_ARCHITECTURE_P3_P7_PROTOCOL.md`](META_ARCHITECTURE_P3_P7_PROTOCOL.md) — freezes A0/A1/A2/null competition, blind-test packet, hostile partial order, residual promotion gate, and meta-stop rules.
+
+Current meta-audit checkpoint:
+
+```text
+P0: AUDIT-WORTHY
+P1: CORPORA FROZEN
+P2: PROVENANCE AUDITED
+P3: CANDIDATES FROZEN; NO WINNER
+P4: BLIND PACKET READY; INDEPENDENT OUTPUTS NOT COLLECTED
+P5: BLOCKED ON P4 + GENUINELY HELD-OUT CASE
+```
+
+Do not infer a third Q-track, a small global partition, architecture completeness, or a formalization entitlement from this meta-audit.
+
 ## Cross-domain lineage
 
 - [`CROSS_DOMAIN_CANDIDATE_VERDICT.md`](CROSS_DOMAIN_CANDIDATE_VERDICT.md) — current top-level verdict anchor.
