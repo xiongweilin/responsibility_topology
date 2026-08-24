@@ -7,7 +7,7 @@
 
 Lean 4 formal research on historical responsibility, current qualification, invalidation, repair, and evidence-gated higher-order questions.
 
-`RESEARCH_STATE.md` is the authoritative current research-governance state. This README is a public entry point, not the research log. `SEARCH_SCOPE.md` records the bounded search provenance and stopping basis behind dormant/evidence-limited research states.
+`RESEARCH_STATE.md` is the authoritative current research-governance state. This README is a public entry point, not the research log. `SEARCH_SCOPE_PROVENANCE.md` records the bounded search provenance and stopping basis behind dormant/evidence-limited research states.
 
 ## Status
 
@@ -43,7 +43,7 @@ TheoryGate = CLOSED
 RealityHypothesis = ABSENT
 ```
 
-QO and QX do not claim search exhaustion or saturation. QC does not claim search saturation. For all three tracks, the reality-level hypothesis remains unresolved outside the explicitly audited scope. See `SEARCH_SCOPE.md` for the recorded mechanism/domain coverage, unrecorded search fields, blind spots, stop rules, and wake conditions.
+QO and QX do not claim search exhaustion or saturation. QC does not claim search saturation. For all three tracks, the reality-level hypothesis remains unresolved outside the explicitly audited scope. See `SEARCH_SCOPE_PROVENANCE.md` for the recorded mechanism/domain coverage, unrecorded search fields, blind spots, stop rules, and wake conditions.
 
 ```mermaid
 flowchart LR
@@ -122,7 +122,7 @@ QC uses an evidence pipeline that freezes material facts before ordinary decompo
 
 QC has not established search saturation. The absence of a current positive residual is limited to admitted/audited cases and does not distinguish rarity, search insufficiency, source insufficiency, formulation error, or correct absorption by ordinary explanations.
 
-See `RESEARCH_STATE.md` for exact current status, `SEARCH_SCOPE.md` for search provenance/stopping semantics, and `NAVIGATION.md` for the research lineage.
+See `RESEARCH_STATE.md` for exact current status, `SEARCH_SCOPE_PROVENANCE.md` for search provenance/stopping semantics, and `NAVIGATION.md` for the research lineage.
 
 ## Explicitly not claimed
 
@@ -139,7 +139,7 @@ a generic representation-insufficiency certificate;
 a generic provisional-shared-reliance object;
 QX or QC Lean formalization;
 exhaustive search of QO/QX/QC reality;
-QO/QX/QC search saturation unless explicitly recorded in SEARCH_SCOPE.md;
+QO/QX/QC search saturation unless explicitly recorded in SEARCH_SCOPE_PROVENANCE.md;
 absence of future source-backed positive residuals.
 ```
 
@@ -153,7 +153,7 @@ Three reading depths are supported:
 
 ```text
 ~30 seconds   README.md + status badges
-~5 minutes    RESEARCH_STATE.md + SEARCH_SCOPE.md + NAVIGATION.md + STRICT_LEVEL6_TECHNICAL_AUDIT.md
+~5 minutes    RESEARCH_STATE.md + SEARCH_SCOPE_PROVENANCE.md + NAVIGATION.md + STRICT_LEVEL6_TECHNICAL_AUDIT.md
 ~1 hour+      paper / QO / QX / QC / bridge audit lineage
 ```
 
@@ -184,7 +184,7 @@ python -m pytest -q \
 Useful entry points:
 
 - `RESEARCH_STATE.md` — authoritative current governance state.
-- `SEARCH_SCOPE.md` — bounded search provenance, blind spots, stop rules, and wake conditions.
+- `SEARCH_SCOPE_PROVENANCE.md` — bounded search provenance, blind spots, stop rules, and wake conditions.
 - `NAVIGATION.md` — logical index for the grouped research lineage.
 - `RESEARCH_DEBT.md` — evidence-gated research debt ledger.
 - `PROGRAM_ROADMAP.md` — frozen architecture and stop rules.
