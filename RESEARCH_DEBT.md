@@ -111,55 +111,61 @@ No fourth Candidate-B domain is authorized.
 
 ### QX wake debt
 
-QX default state is:
+QX default state:
 
 ```text
 DORMANT / OPEN / PRE-FORMAL
 ```
 
-The only legal wake condition is:
+Legal wake condition:
 
 ```text
 E-WAKE OR T-WAKE
 ```
 
-`E-WAKE` requires a new mechanism-distinct source-backed residual. It is evidence-deferred and is not an active search mandate.
+`E-WAKE` requires a new mechanism-distinct source-backed residual and remains open but not actively searched.
 
-`T-WAKE` requires a representation-independent, non-definitional theoretical residual. The current audit obligation is:
-
-```text
-QX-TW:
-Does any impossibility remain after ordinary
-observability / diagnosability / non-identifiability /
-task infeasibility / model-class rejection /
-abstraction-refinement explanations are removed?
-```
-
-The required firewall is:
+`T-WAKE` has now been audited against:
 
 ```text
-cannot distinguish states
-!= cannot diagnose a critical property
-!= cannot satisfy task T
-!= cannot certify that the current representation is the source of failure.
+finite-state observability / critical observability;
+diagnosability;
+active diagnosis;
+interaction-level observational / counterfactual equivalence;
+model invalidation without a known replacement model.
 ```
 
-Decisive provenance question:
+Result:
 
 ```text
-Who has the ground distinction?
+T-WAKE: CLOSED FOR THE CURRENT THEORETICAL CANDIDATE FAMILY
 ```
 
-If the proof assumes an analyst-visible concrete state space or correct finer decomposition, it is analyst-side non-observability unless a separate system-accessible pre-refinement certificate is established.
-
-Allowed QX-TW verdicts:
+The closure reason is the ground-distinction dilemma:
 
 ```text
-CLOSED
-CANDIDATE
+analyst knows the hidden/task-relevant distinction
+-> ordinary analyst-side non-observability / diagnosability / non-identifiability;
+
+system has only data inconsistent with current model
+-> model invalidation / model criticism;
+
+system claims the representation is specifically too coarse for task T
+-> requires an independently sourced discriminator-unavailability witness,
+   recreating the frozen Candidate-A provenance obligation.
 ```
 
-Even `CANDIDATE` does not open Lean.
+Permanent theoretical-wake firewalls:
+
+```text
+observational impossibility != QX-specific impossibility;
+analyst-known hidden distinction != system-side inadequacy certificate;
+failure of all active probes != certificate that representation is the source of failure;
+model invalidation without replacement != task-relative distinction-space insufficiency;
+compact diagonal/impossibility syntax != T-WAKE.
+```
+
+A future T-WAKE is permitted only if it introduces a materially different provenance mechanism from the absorbed families. It is not an invitation to vary the same impossibility statement.
 
 ### Shared QX formal gate
 
