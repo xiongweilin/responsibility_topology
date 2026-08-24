@@ -47,7 +47,7 @@ The QO lineage remains an archived negative control.
 
 ## QX — Representation Inadequacy debt
 
-### Resolved baseline
+Resolved baseline:
 
 ```text
 QX-D1 finite-system / distinction-space / task objects -> RESOLVED
@@ -59,132 +59,43 @@ QX-D7 preregister domain falsification before promotion -> RESOLVED
 QX-D10 A/B certificate-provenance non-unification -> RESOLVED: NO MERGE
 ```
 
-### Candidate A — frozen mechanism-specific residual
+Candidate A is frozen as one mechanism-specific `pre-refinement discriminator-unavailability witness` survivor. Candidate B is eliminated and may not receive a fourth rescue domain.
 
-QX-4A:
+QX wake governance:
 
 ```text
-Web PKI: SURVIVES WITH EXACT RESIDUAL
-737 MAX: ELIMINATED
-pulse oximetry: ELIMINATED
+QX: DORMANT / OPEN / PRE-FORMAL
+legal wake: E-WAKE OR T-WAKE
 ```
 
-Preferred provisional name:
+`E-WAKE` requires a new mechanism-distinct source-backed residual and is not actively searched.
+
+The current `T-WAKE` candidate family has been resolved negatively after audit against observability/diagnosability, active diagnosis, interaction-level observational equivalence, and model invalidation:
 
 ```text
-pre-refinement discriminator-unavailability witness
-```
-
-Permanent constraints:
-
-```text
-post-refinement hindsight cannot supply E_pre provenance;
-ignored existing signal != absent distinction;
-measurement aliasing != representation inadequacy;
-policy input vocabulary != full task-relevant system representation;
-one survivor != generic theorem family.
-```
-
-Candidate A is frozen. Do not add rescue/support cases to the completed cycle.
-
-### Candidate B — archived negative result
-
-```text
-incomplete-model diagnosis: ELIMINATED
-TLS finite negotiation: ELIMINATED
-spacecraft fault catalogue: ELIMINATED
-Candidate B aggregate: ELIMINATED
-```
-
-Permanent constraints:
-
-```text
-finite enumeration != complete candidate universe;
-complete finite exhaustion != representation inadequacy;
-model-class rejection != QX certificate;
-institutional catalogue authority != world/task-space completeness;
-Unknown-as-response != Unknown-as-candidate;
-failed identification != failed safe task response.
-```
-
-No fourth Candidate-B domain is authorized.
-
-### QX wake debt
-
-QX default state:
-
-```text
-DORMANT / OPEN / PRE-FORMAL
-```
-
-Legal wake condition:
-
-```text
-E-WAKE OR T-WAKE
-```
-
-`E-WAKE` requires a new mechanism-distinct source-backed residual and remains open but not actively searched.
-
-`T-WAKE` has now been audited against:
-
-```text
-finite-state observability / critical observability;
-diagnosability;
-active diagnosis;
-interaction-level observational / counterfactual equivalence;
-model invalidation without a known replacement model.
-```
-
-Result:
-
-```text
-T-WAKE: CLOSED FOR THE CURRENT THEORETICAL CANDIDATE FAMILY
-```
-
-The closure reason is the ground-distinction dilemma:
-
-```text
-analyst knows the hidden/task-relevant distinction
+analyst knows the hidden distinction
 -> ordinary analyst-side non-observability / diagnosability / non-identifiability;
 
-system has only data inconsistent with current model
+system has current-model/data inconsistency
 -> model invalidation / model criticism;
 
-system claims the representation is specifically too coarse for task T
--> requires an independently sourced discriminator-unavailability witness,
-   recreating the frozen Candidate-A provenance obligation.
+system claims specifically that a task-required discriminator is absent
+-> requires the independent Candidate-A provenance burden.
 ```
 
-Permanent theoretical-wake firewalls:
+Therefore:
 
 ```text
-observational impossibility != QX-specific impossibility;
-analyst-known hidden distinction != system-side inadequacy certificate;
-failure of all active probes != certificate that representation is the source of failure;
-model invalidation without replacement != task-relative distinction-space insufficiency;
-compact diagonal/impossibility syntax != T-WAKE.
-```
-
-A future T-WAKE is permitted only if it introduces a materially different provenance mechanism from the absorbed families. It is not an invitation to vary the same impossibility statement.
-
-### Shared QX formal gate
-
-```text
-QX-D8 keep Lean closed until a non-definitional theorem/countermodel obligation is earned
-      -> STILL OPEN AS A GATE; current state NO.
-```
-
-Current formal status:
-
-```text
+T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
 Generic QX object: NOT EARNED
-InsufficiencyCertificate: NOT EARNED
 QX Lean: NO
 ```
 
+A future T-WAKE would require a materially different provenance mechanism, not a variant of the absorbed impossibility arguments.
+
 ## QC — Provisional Shared Determination debt
 
-Existing conceptual obligations remain:
+Conceptual obligations remain:
 
 ```text
 QC-D1 local determination != provisional shared determination != shared reliance != global truth != final authority;
@@ -197,18 +108,9 @@ QC-D7 compute native residual after ordinary rivals;
 QC-D8 keep Lean closed until non-eliminable multi-agent responsibility structure survives.
 ```
 
-Current evidence:
+### QC methodology debt — RESOLVED AS PROTOCOL
 
-```text
-source-backed QC negative controls: 3
-source-backed positive QC residuals: 0
-generic QC object: NOT EARNED
-QC Lean: NO
-```
-
-### QC methodology debt — active
-
-Before further case promotion, freeze this order:
+`QC_EVIDENCE_PROTOCOL.md` now freezes:
 
 ```text
 RawSources
@@ -220,78 +122,129 @@ RawSources
 -> SharedRelianceConsequence
 ```
 
-`MaterialFactsFreeze` must record at least:
+Material facts are frozen before ordinary decomposition. Rival sufficiency requires:
 
 ```text
-who determined what;
-who actually relied;
-what evidence each actor owned;
-what changed;
-who could revise locally;
-who could revise the shared state;
-which downstream action depended on continued validity;
-what counterfactual consequence follows from withdrawal/change.
+descriptive + causal + normative + counterfactual
 ```
 
-An ordinary rival counts as sufficient only if it preserves material facts across:
+fit rather than mere descriptive retelling.
+
+Shared-determination admission requires source-backed evidence that multiple parties actually rely on one bounded common basis `d`; same object, label, local agreement, coordinated action, distributed trust data, or absence of one global operator are insufficient.
+
+For the relevant bounded `d`, `no final arbiter` means no single actor can unilaterally settle continued validity of shared `d`.
+
+### Post-QC3A reprioritization — EXECUTED FOR FIRST SOURCE-RICH CONTROLS
+
+The current operational order was explicitly changed after QC-3A:
 
 ```text
-descriptive
-+ causal
-+ normative
-+ counterfactual
+F8 local qualification changes after shared determination: first
+F5 delegation followed by orphaned revalidation: second
+F7 shared abstraction erases disagreement: downgraded
 ```
 
-fit. Merely retelling the case in ordinary vocabulary is insufficient.
+This does not rewrite the historical QC-2 corpus ordering.
 
-### SharedDeterminationExistenceGate — active
+#### F8 / QC-NEG-RPKI
 
-The following are insufficient:
+Result:
 
 ```text
-same object;
-same label;
-local agreement;
-coordinated action;
-no central authority.
+source-rich distributed currentness: YES
+shared signed source objects: YES
+multiple relying parties: YES
+SharedDeterminationExistenceGate: NOT ESTABLISHED
+ordinary authorization/currentness/local-policy rival: SUFFICIENT
+QC residual: NONE
 ```
 
-A case must establish source-backed:
+Debt resolved:
 
 ```text
-exists d:
-multiple parties actually rely on d as a common bounded basis.
+distributed trust/currentness + no global operator
+-/->
+shared determination.
 ```
 
-It must also distinguish this from coincident local determinations `d_A` and `d_B`.
+#### F5 / QC-SRC-F5-DNSSEC-DELEGATION
 
-For the relevant shared determination, `no final arbiter` means:
+Result:
 
 ```text
-no single actor can unilaterally settle the continued validity of shared d.
+bounded common basis (parent DS RRset): PLAUSIBLE
+multi-provider qualification changes: source-backed by standards model
+parent-side bounded final authority: YES
+explicit consistency/revalidation owner: YES
+ordinary delegation/currentness rival: SUFFICIENT
+QC residual: NONE
 ```
 
-### QC source priorities
-
-Post-QC3A reprioritization:
+Debt resolved:
 
 ```text
-F8 local qualification changes after shared determination: FIRST
-F5 delegation followed by orphaned revalidation: SECOND
-F7 shared abstraction erases disagreement: DOWNGRADED because QX/semantic-mapping rivals are too strong
+shared bounded state + multiple providers + currentness changes
+-/->
+QC residual when bounded authority and revalidation ownership are explicit.
 ```
 
-This reprioritization is new and must not be rewritten as the original protocol.
-
-The corpus may include:
+It also deletes:
 
 ```text
-FailureCases + SuccessCases + NegativeControls
+multi-party revalidation work -> orphaned revalidation;
+violation of an assigned consistency duty -> missing responsibility relation.
 ```
 
-All case types use the same material-facts and shared-determination gates.
+### QC evidence re-audit — current result
 
-RPKI/IRR is admitted only as a source-rich negative/stress queue item, not a presumed QC positive case.
+The two new controls bracket two major false positives:
+
+```text
+RPKI:
+  shared/distributed source data does not establish one common determination;
+
+DNSSEC:
+  even a plausible common determination does not establish QC when ordinary authority/revalidation ownership is explicit.
+```
+
+A future positive residual now must establish all of:
+
+```text
+one bounded common determination d;
+actual multi-party reliance on d;
+a material local qualification/evidence/authority change;
+no single actor able to settle continued validity of d;
+the local change cannot be responsibility-irrelevant to other parties;
+strongest ordinary decomposition loses a frozen material fact;
+the loss is descriptive, causal, normative, or counterfactual rather than terminological.
+```
+
+No current source-backed case satisfies this conjunction.
+
+Current QC status:
+
+```text
+source-backed positive QC residuals: 0
+Generic QC object: NOT EARNED
+ProvisionalSharedReliance: NOT EARNED
+QC Lean: NO
+QC: EVIDENCE-LIMITED / PRE-FORMAL
+```
+
+### Open QC debt
+
+QC-D5/QC-D6/QC-D7 remain open only as **evidence acquisition debt**, not theory construction debt.
+
+A new source case should be admitted only when source viability is independently high enough to reconstruct the material-facts/reliance/currentness timeline. There is no obligation to add a case merely to maintain momentum.
+
+Use `QC_SOURCE_QUEUE.md`; do not create a new QC theory ladder number.
+
+A future case is valuable only if it survives both current false-positive firewalls:
+
+```text
+shared source object != shared determination;
+shared determination != novel shared-responsibility relation.
+```
 
 ## Cross-track debt
 
