@@ -1,6 +1,6 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after Strict-L6, QO negative falsification, and QX Candidate-A domain kill.**
+Status: **governance checkpoint after Strict-L6, QO negative falsification, QX Candidate-A domain kill, and QC-3A source-viability calibration.**
 
 This file separates frozen technical evidence, archived negative-control research, and currently open evidence-gated research tracks. It is not a theorem manifest.
 
@@ -71,7 +71,7 @@ QX -> QC        [not assumed]
 QC -> QX        [not assumed]
 ```
 
-The tracks may produce cases relevant to one another, but neither is a prerequisite for the other.
+The tracks may reuse an empirical event only through an independent track-specific audit. A result in one track is not evidence in the other by default.
 
 ### QX — Representation Inadequacy
 
@@ -107,18 +107,41 @@ Mother question:
 
 > **How can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?**
 
-Current status:
+Current evidence status:
 
 ```text
 QC-0 conceptual firewalls: ESTABLISHED
 QC-1 broad prior-art claims: ELIMINATED
 QC-2 failure corpus: SEEDED
-source-backed positive QC residuals: NONE
+QC-3A source-viability calibration: COMPLETE
+
+source-backed negative controls:
+  Stellar halt
+  Mars Climate Orbiter
+  Web PKI / Symantec distrust calibration
+
+source-backed positive QC residuals: 0
 generic QC object: NOT EARNED
 QC Lean: NO
 ```
 
-The next legal QC action remains source acquisition + native decomposition, not a generic relation or calculus.
+The Web-PKI event is particularly informative because it survives narrowly in QX while producing no QC residual after an independent native decomposition. At current evidence level:
+
+```text
+CA qualification
++
+local root-program authority
++
+credential lifecycle
++
+staged distrust / revalidation
++
+compatibility / interoperability
+```
+
+preserve the material QC facts. Therefore the event is a QC negative control, not a bridge case.
+
+The next legal QC action remains targeted source acquisition for F2–F8, with F7 still the highest-priority falsifier. It is not a generic relation or calculus.
 
 ## 4. Shared formal gate
 
@@ -135,6 +158,8 @@ a theorem/countermodel obligation that is not definition expansion.
 ```
 
 Candidate A has **not** met this gate: it has one mechanism-specific survivor only, while QX-3 explicitly requires more before generic formal promotion.
+
+QC has **not** met this gate: QC-3A added another source-backed negative control and zero positive residuals.
 
 ## 5. Research progress metric
 
@@ -163,6 +188,16 @@ measurement aliasing may not be redescribed as representation inadequacy;
 one surviving domain may not be generalized into a theorem family.
 ```
 
+QC-3A permanently removes at least:
+
+```text
+same event survives QX -> event supports QC;
+no global arbiter -> QC;
+different local trust policies -> provisional shared determination;
+shared credential object -> shared trust determination;
+revocable multi-party trust -> irreducible shared revalidation responsibility.
+```
+
 ## 6. Current execution status
 
 ```text
@@ -170,18 +205,20 @@ Strict-L6 technical track: FROZEN / CLOSED
 QO standing/closure operationalization: ARCHIVED NEGATIVE CONTROL
 QX: ACTIVE, PRE-FORMAL, Candidate A domain cycle complete
 Candidate A: SURVIVES WITH EXACT RESIDUAL / MECHANISM-SPECIFIC ONLY
-Candidate B: DEFERRED TO A LATER CYCLE
-QC: ACTIVE, PRE-FORMAL, SOURCE ACQUISITION NEXT
+Candidate B: ELIGIBLE FOR A LATER, SEPARATE QX-4B CYCLE
+QC: ACTIVE, PRE-FORMAL, QC-3A calibration complete; targeted source acquisition remains
 Q_close as old linear successor to Q_open: RETIRED
 QX Lean: NO
 QC Lean: NO
 ```
 
-Permitted next moves:
+Permitted next moves are independent:
 
 ```text
-QC-3A source-viability + native-decomposition acquisition;
-QX-4B only after the Candidate-A verdict remains frozen in a separate later cycle.
+QC: targeted source acquisition + native decomposition for F2–F8;
+QX: QX-4B only as a new separate research cycle under the frozen Candidate-B protocol.
 ```
+
+Do not infer a QX/QC bridge from the shared Web-PKI event.
 
 This state remains in force until a later evidence-gated checkpoint explicitly supersedes it.
