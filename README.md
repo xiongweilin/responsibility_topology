@@ -1,291 +1,144 @@
-# Responsibility Topology — Formal Research Program
+# Responsibility Topology
 
-This repository is the Lean-centered formal research line of the Responsibility Topology program.
+[![Lean](https://github.com/xiongweilin/responsibility_topology/actions/workflows/lean.yml/badge.svg)](https://github.com/xiongweilin/responsibility_topology/actions/workflows/lean.yml)
+[![Python-Lean Conformance](https://github.com/xiongweilin/responsibility_topology/actions/workflows/conformance.yml/badge.svg)](https://github.com/xiongweilin/responsibility_topology/actions/workflows/conformance.yml)
+![Strict L6](https://img.shields.io/badge/Strict_L6-Frozen_Pass-2ea44f)
+![Research](https://img.shields.io/badge/Research-Evidence--Gated-6f42c1)
 
-Its recurring concern is how finite representations carry historical responsibility, current qualification, change, and bounded reliance without silently upgrading one kind of evidence into another.
+Lean 4 formal research on historical responsibility, current qualification, invalidation, repair, and evidence-gated higher-order questions.
 
-## Program history and current architecture
+`RESEARCH_STATE.md` is the authoritative current research-governance state. This README is a public entry point, not the research log.
 
-The completed formal sequence is:
-
-```text
-Object
-  Paper 1: identity / formation
-  historical relation != current qualification
-        |
-        v
-Environment
-  Paper 2: cross-context responsibility
-  transported history != source/target current responsibility
-        |
-        v
-Change
-  Paper 3: invalidation / repair
-  preserved history != restored current responsibility
-```
-
-After Paper 3, the repository completed a technical consolidation track and froze **Strict technical Level 6**.
-
-The research architecture is no longer the old linear sequence:
+## Status
 
 ```text
-Q_open -> Q_close
+Formal base
+  Papers 1–3 ............... FROZEN
+  Strict Technical L6 ...... PASS / FROZEN
+
+Research
+  QO ....................... ARCHIVED NEGATIVE CONTROL
+  QX ....................... DORMANT / OPEN / PRE-FORMAL
+  QC ....................... EVIDENCE-LIMITED / PRE-FORMAL
+
+Formal expansion
+  QX Lean .................. NO
+  QC Lean .................. NO
 ```
 
-Instead, current pre-formal research is organized as two independent evidence-gated tracks:
+Current maintenance rule:
 
 ```text
-Frozen Strict-L6
-+
-QX  Representation Inadequacy
-+
-QC  Provisional Shared Determination
+allowed changes
+= Maintenance | Correction | Absorption | EvidenceEvent
 ```
 
-Neither QX nor QC is a prerequisite for the other.
+There is no default next theory step. QX/QC formalization remains closed unless independently strong evidence or a genuinely non-definitional argument changes the authoritative research state.
+
+```mermaid
+flowchart LR
+    P1[Paper 1<br/>Object] --> P2[Paper 2<br/>Environment]
+    P2 --> P3[Paper 3<br/>Change]
+    P3 --> L6[Strict Technical L6<br/>FROZEN]
+    L6 --> QX[QX<br/>DORMANT / OPEN]
+    L6 --> QC[QC<br/>EVIDENCE-LIMITED]
+```
+
+QX and QC are independent tracks; neither implies or unlocks the other.
+
+## What is formally established
+
+The frozen formal line separates historical structure from state-indexed current qualification and then studies change without rewriting canonical history.
+
+- **Paper 1 — Object / identity:** canonical formation/history is distinct from current usability/qualification.
+- **Paper 2 — Environment:** transported historical dependency is distinct from source/target current responsibility; Adopt provenance is distinct from license currentness and context groundedness.
+- **Paper 3 — Change:** challenge/invalidation preserves canonical history while currentness may shrink; repair selection is separated from repair realization; inclusion-minimal repair has local private-cut witnesses; reachable revalidation provides a narrow execution bridge.
+- **Strict Technical Level 6:** an actual serialized selected runtime transition artifact is parsed by Lean, projected by Lean into restricted B0, and checked against the restricted B0 contract. This boundary is frozen.
+
+The strict bridge path is:
+
+```mermaid
+flowchart TD
+    A[selected runtime transition] --> B[raw serialized artifact]
+    B --> C[Lean parser]
+    C --> D[Lean-owned B0 projection]
+    D --> E[checker]
+    E --> F[restricted B0 contract]
+```
+
+For detailed theorem and trust boundaries, start with `ARTIFACT.md`, `PAPER_VERSIONS.md`, `STRICT_LEVEL6_TECHNICAL_AUDIT.md`, and `CROSS_REPO_RELATION.md`.
 
 ## Current research status
 
-```text
-Cross-domain strength:       FORMAL SIMILARITY
-Strict technical Level 6:    PASS / FROZEN
-Technical feature expansion: CLOSED by default
-QO standing/closure lineage: ARCHIVED NEGATIVE CONTROL
-QX:                         ACTIVE, PRE-FORMAL
-QC:                         ACTIVE, PRE-FORMAL
-QX Lean:                    NO
-QC Lean:                    NO
-```
+### QO — archived negative control
 
-See `RESEARCH_STATE.md` for the governance checkpoint and `RESEARCH_DEBT.md` for the evidence-gated debt ledger.
+The standing/closure operationalization is closed as a negative-control lineage. In particular, review is not standing, reviewability is not closure qualification, and use-sensitive admissibility must remain indexed. Renamed revivals of rejected generic standing/closure predicates are not authorized without new evidence.
 
-## Paper and technical map
+### QX — representation inadequacy
 
-| Stage | Research axis | Frozen/current scope | Status |
-| --- | --- | --- | --- |
-| **Paper 1** | Object / identity | ROOT + INFER; canonical history vs current usability | frozen artifact/manuscript line |
-| **Paper 2** | Environment | TRANSPORT, source-indexed current qualification, Adopt license/currentness/groundedness | frozen manuscript/formal line |
-| **Paper 3** | Change | challenge invalidation, repair selection/realization, private-cut witnesses, proof-carrying revalidation | frozen manuscript/formal line |
-| **Technical consolidation** | Cross-domain + runtime/formal correspondence | minimal calculi, explicit finite-domain interpretations, executable O0/B0, verified raw-artifact checker path | **Strict technical Level 6: PASS / FROZEN** |
-| **QO negative-control lineage** | standing / closure operationalization | use-indexed admissibility correction; review/standing and reviewability/closure shortcuts eliminated | archived after negative falsification |
-| **QX** | representation inadequacy | finite distinction spaces and evidence for suspecting insufficiency | active pre-formal research |
-| **QC** | provisional shared determination | heterogeneous finite systems, partial interpretation, bounded revocable shared reliance | active pre-formal scouting |
+Mother question: how can a finite system become entitled to suspect that its current distinction space is inadequate for a relied-upon responsibility task without already possessing the correct refinement?
 
-Paper-specific claims must be read from their own manifests and paper files, not inferred from moving `main`.
-
-## Current formal architecture
+Current state:
 
 ```text
-static entitlement / locality
-        |
-canonical interpretation + exact profile semantics
-        |
-reachable canonical history/evaluation state
-        |
-ROOT / INFER formation and qualification
-        |
-TRANSPORT formation and source-indexed qualification
-        |
-Adopt license records / BaseCurrent / activation / Grounded
-        |
-challenge invalidation
-        |
-grounded refresh
-        |
-finite repair hypergraph
-        |
-selection -- realization -- represented-cut necessity
-        |
-ordered proof-carrying revalidation trace
-
-CrossDomain
-  ImpactDischargeCore
-  EvaluationLayerCore
-  explicit source-audited finite-domain interpretations
-
-Bridge
-  raw selected runtime transition artifact
-  Lean-owned restricted B0 projection/checker
-  formal challenge witness for the same restricted observation pattern
+QX: DORMANT / OPEN / PRE-FORMAL
+E-WAKE: OPEN / NOT ACTIVELY SEARCHED
+T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
+Generic QX object: NOT EARNED
+QX Lean: NO
 ```
 
-The cross-domain calculi establish formal similarity only. The finite case models and interpretations are not formal verification of FAA practice, public law, metrology, software operations, or any other external domain.
+The only surviving positive structure is one mechanism-specific, narrowed Web-PKI residual concerning contemporaneous institution-accessible evidence that an already task-identified discriminator was not operationally available at the relied-upon boundary. It is not a generic `InsufficiencyCertificate`.
 
-## Strict Level-6 boundary
+### QC — provisional shared determination
 
-The final strict bridge is intentionally narrow.
+Mother question: how can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?
 
-The executable path is:
+Current state:
 
 ```text
-actual selected runtime transition
-  -> raw serialized before/after artifact
-  -> Lean parser
-  -> Lean-owned alpha_B0 projection
-  -> Lean checker
-  -> restricted B0 withdrawal contract
+QC: EVIDENCE-LIMITED / PRE-FORMAL
+source-backed positive residuals: 0
+Generic QC object: NOT EARNED
+ProvisionalSharedReliance: NOT EARNED
+QC Lean: NO
 ```
 
-The Python O0/B0 semantic extractor is not trusted on that successful checker path.
+QC uses an evidence pipeline that freezes material facts before ordinary decomposition and requires source-disciplined, four-dimensional RivalFit. A distributed object, local agreement, or absence of a global operator does not by itself establish shared determination or shared reliance.
 
-Remaining trust includes raw runtime construction, serialization correctness, artifact transport/I/O fidelity, and the representativeness of the selected executable fixture.
+See `RESEARCH_STATE.md` for exact current status and `NAVIGATION.md` for the research lineage.
 
-The approved relationship language is therefore:
+## Explicitly not claimed
+
+This repository does **not** claim:
 
 ```text
-end-to-end from an actual serialized selected runtime transition artifact
-to a verified restricted B0 contract
+Python runtime verified;
+all runtime transitions verified;
+RuntimeStep -> FormalStep* refinement;
+external-domain verification;
+mechanism similarity across domains;
+a universal theory of responsibility;
+a generic representation-insufficiency certificate;
+a generic provisional-shared-reliance object;
+QX or QC Lean formalization.
 ```
 
-It does **not** mean:
+Cross-domain results are formal similarity results under explicit interpretations, not verification of aviation, public law, metrology, medicine, PKI operations, routing operations, or other external institutions.
+
+A clean predicate, constructor, theorem statement, or additional example is not sufficient reason to reopen formalization.
+
+## Read and reproduce
+
+Three reading depths are supported:
 
 ```text
-Python runtime verified
-all runtime transitions verified
-RuntimeStep -> FormalStep*
-impact equivalence
-external-domain verification
-mechanism similarity
-universal responsibility invariant
+~30 seconds   README.md + status badges
+~5 minutes    RESEARCH_STATE.md + NAVIGATION.md + STRICT_LEVEL6_TECHNICAL_AUDIT.md
+~1 hour+      paper / QO / QX / QC / bridge audit lineage
 ```
 
-See `STRICT_LEVEL6_TECHNICAL_AUDIT.md`, `LEVEL6_TECHNICAL_AUDIT.md`, and `CROSS_REPO_RELATION.md`.
-
-## QO negative-control lineage
-
-The QO-1/QO-2 research is preserved because it eliminated several dangerous shortcuts.
-
-Forward representation discipline:
-
-```text
-Admissible_K(item,use)
-```
-
-replaces unindexed:
-
-```text
-A_K(e)
-```
-
-as the default cross-domain admissibility description.
-
-The following are now negative-control boundaries:
-
-```text
-review
--/-> standing
-
-different admissibility by use
--/-> standing
-
-reviewability
-!= closure qualification
-
-gate review / preserved challenge
--/-> closure defeater
-
-syntactic/procedural scope
--/-> adequate localization
-```
-
-The attempted generic objects were not earned:
-
-```text
-ChallengeStanding: NOT EARNED
-generic ReopenEntitled/closure-defeater relation: NOT EARNED
-QO-3 formalization: BLOCKED
-```
-
-`Q_OPEN_POST_FALSIFICATION_SYNTHESIS.md` is the owning checkpoint.
-
-This negative result closes the standing/closure operationalization. It does **not** settle the broader mother problem of representation inadequacy.
-
-## QX — Representation Inadequacy
-
-Mother question:
-
-> **How can a finite system become entitled to suspect that its current space of distinctions is inadequate for a relied-upon responsibility task without already knowing the correct refinement?**
-
-QX must not reuse `standing`, `closure`, or `reopen` as default primitives.
-
-Initial analytical separation:
-
-```text
-Anomaly
-!=
-SuspectInadequacy
-!=
-AuthorizedRevision
-```
-
-The first hard problem is not to prove that an already-specified abstraction loses information. It is to determine what evidence may count as an insufficiency certificate when the correct finer representation is not already supplied by an oracle.
-
-Formal gate: **CLOSED**.
-
-## QC — Provisional Shared Determination
-
-Mother question:
-
-> **How can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?**
-
-QC begins with the separations:
-
-```text
-local determination
-!= provisional shared determination
-!= shared reliance
-!= global truth
-!= final authority
-```
-
-and:
-
-```text
-agreement != semantic identity
-```
-
-The absence of a central arbiter is not itself a research contribution. QC must survive ordinary consensus, federated/heterogeneous quorum, authority, and semantic-translation explanations before proposing any new responsibility object.
-
-Formal gate: **CLOSED**.
-
-## Research progress metric
-
-The program no longer uses theorem count or constructor count as a progress proxy.
-
-```text
-progress
-=
-deleted freedom
-+ resolved research debt
-+ independently surviving structure
-```
-
-The controlling question after each cycle is:
-
-> **Which degrees of theoretical freedom were removed by the evidence?**
-
-## Formal freeze rule
-
-Formal work is frozen by default.
-
-A new Lean phase may open only when a research track has stable objects, a strong prior-art elimination record, a preregistered kill protocol, non-eliminable native structure in heterogeneous evidence, and a theorem/countermodel obligation that is not mere definition expansion.
-
-No current QX or QC Lean module exists or is authorized.
-
-## Repository map
-
-- `formal/` — frozen/current Lean research program, cross-domain calculi, bridge checker, and audit surfaces.
-- `paper/` — Paper 1–3 writing/audit material.
-- `ARTIFACT.md` — Paper 1 artifact lock.
-- `PAPER_VERSIONS.md` — paper-specific frozen identities.
-- `STRICT_LEVEL6_TECHNICAL_AUDIT.md` — strict technical Level-6 evidence and trust boundary.
-- `LEVEL6_TECHNICAL_AUDIT.md` — earlier restricted Level-6 checkpoint.
-- `Q_OPEN_POST_FALSIFICATION_SYNTHESIS.md` — QO negative-control research stop.
-- `RESEARCH_STATE.md` — current parallel-track governance state.
-- `RESEARCH_DEBT.md` — evidence-gated research debt ledger.
-- `PROGRAM_ROADMAP.md` — current execution architecture.
-
-## Build and audit
+Build the frozen Lean program:
 
 ```bash
 cd formal
@@ -297,5 +150,31 @@ lake env lean ResponsibilityTopology/BridgeAudit.lean
 lake env lean ResponsibilityTopology/Level6Audit.lean
 lake env lean ResponsibilityTopology/StrictLevel6Audit.lean
 ```
+
+Run the Python–Lean conformance suite from the repository root:
+
+```bash
+python -m pip install pytest
+python -m pytest -q \
+  test_v0122_kernel.py \
+  test_v0122_currentness.py \
+  test_v0122_conformance.py \
+  test_v0122_currentness_conformance.py
+```
+
+Useful entry points:
+
+- `RESEARCH_STATE.md` — authoritative current governance state.
+- `NAVIGATION.md` — stable logical index without moving historical provenance files.
+- `RESEARCH_DEBT.md` — evidence-gated research debt ledger.
+- `PROGRAM_ROADMAP.md` — frozen architecture and stop rules.
+- `ARTIFACT.md` / `PAPER_VERSIONS.md` — paper artifact identities.
+- `STRICT_LEVEL6_TECHNICAL_AUDIT.md` — current strict bridge boundary.
+- `CONTRIBUTING.md` — admissible maintenance, correction, absorption, and evidence-event contributions.
+- `CITATION.cff` — repository-level citation metadata.
+
+## Licensing
+
+Source code is licensed under Apache-2.0; research documentation is licensed separately under CC BY 4.0 as described in `LICENSE-DOCS`. Manuscripts under `paper/` are excluded from the documentation license unless an individual file states otherwise.
 
 A Lean theorem is evidence only for its explicit formal statement and premises. It is not evidence of external-domain truth, model adequacy, full runtime refinement, QX, or QC.
