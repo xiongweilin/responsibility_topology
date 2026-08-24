@@ -26,6 +26,17 @@ Formal expansion
   QC Lean .................. NO
 ```
 
+Freeze semantics are deliberately narrow:
+
+```text
+TheoryGate ................. CLOSED under current evidence
+QX empirical saturation .... NOT ESTABLISHED
+QC search saturation ....... NOT ESTABLISHED
+RealityHypothesis .......... UNRESOLVED
+```
+
+A freeze means the current record does not authorize further construction/formalization. It does **not** mean that reality has been exhaustively searched or that positive cases do not exist. `SEARCH_SCOPE_PROVENANCE.md` records the actual search scope behind the existing freezes and the known coverage limits.
+
 Current maintenance rule:
 
 ```text
@@ -106,7 +117,7 @@ QC Lean: NO
 
 QC uses an evidence pipeline that freezes material facts before ordinary decomposition and requires source-disciplined, four-dimensional RivalFit. A distributed object, local agreement, or absence of a global operator does not by itself establish shared determination or shared reliance.
 
-See `RESEARCH_STATE.md` for exact current status and `NAVIGATION.md` for the research lineage.
+See `RESEARCH_STATE.md` for exact current status, `SEARCH_SCOPE_PROVENANCE.md` for what was and was not actually searched, and `NAVIGATION.md` for the research lineage.
 
 ## Explicitly not claimed
 
@@ -121,7 +132,10 @@ mechanism similarity across domains;
 a universal theory of responsibility;
 a generic representation-insufficiency certificate;
 a generic provisional-shared-reliance object;
-QX or QC Lean formalization.
+QX or QC Lean formalization;
+QX/QC empirical search exhaustion;
+QX/QC search saturation;
+absence of positive cases in reality.
 ```
 
 Cross-domain results are formal similarity results under explicit interpretations, not verification of aviation, public law, metrology, medicine, PKI operations, routing operations, or other external institutions.
@@ -134,7 +148,7 @@ Three reading depths are supported:
 
 ```text
 ~30 seconds   README.md + status badges
-~5 minutes    RESEARCH_STATE.md + NAVIGATION.md + STRICT_LEVEL6_TECHNICAL_AUDIT.md
+~5 minutes    RESEARCH_STATE.md + SEARCH_SCOPE_PROVENANCE.md + NAVIGATION.md
 ~1 hour+      paper / QO / QX / QC / bridge audit lineage
 ```
 
@@ -165,6 +179,7 @@ python -m pytest -q \
 Useful entry points:
 
 - `RESEARCH_STATE.md` — authoritative current governance state.
+- `SEARCH_SCOPE_PROVENANCE.md` — audited search scope and the limits of freeze/search-closure claims.
 - `NAVIGATION.md` — stable logical index without moving historical provenance files.
 - `RESEARCH_DEBT.md` — evidence-gated research debt ledger.
 - `PROGRAM_ROADMAP.md` — frozen architecture and stop rules.
