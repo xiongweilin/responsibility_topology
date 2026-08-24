@@ -59,9 +59,84 @@ QX-D7 preregister domain falsification before promotion -> RESOLVED
 QX-D10 A/B certificate-provenance non-unification -> RESOLVED: NO MERGE
 ```
 
-Candidate A is frozen as one mechanism-specific `pre-refinement discriminator-unavailability witness` survivor. Candidate B is eliminated and may not receive a fourth rescue domain.
+Candidate B is eliminated and may not receive a fourth rescue domain.
 
-QX wake governance:
+### Candidate A survivor absorption — RESOLVED: NARROWED
+
+`QX_SURVIVOR_ABSORPTION.md` attacks the one frozen survivor against Nayebi 2026 selection theorems and Blackwell–Le Cam comparison/deficiency theory.
+
+Result by layer:
+
+```text
+aliasing / performance-loss layer:
+  ABSORBED
+
+representation-necessity / task-relative information-deficiency layer:
+  LARGELY ABSORBED
+
+pre-refinement institutional provenance layer:
+  NOT ABSORBED, BUT NARROWED
+```
+
+The earlier broad reading is no longer permitted. The Web-PKI case did **not** establish that the institution discovered an unknown missing distinction. Validation provenance/compliance was already the task-identified semantic distinction.
+
+The exact survivor is now:
+
+> **A contemporaneous institution-accessible record can justify that an already task-identified discriminator is not operationally available at the relied-upon decision boundary, even when no reliable per-object finer assignment or remediation architecture is yet available, provided that the task pressure and discriminator-unavailability fact are independently recorded and later refinement/remediation evidence is excluded from the justification.**
+
+For Web PKI, this means the missing object was a reliable per-certificate operational discriminator for validation provenance/compliance, not knowledge that validation provenance mattered at all.
+
+Permanent absorption firewalls:
+
+```text
+task-relevant aliasing -> QX novelty                    [rejected]
+performance loss -> representation-insufficiency object [rejected]
+representation necessity -> system-side self-certificate [rejected]
+task-relative information deficiency -> QX novelty      [rejected]
+unknown refinement -> refinement-independent theorem     [rejected]
+```
+
+The task/loss/test family may itself encode the distinction content. This must be checked before claiming representation-independent provenance.
+
+Freeze the audit-only access distinction:
+
+```text
+Access(E) in {
+  Analyst,
+  Institution,
+  DecisionSystem,
+  AutonomousAgent,
+  PostHocHistorian
+}
+```
+
+For Candidate A:
+
+```text
+SystemAccessible(E_pre)
+```
+
+means accessible to the responsible contemporaneous sociotechnical/institutional decision process. It does not mean an autonomous algorithm internally proves a metacognitive theorem.
+
+Three durable burdens remain:
+
+```text
+ProvenanceBurden;
+NonDefinitionalityBurden;
+AccessLevelBurden.
+```
+
+Especially:
+
+```text
+analyst can prove a distinction is necessary
+-/->
+responsible system was entitled, at that time, to indict its own decision boundary.
+```
+
+Candidate A remains one mechanism-specific survivor only. This audit does not create a new Candidate-A search cycle.
+
+### QX wake governance
 
 ```text
 QX: DORMANT / OPEN / PRE-FORMAL
@@ -90,6 +165,8 @@ T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
 Generic QX object: NOT EARNED
 QX Lean: NO
 ```
+
+The survivor-absorption audit does not change this verdict.
 
 A future T-WAKE would require a materially different provenance mechanism, not a variant of the absorbed impossibility arguments.
 
@@ -233,7 +310,11 @@ QC: EVIDENCE-LIMITED / PRE-FORMAL
 
 ### Open QC debt
 
-QC-D5/QC-D6/QC-D7 remain open only as **evidence acquisition debt**, not theory construction debt.
+The only immediate methodological question authorized by the current program is the one-shot `QC-RIVALFIT-FALSIFIABILITY` audit: determine whether ordinary rival admission/fit has explicit failure conditions or can absorb cases by merely adding labels such as governance, ownership, contract, or versioning.
+
+This audit does not authorize a new QC theory object.
+
+QC-D5/QC-D6/QC-D7 otherwise remain open only as **evidence acquisition debt**, not theory construction debt.
 
 A new source case should be admitted only when source viability is independently high enough to reconstruct the material-facts/reliance/currentness timeline. There is no obligation to add a case merely to maintain momentum.
 
