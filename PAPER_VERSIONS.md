@@ -1,6 +1,6 @@
 # Paper-Specific Version Manifest
 
-`main` is a moving research branch. Papers must cite frozen commit identities rather than “current main.”
+`main` is a moving research/maintenance branch. Papers must cite frozen commit identities rather than “current main.”
 
 This manifest separates three identities where relevant:
 
@@ -108,7 +108,7 @@ invalidated / restored current responsibility
 | conceptual v3 manuscript baseline | `44605d00d66921aebc6279fc11270d1e58d7867f` | PR #60 merge; four result families, two-figure architecture, affected/necessity hierarchy normalized |
 | artifact packaging baseline | `2b620cd7479aec3700f72c2faead0873a889cb63` | PR #61 merge; `PAPER3_ARTIFACT.md` and version packaging only; formal semantics unchanged |
 
-The formal identity remains `190e24e4...` unless an explicit formal trigger fires. Later paper-only commits do not change Paper 3 semantics.
+The formal identity remains `190e24e4...` unless an explicit future formal trigger is independently earned. Later paper-only or post-paper technical commits do not change Paper 3 semantics.
 
 `PAPER3_ARTIFACT.md` is the authoritative Paper 3 artifact/version document. It freezes the formal baseline separately from manuscript and packaging identities.
 
@@ -138,7 +138,7 @@ A paper-specific freeze means:
 1. claims are evaluated against the recorded semantic commit;
 2. later `main` changes are not silently imported;
 3. manuscript-only changes may narrow/reorganize claims without changing the semantic identity;
-4. if formal semantics later change for a new paper, the older paper keeps its original baseline;
+4. if formal semantics later change for a new independently authorized research objective, the older paper keeps its original baseline;
 5. artifact packaging must identify whether it reproduces the semantic commit exactly or adds post-baseline packaging files.
 
 ## Cross-paper inheritance
@@ -159,17 +159,26 @@ Because current main proves Paper 3, Paper 1's artifact also proves Paper 3.
 
 Each paper owns its theorem surface and non-claims at its own baseline.
 
-## Formal reopen policy
+## Current post-freeze policy
 
-The current default is:
+The older pre-Strict-L6 roadmap language (`define alpha_0`, then attempt a refinement theorem, then proceed to `Q_open`) is historical and no longer describes the current execution state.
+
+Current authoritative status is:
 
 ```text
-Paper 1 formal: frozen
-Paper 2 formal: frozen
-Paper 3 formal: frozen
-Cross-domain work: falsification/research only, not formal reopening
-Observation bridge: define alpha_0 before any refinement theorem
-Q_open: problem formulation before mechanization
+Paper 1 formal:                 FROZEN
+Paper 2 formal:                 FROZEN
+Paper 3 formal:                 FROZEN
+Strict Technical Level 6:       PASS / FROZEN
+Cross-domain strength:           FORMAL SIMILARITY
+Full RuntimeStep -> FormalStep*: NOT PROVED / NOT OWED TO STRICT-L6
+QO:                              ARCHIVED NEGATIVE CONTROL
+QX:                              DORMANT / OPEN / PRE-FORMAL
+QC:                              EVIDENCE-LIMITED / PRE-FORMAL
+QX Lean:                         NO
+QC Lean:                         NO
 ```
 
-A paper-only correction or cross-domain analogy never changes a recorded formal semantic baseline.
+The current strict bridge is the raw selected-transition path documented in `STRICT_LEVEL6_TECHNICAL_AUDIT.md`; it does not alter any paper semantic identity.
+
+Neither QX nor QC is the default “next paper” or next formal stage. Any future formal line must be independently earned under `RESEARCH_STATE.md`, `PROGRAM_ROADMAP.md`, and `CONTRIBUTING.md`.
