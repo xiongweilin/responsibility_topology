@@ -1,0 +1,54 @@
+name: Prior-art threat
+description: Submit stronger neighboring theory or evidence that may absorb/narrow an existing surviving claim.
+title: "[prior-art] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Absorption is a valid result. This form is for prior art that may narrow or eliminate an existing survivor; it is not a request to replace an absorbed claim with a new theory automatically.
+  - type: dropdown
+    id: target
+    attributes:
+      label: Target lineage
+      options:
+        - QX Candidate-A narrowed survivor
+        - QX wake governance
+        - QC evidence methodology / residual interpretation
+        - Frozen Paper 1–3 claim wording
+        - Strict-L6 bridge claim boundary
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Provide bibliographic details and stable URLs/DOIs where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: strongest_reading
+    attributes:
+      label: Strongest relevant reading
+      description: State the strongest result the prior work actually establishes, not just keyword overlap.
+    validations:
+      required: true
+  - type: textarea
+    id: absorption
+    attributes:
+      label: Exact absorption threat
+      description: Identify which current claim/residual becomes ordinary, redundant, weaker, or false.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: What remains unabsorbed, if anything?
+      description: Separate analyst-side results, system/institution access, timing, task provenance, and other relevant burdens.
+  - type: checkboxes
+    id: discipline
+    attributes:
+      label: Research discipline
+      options:
+        - label: I am submitting this as an absorption/correction threat, not as automatic authorization for a new formal object.
+          required: true
