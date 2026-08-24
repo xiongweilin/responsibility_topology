@@ -1,6 +1,6 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after Strict-L6 and Q_open negative falsification.**
+Status: **governance checkpoint after Strict-L6, QO negative falsification, and QX Candidate-A domain kill.**
 
 This file separates frozen technical evidence, archived negative-control research, and currently open evidence-gated research tracks. It is not a theorem manifest.
 
@@ -54,7 +54,7 @@ without new non-eliminable evidence.
 
 ## 3. Parallel research architecture
 
-The program now runs two independent evidence-gated tracks after the frozen Paper 1–3 and Strict-L6 baseline.
+The program runs two independent evidence-gated tracks after the frozen Paper 1–3 and Strict-L6 baseline.
 
 ```text
 Frozen Strict-L6
@@ -79,14 +79,27 @@ Mother question:
 
 > **How can a finite system become entitled to suspect that its current space of distinctions is inadequate for a relied-upon responsibility task without already knowing the correct refinement?**
 
-Current status:
+Current evidence status:
 
 ```text
-pre-formal research
-Lean gate: CLOSED
+QX-1 problem kernel: COMPLETE
+QX-2 prior-art kill: COMPLETE
+QX-3 candidate preregistration: COMPLETE
+QX-4A three-domain Candidate-A falsification: COMPLETE
+
+A-D1 Web PKI: SURVIVES WITH EXACT RESIDUAL
+A-D2 737 MAX: ELIMINATED
+A-D3 pulse oximetry: ELIMINATED
+
+Candidate A: MECHANISM-SPECIFIC CERTIFICATE CANDIDATE ONLY
+Candidate B: PREREGISTERED / NOT YET DOMAIN-TESTED
+generic QX object: NOT EARNED
+QX Lean: NO
 ```
 
-The first obligation is to distinguish evidence for representation insufficiency from ordinary anomaly, model error, partial observability, open-set uncertainty, or an externally supplied finer representation.
+The surviving Candidate-A residual is not elementary aliasing. It is the evidence-provenance problem of establishing, before the later correct refinement is known, that a task-relevant discriminator is unavailable at the relied-upon decision boundary rather than merely unused, noisy, miscalibrated, or hidden elsewhere.
+
+One source-backed survivor is insufficient for a generic theorem family or Lean opening.
 
 ### QC — Provisional Shared Determination
 
@@ -97,11 +110,15 @@ Mother question:
 Current status:
 
 ```text
-pre-formal scouting / failure-corpus work
-Lean gate: CLOSED
+QC-0 conceptual firewalls: ESTABLISHED
+QC-1 broad prior-art claims: ELIMINATED
+QC-2 failure corpus: SEEDED
+source-backed positive QC residuals: NONE
+generic QC object: NOT EARNED
+QC Lean: NO
 ```
 
-The track must not collapse into ordinary consensus, quorum agreement, centralized authority, or semantic identity.
+The next legal QC action remains source acquisition + native decomposition, not a generic relation or calculus.
 
 ## 4. Shared formal gate
 
@@ -116,6 +133,8 @@ pre-registered kill protocol;
 non-eliminable native structure in heterogeneous evidence;
 a theorem/countermodel obligation that is not definition expansion.
 ```
+
+Candidate A has **not** met this gate: it has one mechanism-specific survivor only, while QX-3 explicitly requires more before generic formal promotion.
 
 ## 5. Research progress metric
 
@@ -135,16 +154,34 @@ The controlling question after each research cycle is:
 
 > **Which degrees of theoretical freedom were removed by the evidence?**
 
+QX-4A permanently removed at least:
+
+```text
+post-refinement hindsight may not serve as E_pre provenance;
+policy omission may not be redescribed as representation absence;
+measurement aliasing may not be redescribed as representation inadequacy;
+one surviving domain may not be generalized into a theorem family.
+```
+
 ## 6. Current execution status
 
 ```text
 Strict-L6 technical track: FROZEN / CLOSED
 QO standing/closure operationalization: ARCHIVED NEGATIVE CONTROL
-QX: ACTIVE, PRE-FORMAL
-QC: ACTIVE, PRE-FORMAL
+QX: ACTIVE, PRE-FORMAL, Candidate A domain cycle complete
+Candidate A: SURVIVES WITH EXACT RESIDUAL / MECHANISM-SPECIFIC ONLY
+Candidate B: DEFERRED TO A LATER CYCLE
+QC: ACTIVE, PRE-FORMAL, SOURCE ACQUISITION NEXT
 Q_close as old linear successor to Q_open: RETIRED
 QX Lean: NO
 QC Lean: NO
+```
+
+Permitted next moves:
+
+```text
+QC-3A source-viability + native-decomposition acquisition;
+QX-4B only after the Candidate-A verdict remains frozen in a separate later cycle.
 ```
 
 This state remains in force until a later evidence-gated checkpoint explicitly supersedes it.
