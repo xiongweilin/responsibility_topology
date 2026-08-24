@@ -6,7 +6,7 @@ This roadmap is theory-level. It is not a constructor backlog.
 
 > **How can finite systems preserve responsibility-bearing structure while determining what may be relied on under changing representations, environments, and agents?**
 
-The completed formal lineage remains:
+Completed formal lineage:
 
 ```text
 Object -> Environment -> Change
@@ -14,13 +14,7 @@ Object -> Environment -> Change
 
 The post-Paper-3 technical consolidation is frozen at Strict technical Level 6.
 
-The current research architecture is **parallel**, not the old linear:
-
-```text
-Q_open -> Q_close
-```
-
-Instead:
+Current research architecture:
 
 ```text
 Frozen Strict-L6
@@ -34,13 +28,9 @@ Neither QX nor QC is a prerequisite for the other.
 
 ---
 
-## 1. Object — Paper 1
+## 1. Frozen formal lineage
 
-Question:
-
-> For one object, how are immutable historical formation and current qualification kept distinct?
-
-Formal lesson:
+### Object — Paper 1
 
 ```text
 historical warrant / parent identity
@@ -50,13 +40,7 @@ state-indexed Usable
 
 Status: frozen.
 
-## 2. Environment — Paper 2
-
-Question:
-
-> When responsibility crosses contexts, which facts stay with historical objects and which must be re-established in the relevant environment?
-
-Formal lessons include:
+### Environment — Paper 2
 
 ```text
 TRANSPORT historical formation
@@ -76,13 +60,7 @@ context Groundedness
 
 Status: frozen.
 
-## 3. Change — Paper 3
-
-Question:
-
-> When dependencies change, how can current responsibility be withdrawn and repaired without rewriting canonical history?
-
-Formal lessons include:
+### Change — Paper 3
 
 ```text
 history continuity
@@ -104,19 +82,7 @@ Status: frozen.
 
 ---
 
-# Technical consolidation — completed and frozen
-
-The technical consolidation tested cross-domain portability and a restricted runtime/formal bridge.
-
-Evidence stack:
-
-```text
-DomainParametricCore
-+
-ExplicitDomainInterpretations
-+
-EndToEndB0RuntimeCorrespondence
-```
+## 2. Technical consolidation — completed and frozen
 
 Strict bridge scope:
 
@@ -137,13 +103,9 @@ Technical feature expansion is closed by default.
 
 ---
 
-# Archived negative-control lineage — QO standing/closure
+## 3. Archived QO negative-control lineage
 
-The old Q_open operationalization asked whether evidence could acquire `ChallengeStanding` and defeat `UnqualifiedClosure`.
-
-That line is now an archived negative-control lineage after prior-art attack, hostile audit, preregistered falsification, and post-falsification synthesis.
-
-Permanent corrections:
+Permanent corrections include:
 
 ```text
 Admissible_K(item,use) is the forward admissibility baseline;
@@ -162,277 +124,219 @@ generic closure-defeater object: NOT EARNED
 QO-3 Lean: BLOCKED
 ```
 
-The lineage must not be rescued by renamed substitute predicates without new non-eliminable evidence.
-
-Its value is methodological: it permanently removes shortcuts from later research.
+Do not revive this lineage through renamed predicates without new non-eliminable evidence.
 
 ---
 
-# Parallel track QX — Representation Inadequacy
+# 4. QX — Representation Inadequacy
 
 Mother question:
 
 > **How can a finite system become entitled to suspect that its current space of distinctions is inadequate for a relied-upon responsibility task without already knowing the correct refinement?**
 
-QX intentionally returns to the broader representation problem that survived the rejection of the old standing/closure operationalization.
-
-## QX-1 — Problem kernel
-
-First analytical distinction:
+The executed research sequence is now:
 
 ```text
-Anomaly
-!=
-SuspectInadequacy
-!=
-AuthorizedRevision
+QX-1 ProblemKernel
+-> QX-2 PriorArtKill
+-> QX-3 CandidatePreregistration
+-> QX-4A Candidate-A DomainKill
+-> QX-4B Candidate-B DomainKill
+-> QX-5 Certificate-Provenance Non-Unification Audit
 ```
 
-Initial objects must remain conceptual and pre-formal:
+All six checkpoints above are complete.
+
+## 4.1 Candidate A — frozen mechanism-specific survivor
+
+Three-domain result:
 
 ```text
-finite system
-finite distinction space V
-relied-upon responsibility task T
-representation alpha_V
-responsibility-relevant difference relative to T
+Web PKI: SURVIVES WITH EXACT RESIDUAL
+737 MAX: ELIMINATED
+pulse oximetry: ELIMINATED
 ```
 
-Freeze the non-shortcuts:
+Preferred provisional name:
 
 ```text
-SuspectInadequacy
--/-> know the missing distinction
--/-> know a better representation
--/-> AuthorizedRevision
--/-> RegimeFailure
+pre-refinement discriminator-unavailability witness
 ```
 
-No `standing`, `closure`, or `reopen` vocabulary is permitted as a default QX primitive.
+The positive residual is not elementary aliasing. It is the provenance problem:
 
-## QX-2 — Prior-art kill
+> **Can pre-refinement evidence establish that a task-required discriminator is unavailable at the relied-upon decision boundary without already possessing the later correct refinement?**
 
-Strong neighbors must be attacked before any kernel promotion:
+Current evidence strength:
 
 ```text
-unawareness / partial-state-space refinement
-awareness of unawareness
-open-set / open-world recognition
-unknown-unknown discovery
-state aliasing / state aggregation
-POMDP representation learning
-CEGAR / abstraction refinement
-model misspecification / criticism
+one source-backed mechanism only
+MECHANISM-SPECIFIC
 ```
 
-Each candidate QX claim receives only:
+Permanent firewalls:
 
 ```text
-ELIMINATED
-DOMAIN-SPECIFIC
-SURVIVES WITH EXACT RESIDUAL
+post-refinement hindsight != earlier certificate provenance;
+ignored signal != absent distinction;
+measurement aliasing != representation inadequacy;
+policy input vocabulary != full task-relevant system representation;
+one survivor != generic theorem family.
 ```
 
-No vague “related but different” verdict is allowed.
+Candidate A is frozen. A new domain is not an automatic next step.
 
-If no exact residual remains, QX stops.
+## 4.2 Candidate B — eliminated
 
-## QX-3 — Kernel preregistration, only if earned
-
-Two candidate theorem surfaces may be preregistered only after QX-2 leaves a residual.
-
-### Candidate A — task-relevant aliasing
-
-Conceptual shape:
+Preliminary negative control:
 
 ```text
-alpha_V : X -> V
-alpha_V(x) = alpha_V(y)
+beta-decay / Pauli-neutrino history: ELIMINATED
 ```
 
-while an independently justified accountability specification requires incompatible responses.
-
-The hard obligation is **not** the elementary incompatibility proof. It is the provenance of the accountability witness without assuming the correct finer representation in advance.
-
-### Candidate B — finite candidate exhaustion
-
-Conceptual shape:
+Active preregistered three-domain cycle:
 
 ```text
-H_V = {h1,...,hn}
-forall h in H_V, Fail(h,C)
+incomplete-model diagnosis / hidden interaction faults: ELIMINATED
+TLS finite negotiation: ELIMINATED
+spacecraft fault-protection catalogue: ELIMINATED
 ```
 
-Safe conclusion only:
+Aggregate:
 
 ```text
-current represented candidate space exhausted relative to C
+Candidate B: ELIMINATED
 ```
 
-Do not infer:
+The domain cycle removes the following shortcuts:
 
 ```text
-reality has no explanation
-the missing distinction is known
-V should be expanded in a particular way
+finite enumeration != complete candidate universe;
+complete finite exhaustion != representation inadequacy;
+model-class rejection != QX certificate;
+institutional catalogue authority != world/task-space completeness;
+Unknown-as-response != Unknown-as-candidate.
 ```
 
-## QX-4 — Domain kill, only after preregistration
+No fourth Candidate-B domain is permitted as a rescue attempt.
 
-Domain work begins only after the candidate kernel and kill criteria are frozen.
+## 4.3 QX-5 — non-unification result
 
-The goal is to eliminate the candidate, not gather supportive examples.
-
-## QX Lean gate
-
-Closed until all are true:
+Candidate A and Candidate B were compared along:
 
 ```text
-stable objects;
-independent accountability witness or equivalent certificate source;
-nonempty prior-art residual;
-pre-registered domain kill protocol;
-non-definitional theorem/countermodel obligation.
+candidate/policy-class definition;
+boundary authority;
+independent task-constraint provenance;
+failure evidence;
+pre-refinement knowledge;
+remaining unknowns;
+licensed conclusion.
 ```
 
-Current status:
+Verdict:
 
 ```text
+A/B certificate-provenance unification: NO MERGE
+```
+
+The shared skeleton
+
+```text
+forall c in C_V, Fail_T(c)
+```
+
+is common elimination syntax, not a theory contribution.
+
+The evidential burdens remain different:
+
+```text
+A: establish pre-refinement discriminator unavailability without hindsight/refinement circularity;
+B: establish candidate-boundary authority/completeness and show exhaustion means more than native model/option failure.
+```
+
+No nontrivial common provenance object survived.
+
+## 4.4 QX state
+
+```text
+Generic QX object: NOT EARNED
+InsufficiencyCertificate: NOT EARNED
+A/B unified theorem family: NOT EARNED
 QX Lean: NO
+QX: EVIDENCE-DEFERRED / PRE-FORMAL
 ```
+
+There is no automatic QX construction step after QX-5.
+
+Future QX work requires genuinely new source-backed evidence or a stronger representation-independent argument for Candidate A's provenance structure. It must not reopen Candidate A/B simply because clean predicates can be written.
 
 ---
 
-# Parallel track QC — Provisional Shared Determination
+# 5. QC — Provisional Shared Determination
 
 Mother question:
 
 > **How can multiple finite systems become entitled to provisionally share a bounded determination across heterogeneous representations without a final arbiter?**
 
-QC is not defined as consensus without a central node.
-
-## QC-0 — Conceptual firewalls
-
-Freeze:
-
-```text
-local determination
-!= provisional shared determination
-!= shared reliance
-!= global truth
-!= final authority
-```
-
-and:
-
-```text
-agreement != semantic identity
-```
-
-The absence of a final arbiter is not itself a novelty axis.
-
-## QC-1 — Prior-art scouting
-
-Strong neighbors include:
-
-```text
-Byzantine consensus
-federated Byzantine agreement
-heterogeneous / personalized quorum systems
-judgment aggregation
-multi-agent epistemic agreement
-semantic interoperability / translation
-institutional delegation and authority models
-```
-
-The residual question, if any, must involve the joint pressure of:
-
-```text
-heterogeneous semantics
-+
-local qualification
-+
-distributed evidence/authority
-+
-revocable shared reliance
-```
-
-## QC-2 — Failure corpus before calculus
-
-Collect native failures before proposing a generic structure.
-
-Priority failures:
-
-```text
-shared representation but no responsibility owner;
-agreement with incompatible semantics;
-distributed evidence separated from centralized decision authority;
-delegation whose later revalidation becomes orphaned;
-joint approval mistaken for joint discharge;
-agents agree because a shared abstraction erased their real disagreement.
-```
-
-The last class may eventually connect to QX, but no QX->QC theorem or unified theory is assumed.
-
-## QC native-decomposition gate
-
-For every failure, first attempt elimination through ordinary models of:
-
-```text
-consensus state
-quorum/trust structure
-authority/delegation
-evidence ownership
-semantic translation
-revocation/revalidation
-```
-
-Only non-eliminable responsibility structure may enter a future QC problem kernel.
-
-## QC Lean gate
-
-Closed until there is:
-
-```text
-a real multi-agent failure not honestly expressible as ordinary consensus/authority/translation;
-a stable local-entitlement interface;
-a non-eliminable shared-reliance responsibility relation;
-a non-definitional theorem/countermodel obligation.
-```
-
 Current status:
 
 ```text
+QC-0 conceptual firewalls: ESTABLISHED
+QC-1 broad prior-art claims: ELIMINATED
+QC-2 failure corpus: SEEDED
+QC-3A source-viability calibration: COMPLETE
+source-backed positive residuals: 0
+Generic QC object: NOT EARNED
 QC Lean: NO
 ```
 
+Source-backed negative controls currently include:
+
+```text
+Stellar 2019 halt;
+Mars Climate Orbiter;
+Web PKI / Symantec distrust calibration.
+```
+
+The Web-PKI event demonstrates track independence at the evidence level:
+
+```text
+QX residual: narrowly nonempty
+QC residual: empty
+```
+
+This is not a theorem.
+
+QC remains a low-speed native source-acquisition track. Ordinary explanations in consensus, authority, semantic translation, versioning, revocation, service ownership, and revalidation must be exhausted before any generic shared-reliance object is proposed.
+
 ---
 
-# Cross-track discipline
+# 6. Cross-track discipline
 
-Do not assume a unification law such as:
+Do not assume:
 
 ```text
 RepresentationInsufficiency -> FalseSharedDetermination
 ```
 
-QX and QC may exchange empirical cases, but any common abstraction must be earned independently after both tracks survive their own elimination protocols.
+Do not infer a common theory from shared terminology, shared cases, or shared failure syntax.
+
+Any future cross-track abstraction must first survive independently inside each track.
 
 ---
 
-# Research progress metric
-
-The project measures research progress by:
+# 7. Research progress metric
 
 ```text
+progress
+=
 deleted freedom
-+
-resolved research debt
-+
-independently surviving structure
++ resolved research debt
++ independently surviving structure
 ```
 
-not by:
+not:
 
 ```text
 theorem count
@@ -441,15 +345,13 @@ number of domains
 number of repositories
 ```
 
-The controlling review question is:
+The controlling question is:
 
 > **What freedom did this research cycle remove?**
 
-See `RESEARCH_STATE.md` and `RESEARCH_DEBT.md`.
-
 ---
 
-# Global stop rule
+# 8. Global stop rule
 
 Do not open or expand a formal program merely because a clean predicate, structure, theorem, algorithm, or bridge can be written.
 
@@ -460,9 +362,9 @@ Current global state:
 ```text
 Paper 1-3 formal semantics: FROZEN
 Strict-L6 technical consolidation: FROZEN
-QO standing/closure operationalization: ARCHIVED NEGATIVE CONTROL
-QX: PRE-FORMAL
-QC: PRE-FORMAL
+QO standing/closure: ARCHIVED NEGATIVE CONTROL
+QX: EVIDENCE-DEFERRED / PRE-FORMAL
+QC: PRE-FORMAL / LOW-SPEED SOURCE ACQUISITION
 QX Lean: NO
 QC Lean: NO
 ```
