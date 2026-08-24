@@ -187,7 +187,7 @@ QC-D8 keep Lean closed until non-eliminable multi-agent responsibility structure
 
 ### QC methodology debt — RESOLVED AS PROTOCOL
 
-`QC_EVIDENCE_PROTOCOL.md` now freezes:
+`QC_EVIDENCE_PROTOCOL.md` freezes:
 
 ```text
 RawSources
@@ -199,17 +199,78 @@ RawSources
 -> SharedRelianceConsequence
 ```
 
-Material facts are frozen before ordinary decomposition. Rival sufficiency requires:
+Material facts are frozen before ordinary decomposition. Shared-determination admission requires source-backed evidence that multiple parties actually rely on one bounded common basis `d`.
+
+### QC RivalFit falsifiability debt — RESOLVED
+
+`QC_RIVALFIT_FALSIFIABILITY.md` resolves the concern that ordinary-theory vocabulary could become an unfalsifiable absorption sink.
+
+Freeze:
 
 ```text
-descriptive + causal + normative + counterfactual
+RivalAdmissible(M,D)
 ```
 
-fit rather than mere descriptive retelling.
+with mandatory conditions:
 
-Shared-determination admission requires source-backed evidence that multiple parties actually rely on one bounded common basis `d`; same object, label, local agreement, coordinated action, distributed trust data, or absence of one global operator are insufficient.
+```text
+R1 existing domain-native / recognized ordinary mechanism;
+R2 source-instantiable actor/object/authority/evidence/path;
+R3 actual institution preserved rather than redesigned;
+R4 no invented owner/contract/arbiter/notification/revocation authority;
+R5 four-dimensional frozen-fact preservation;
+R6 at least one case-specific source-checkable consequence.
+```
 
-For the relevant bounded `d`, `no final arbiter` means no single actor can unilaterally settle continued validity of shared `d`.
+Permanent firewall:
+
+```text
+counterfactual repair
+!=
+explanation.
+```
+
+Freeze fit as:
+
+```text
+Fit(M,D) = (F_desc, F_causal, F_norm, F_cf)
+```
+
+where each component is:
+
+```text
+FULL | PARTIAL | FAIL
+```
+
+Only:
+
+```text
+(FULL,FULL,FULL,FULL)
+```
+
+supports eliminative sufficiency for the frozen material facts.
+
+Therefore:
+
+```text
+QC-RIVALFIT-FALSIFIABILITY:
+FALSIFIABLE / DISCRIMINATIVE AT THE EVIDENCE-METHOD LEVEL
+```
+
+A future case may defeat an ordinary rival by making it inadmissible or by leaving any fit dimension `PARTIAL`/`FAIL`. Ordinary labels alone cannot close `Delta_D`.
+
+This result does **not** establish that any positive QC case exists or that the admissible rival set is globally complete.
+
+The rule audit itself supplied explicit failure conditions, so second-line synthetic fixtures were not required:
+
+```text
+SyntheticFixture: NOT USED
+SyntheticFixture notin QCEvidenceCorpus
+SyntheticPass -/-> PositiveQCResidual
+SyntheticFixture -/-> SourceBacked
+```
+
+QC research state does not change.
 
 ### Post-QC3A reprioritization — EXECUTED FOR FIRST SOURCE-RICH CONTROLS
 
@@ -292,7 +353,7 @@ actual multi-party reliance on d;
 a material local qualification/evidence/authority change;
 no single actor able to settle continued validity of d;
 the local change cannot be responsibility-irrelevant to other parties;
-strongest ordinary decomposition loses a frozen material fact;
+strongest admissible ordinary decomposition loses a frozen material fact;
 the loss is descriptive, causal, normative, or counterfactual rather than terminological.
 ```
 
@@ -310,21 +371,18 @@ QC: EVIDENCE-LIMITED / PRE-FORMAL
 
 ### Open QC debt
 
-The only immediate methodological question authorized by the current program is the one-shot `QC-RIVALFIT-FALSIFIABILITY` audit: determine whether ordinary rival admission/fit has explicit failure conditions or can absorb cases by merely adding labels such as governance, ownership, contract, or versioning.
-
-This audit does not authorize a new QC theory object.
-
-QC-D5/QC-D6/QC-D7 otherwise remain open only as **evidence acquisition debt**, not theory construction debt.
+QC-D5/QC-D6/QC-D7 remain open only as **evidence acquisition debt**, not theory construction debt.
 
 A new source case should be admitted only when source viability is independently high enough to reconstruct the material-facts/reliance/currentness timeline. There is no obligation to add a case merely to maintain momentum.
 
 Use `QC_SOURCE_QUEUE.md`; do not create a new QC theory ladder number.
 
-A future case is valuable only if it survives both current false-positive firewalls:
+A future case is valuable only if it survives both current false-positive firewalls and the strengthened RivalFit method:
 
 ```text
 shared source object != shared determination;
-shared determination != novel shared-responsibility relation.
+shared determination != novel shared-responsibility relation;
+ordinary retelling != full RivalFit.
 ```
 
 ## Cross-track debt
