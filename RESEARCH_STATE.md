@@ -1,6 +1,6 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after QX Candidate-A/B falsification, QX-5 non-unification, and dual-wake clarification.**
+Status: **governance checkpoint after QX Candidate-A/B falsification, QX-5 non-unification, dual-wake clarification, and QX-TW theoretical-wake elimination.**
 
 This file separates frozen technical evidence, archived negative-control research, and evidence-gated open questions. It is not a theorem manifest.
 
@@ -60,6 +60,7 @@ QX-3 candidate preregistration: COMPLETE
 QX-4A Candidate-A domain kill: COMPLETE
 QX-4B Candidate-B domain kill: COMPLETE
 QX-5 certificate-provenance non-unification audit: COMPLETE
+QX-TW theoretical-wake elimination audit: COMPLETE
 ```
 
 ### Candidate A
@@ -84,8 +85,6 @@ MECHANISM-SPECIFIC
 no generic certificate object
 ```
 
-The surviving question is whether pre-refinement evidence can establish that a task-required discriminator is unavailable at the relied-upon boundary without deriving that judgment from the later refinement, a hidden existing channel, or a measurement/calibration artifact.
-
 ### Candidate B
 
 ```text
@@ -97,16 +96,6 @@ aggregate Candidate B: ELIMINATED
 
 Candidate B is an archived negative result. No fourth rescue domain is authorized.
 
-Permanent constraints include:
-
-```text
-finite enumeration != complete candidate universe;
-complete finite exhaustion != representation inadequacy;
-model-class rejection != QX certificate;
-institutional catalogue authority != world/task-space completeness;
-Unknown-as-response != Unknown-as-candidate.
-```
-
 ### QX-5 result
 
 ```text
@@ -117,23 +106,16 @@ The shared skeleton `forall c in C_V, Fail_T(c)` is common elimination syntax, n
 
 ### QX wake governance
 
-QX is now:
-
 ```text
 QX: DORMANT / OPEN / PRE-FORMAL
+legal wake: E-WAKE OR T-WAKE
 ```
 
-It has no active construction ladder. The only legal wake condition is:
+`E-WAKE` requires a new mechanism-distinct, source-backed residual. It is not an active search mandate and does not reopen the completed Candidate-A cycle.
 
-```text
-E-WAKE OR T-WAKE
-```
+`T-WAKE` was audited against finite-state observability/diagnosability, active diagnosis, interaction-level observational equivalence, and model invalidation.
 
-`E-WAKE` requires a new mechanism-distinct, source-backed residual. It is not permission to add rescue cases to completed Candidate-A/B cycles.
-
-`T-WAKE` requires a representation-independent, non-definitional theoretical residual not already absorbed by ordinary observability, diagnosability, non-identifiability, task infeasibility, model-class rejection, or abstraction refinement.
-
-T-WAKE must preserve:
+The decisive four-level firewall remains:
 
 ```text
 cannot distinguish states
@@ -142,9 +124,29 @@ cannot distinguish states
 != cannot certify that the current representation is the source of failure
 ```
 
-An analyst-side theorem that assumes the correct hidden state space does not by itself wake QX. The audit must ask who possesses the ground distinction and whether the system has a certificate accessible before the missing refinement is known.
+The current theoretical candidate family was eliminated by the ground-distinction dilemma:
 
-See `QX_WAKE_GOVERNANCE.md`.
+```text
+analyst owns hidden distinction
+-> ordinary analyst-side non-observability / diagnosability / non-identifiability;
+
+system owns only model/data inconsistency evidence
+-> model invalidation / model criticism;
+
+system claims specifically that a task-required discriminator is absent
+-> requires the same independent provenance obligation already isolated in frozen Candidate A.
+```
+
+Therefore:
+
+```text
+T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
+E-WAKE: OPEN BUT NOT ACTIVELY SEARCHED
+```
+
+A future T-WAKE would require a materially different provenance mechanism, not a reformulation of the absorbed families.
+
+See `QX_WAKE_GOVERNANCE.md` and `QX_TW_THEORETICAL_WAKE_ELIMINATION.md`.
 
 Current promotion state:
 
@@ -224,7 +226,9 @@ one survivor -> generic theorem family;
 finite list -> justified candidate universe;
 complete finite exhaustion -> representation inadequacy;
 model-class rejection -> QX certificate;
-shared A/B elimination syntax -> one generic theory.
+shared A/B elimination syntax -> one generic theory;
+observational impossibility -> QX-specific theoretical wake;
+model invalidation without a replacement -> task-relative distinction-space certificate.
 ```
 
 ## 8. Current execution status
@@ -236,10 +240,11 @@ QX Candidate A: FROZEN / ONE MECHANISM-SPECIFIC SURVIVOR
 QX Candidate B: ELIMINATED / ARCHIVED NEGATIVE RESULT
 QX-5 A/B unification: REJECTED
 QX overall: DORMANT / OPEN / PRE-FORMAL
-QX wake: E-WAKE OR T-WAKE only
+QX E-WAKE: OPEN / NOT ACTIVELY SEARCHED
+QX T-WAKE: CLOSED FOR CURRENT CANDIDATE FAMILY
 QC: ACTIVE / PRE-FORMAL / EVIDENCE ACQUISITION
 QX Lean: NO
 QC Lean: NO
 ```
 
-Do not restart QX formalization merely because a compact impossibility statement can be written. T-WAKE itself is an elimination audit, not a theorem program.
+Do not restart QX formalization merely because a compact impossibility statement can be written. Current QX work stops here unless a genuinely new wake mechanism appears.
