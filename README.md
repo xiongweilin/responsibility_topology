@@ -7,7 +7,7 @@
 
 Lean 4 formal research on historical responsibility, current qualification, invalidation, repair, and evidence-gated higher-order questions.
 
-`RESEARCH_STATE.md` is the authoritative current research-governance state. This README is a public entry point, not the research log.
+`RESEARCH_STATE.md` is the authoritative current research-governance state. This README is a public entry point, not the research log. `SEARCH_SCOPE.md` records the bounded search provenance and stopping basis behind dormant/evidence-limited research states.
 
 ## Status
 
@@ -34,6 +34,16 @@ allowed changes
 ```
 
 There is no default next theory step. QX/QC formalization remains closed unless independently strong evidence or a genuinely non-definitional argument changes the authoritative research state.
+
+Freeze is **procedural/scope-relative, not ontological**:
+
+```text
+TheoryGate = CLOSED
+-/->
+RealityHypothesis = ABSENT
+```
+
+QO and QX do not claim search exhaustion or saturation. QC does not claim search saturation. For all three tracks, the reality-level hypothesis remains unresolved outside the explicitly audited scope. See `SEARCH_SCOPE.md` for the recorded mechanism/domain coverage, unrecorded search fields, blind spots, stop rules, and wake conditions.
 
 ```mermaid
 flowchart LR
@@ -74,6 +84,8 @@ For detailed theorem and trust boundaries, start with `ARTIFACT.md`, `PAPER_VERS
 
 The standing/closure operationalization is closed as a negative-control lineage. In particular, review is not standing, reviewability is not closure qualification, and use-sensitive admissibility must remain indexed. Renamed revivals of rejected generic standing/closure predicates are not authorized without new evidence.
 
+This is a protocol-relative negative result over an explicit prior-art/domain sample, not a claim that no institution can ever exhibit a mechanism-distinct residual.
+
 ### QX — representation inadequacy
 
 Mother question: how can a finite system become entitled to suspect that its current distinction space is inadequate for a relied-upon responsibility task without already possessing the correct refinement?
@@ -89,6 +101,8 @@ QX Lean: NO
 ```
 
 The only surviving positive structure is one mechanism-specific, narrowed Web-PKI residual concerning contemporaneous institution-accessible evidence that an already task-identified discriminator was not operationally available at the relied-upon boundary. It is not a generic `InsufficiencyCertificate`.
+
+QX dormancy follows candidate-specific stop rules. It is not evidence that the empirical or theoretical search space has been exhausted.
 
 ### QC — provisional shared determination
 
@@ -106,7 +120,9 @@ QC Lean: NO
 
 QC uses an evidence pipeline that freezes material facts before ordinary decomposition and requires source-disciplined, four-dimensional RivalFit. A distributed object, local agreement, or absence of a global operator does not by itself establish shared determination or shared reliance.
 
-See `RESEARCH_STATE.md` for exact current status and `NAVIGATION.md` for the research lineage.
+QC has not established search saturation. The absence of a current positive residual is limited to admitted/audited cases and does not distinguish rarity, search insufficiency, source insufficiency, formulation error, or correct absorption by ordinary explanations.
+
+See `RESEARCH_STATE.md` for exact current status, `SEARCH_SCOPE.md` for search provenance/stopping semantics, and `NAVIGATION.md` for the research lineage.
 
 ## Explicitly not claimed
 
@@ -121,7 +137,10 @@ mechanism similarity across domains;
 a universal theory of responsibility;
 a generic representation-insufficiency certificate;
 a generic provisional-shared-reliance object;
-QX or QC Lean formalization.
+QX or QC Lean formalization;
+exhaustive search of QO/QX/QC reality;
+QO/QX/QC search saturation unless explicitly recorded in SEARCH_SCOPE.md;
+absence of future source-backed positive residuals.
 ```
 
 Cross-domain results are formal similarity results under explicit interpretations, not verification of aviation, public law, metrology, medicine, PKI operations, routing operations, or other external institutions.
@@ -134,7 +153,7 @@ Three reading depths are supported:
 
 ```text
 ~30 seconds   README.md + status badges
-~5 minutes    RESEARCH_STATE.md + NAVIGATION.md + STRICT_LEVEL6_TECHNICAL_AUDIT.md
+~5 minutes    RESEARCH_STATE.md + SEARCH_SCOPE.md + NAVIGATION.md + STRICT_LEVEL6_TECHNICAL_AUDIT.md
 ~1 hour+      paper / QO / QX / QC / bridge audit lineage
 ```
 
@@ -165,7 +184,8 @@ python -m pytest -q \
 Useful entry points:
 
 - `RESEARCH_STATE.md` — authoritative current governance state.
-- `NAVIGATION.md` — stable logical index without moving historical provenance files.
+- `SEARCH_SCOPE.md` — bounded search provenance, blind spots, stop rules, and wake conditions.
+- `NAVIGATION.md` — logical index for the grouped research lineage.
 - `RESEARCH_DEBT.md` — evidence-gated research debt ledger.
 - `PROGRAM_ROADMAP.md` — frozen architecture and stop rules.
 - `ARTIFACT.md` / `PAPER_VERSIONS.md` — paper artifact identities.
