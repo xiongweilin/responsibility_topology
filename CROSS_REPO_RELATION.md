@@ -1,11 +1,13 @@
 # Cross-Repository Relation Contract
 
-This document defines the relationship between:
+This document defines the current relationship between:
 
-- `xiongweilin/responsibility_topology` — Lean-centered formal kernels, cross-domain calculi, theorem surfaces, and the verified observational checker;
-- `xiongweilin/portable-runtime` — framework documentation, record semantics, operational/runtime mechanisms, executable `O0` adapters, certificate extraction, revision/revalidation/reopen workflows, and engineering implementation.
+- `xiongweilin/responsibility_topology` — Lean-centered formal kernels, cross-domain calculi, explicit interpretation obligations, theorem surfaces, and the frozen restricted observational checker;
+- `xiongweilin/portable-runtime` — Framework V1.0 documentation, record semantics, operational/runtime mechanisms, revision/revalidation/reopen workflows, and engineering implementation.
 
-The relation is intentionally **not** implementation equality or verified runtime refinement.
+`RESEARCH_STATE.md` is authoritative for current research governance. `STRICT_LEVEL6_TECHNICAL_AUDIT.md` is authoritative for the frozen strict technical bridge boundary.
+
+The relation is intentionally **not** implementation equality and **not** verified whole-runtime refinement.
 
 ## 1. Vocabulary and ownership
 
@@ -63,7 +65,7 @@ portable-runtime
     -/-> verified implementation of responsibility_topology
 ```
 
-The current strongest bridge is a **restricted certified observational bridge** over a discovered common fragment.
+The current strongest bridge is a **restricted certified observational bridge** for one selected qualification-withdrawal fragment.
 
 ## 3. Known semantic non-identity
 
@@ -89,7 +91,7 @@ runtime direct typed dependency impact
 formal transitive historical challenge impact
 ```
 
-This coordinate remains `SEMANTIC-MISMATCH`; Level-6 did not normalize it away.
+This coordinate remains outside the certified B0 fragment. Strict-L6 did not normalize it away.
 
 Safe statement:
 
@@ -99,9 +101,9 @@ Unsafe statement:
 
 > The Lean challenge semantics verify the runtime revalidation engine.
 
-## 4. REF-2 executable O0
+## 4. REF-1 / REF-2 observation discovery
 
-The state-only candidate
+The state-only candidate:
 
 ```text
 alpha : RuntimeState -> FormalObservation
@@ -109,7 +111,7 @@ alpha : RuntimeState -> FormalObservation
 
 was rejected as underspecified. Observation time and finite witnesses can matter on both sides.
 
-The executable bridge instead uses finite observation bundles:
+The executable bridge therefore used finite observation bundles:
 
 ```text
 RuntimeObservationBundle0
@@ -145,15 +147,7 @@ SEMANTIC-MISMATCH
 NOT-REPRESENTED
 ```
 
-REF-2 implementation lives in `portable-runtime` PR #9, merge:
-
-```text
-8d04e01e7e16608da5ad9a17b7dc0f4d8f5c229f
-```
-
-Six REF-1 fixture families F1–F6 execute through both adapters.
-
-`discover_b0` discovered a non-empty compatible fragment from actual adapter output under explicit subject-ID mappings rather than receiving a preselected family allowlist:
+The discovered compatible fragment was:
 
 ```text
 B0 = {
@@ -162,100 +156,27 @@ B0 = {
 }
 ```
 
-The impact coordinate is excluded from `B0` because of the semantic mismatch above.
+Impact was excluded because of the semantic mismatch above.
 
-## 5. REF-3 restricted certificate fragment
+`OBSERVATION_BRIDGE_ALPHA0.md` remains the historical REF-1 interface specification and should not be read as the final strict bridge boundary.
 
-The first certified fragment is deliberately narrow:
+## 5. REF-3 restricted certificate checkpoint
+
+REF-3 established a deliberately narrow certificate/checker fragment around:
 
 ```text
 history-retaining qualification withdrawal
 ```
 
-### Runtime side
+The runtime extracted a `QualificationWithdrawalCertificate` from actual B0 observations, and the formal side checked that a presented certificate satisfied the restricted B0 contract.
 
-`portable-runtime` PR #10, merge:
+That checkpoint remains valid provenance, but its trust boundary still began **after** Python-side semantic extraction. It is therefore not the final strict bridge endpoint.
 
-```text
-fd85f3041db99cf4bc12b81b2219e732827ad622
-```
+Approved REF-3-style claim:
 
-adds a versioned `QualificationWithdrawalCertificate` extracted from actual `B0` observations. The frozen fixture records:
+> A concrete certificate presented to the Lean checker satisfies the restricted B0 contract when the checker accepts it.
 
-```text
-historical trace: present -> present
-qualification:     qualified -> withdrawn
-accepted discharge evidence after: false
-```
-
-Extraction refuses to infer qualification from impact/disposition data.
-
-### Formal side
-
-`responsibility_topology` PR #73, merge:
-
-```text
-26bca813ac1c1530a476dc82c24dafcc42ff982c
-```
-
-adds a Lean checker and proves:
-
-```text
-checker acceptance
-->
-restricted B0 qualification-withdrawal contract
-```
-
-and the checker-level consequence:
-
-```text
-checked qualification withdrawal
-+
-no accepted discharge/requalification evidence
-->
-certified current-use continuation rejected
-```
-
-The formal kernel separately proves that its existing challenge semantics can realize the same observational pattern at a challenged target:
-
-```text
-historical target referent retained
-+
-pre-state Usable
-+
-post-state not Usable
-```
-
-This is observational alignment, not a theorem equating runtime assertion status with formal `Usable`.
-
-## 6. Verified-checker trust boundary
-
-The trust boundary is intentionally asymmetric:
-
-```text
-raw runtime state / events
-        |
-        | ordinary Python execution
-        v
-alpha_r0 + certificate extraction / serialization
-        |
-        | UNVERIFIED EXTRACTION BOUNDARY
-        v
-QualificationWithdrawalCertificate
-        |
-        | VERIFIED CHECKER STARTS HERE
-        v
-Lean checkQualificationWithdrawal
-        |
-        v
-abstract B0 transition contract
-```
-
-Therefore the approved claim is:
-
-> A concrete certificate presented to the Lean checker satisfies the restricted `B0` contract when the checker accepts it.
-
-The following are not approved:
+Not approved:
 
 ```text
 Python runtime verified
@@ -264,9 +185,134 @@ portable-runtime refines responsibility_topology
 RuntimeStep -> FormalStep*
 ```
 
-A future stronger refinement claim would have to reduce or separately certify the extraction boundary.
+## 6. REF-4 strict raw-runtime bridge
 
-## 7. Cross-domain status
+Strict-L6 moves the checked boundary left from a Python-derived B0 certificate to selected raw runtime-native record fields.
+
+### Runtime artifact
+
+`portable-runtime` produces a versioned raw envelope:
+
+```text
+RawWithdrawalTransitionV1
+```
+
+whose before/after snapshots are direct serialized `Assertion` records from the selected executable transition path.
+
+The selected frozen transition is:
+
+```text
+same Assertion id
+supported, version 7
+    ->
+revalidation-required, version 8
+```
+
+The raw artifact deliberately contains no Python-derived B0 semantic coordinates such as:
+
+```text
+historicalTraceBefore
+historicalTraceAfter
+qualificationBefore
+qualificationAfter
+B0 key/value
+```
+
+### Lean-owned projection and checker
+
+`responsibility_topology` defines:
+
+```text
+rawQualificationB0
+alphaB0Lean
+checkProjectedB0Withdrawal
+checkRawWithdrawal
+```
+
+Lean reads selected runtime-native canonical fields:
+
+```text
+id
+record_type
+lifecycle_status
+epistemic_status
+version
+```
+
+and computes the restricted B0 historical-trace/current-qualification observation itself.
+
+The main strict theorem is:
+
+```text
+checkRawWithdrawal t = true
+->
+RawB0WithdrawalHolds t
+```
+
+where `RawB0WithdrawalHolds` applies the already-existing restricted B0 qualification-withdrawal contract to the Lean-defined projection.
+
+The cross-repository conformance workflow pins the exact `portable-runtime` merge commit, fetches the committed raw JSON fixture, and sends it directly through:
+
+```text
+Lean JSON parser
+-> alphaB0Lean
+-> checkRawWithdrawal
+-> restricted B0 contract
+```
+
+The Python O0/B0 semantic adapter and REF-3 certificate extractor are not part of this strict success path.
+
+## 7. Strict bridge trust boundary
+
+The current frozen boundary is:
+
+```text
+actual selected Python runtime transition
+        |
+        | runtime execution / Assertion construction / model_dump serialization
+        | TRUSTED / NOT LEAN-VERIFIED
+        v
+RawWithdrawalTransitionV1 JSON artifact
+        |
+        | pinned artifact transport / I/O
+        v
+Lean JSON parser
+        |
+        v
+Lean-owned selected-field projection alphaB0Lean
+        |
+        v
+verified checkRawWithdrawal
+        |
+        v
+restricted B0 withdrawal contract
+```
+
+The remaining trust boundary includes:
+
+- raw runtime execution and record construction;
+- serialization correctness;
+- artifact transport/I/O fidelity;
+- representativeness of the selected fixture/path;
+- all runtime fields and behaviors outside the selected B0 observation surface.
+
+The checker does not verify every field in the full raw `Assertion` snapshot.
+
+Therefore the strongest approved strict claim is:
+
+> The exact pinned serialized selected runtime transition artifact, when parsed and projected by Lean, satisfies the restricted B0 qualification-withdrawal contract when `checkRawWithdrawal` accepts it.
+
+It is **not**:
+
+```text
+Python runtime verified
+all Assertion transitions verified
+production admission path guarded by Lean
+RuntimeStep -> FormalStep*
+portable-runtime refines responsibility_topology
+```
+
+## 8. Cross-domain interpretation status
 
 Cross-domain falsification rejected the broad unqualified candidate:
 
@@ -276,7 +322,7 @@ persistent relation != current responsibility
 
 because historical trace persistence and operative-force persistence are separate questions.
 
-Two narrower candidates survived at **FORMAL SIMILARITY** only:
+Two narrower candidates survived only at **FORMAL SIMILARITY**:
 
 ```text
 CI-2
@@ -287,55 +333,87 @@ Conformance within a represented regime does not by itself settle
 higher-order adequacy / validity / fitness for the relied-upon purpose.
 ```
 
-`responsibility_topology` contains two minimal parametric calculi plus finite D1–D3 and D4 case-model encodings for these responsibility cuts. Those case models do not verify the external domains and establish neither mechanism similarity nor universality.
-
-## 8. Level-6 technical freeze
-
-The technical-consolidation track is frozen at:
+The strict interpretation layer separates:
 
 ```text
-responsibility_topology PR #74 integration merge
-59751542378a61dc33d372dd693ebda8627bab5a
-
-responsibility_topology PR #75 freeze merge
-b95fb82742739395e1e917aa3019199ca470ffad
-
-Lean #256:                    PASS
-Python-Lean Conformance #197: PASS
+M_D : source-audited finite domain semantics
+I_D : explicit interpretation obligations
+C_D : existing parametric core instance
 ```
+
+The interpretation obligations make preservation/reflection responsibilities explicit. They do not certify that the real external institution has been fully formalized, and they do not discharge the external adequacy premises required by the generic core.
+
+Four already-audited finite case models are interpreted through the common interfaces:
+
+```text
+Maintenance
+InstitutionalAuthority
+Measurement
+SoftwareRegression
+```
+
+These results establish reuse of a formal interpretation method across selected finite models. They establish neither mechanism similarity nor external-domain verification nor a universal responsibility invariant.
+
+## 9. Frozen Strict Technical Level 6
+
+The final strict technical evidence stack is:
+
+```text
+DomainParametricCore
++
+ExplicitDomainInterpretations
++
+EndToEndB0RuntimeCorrespondence
+```
+
+with the narrow meaning defined above.
 
 Frozen verdict:
 
 ```text
-TECHNICAL LEVEL 6: PASS
-scope: restricted observational-certificate bridge
+STRICT TECHNICAL LEVEL 6: PASS
 ```
 
-The evidence stack is:
+Scope:
 
 ```text
-CrossDomainCore
+explicit finite-domain interpretation method
 +
-DomainInstances
-+
-CertifiedRuntimeBridge
+actual serialized selected runtime transition artifact
+-> Lean-computed restricted B0 contract
 ```
 
-It does not mean:
+This strict result does **not** establish:
 
 ```text
-universal responsibility invariant proved
-external domains verified
-Python runtime verified
-full observational refinement proved
-Q_open solved
+universal responsibility invariant
+external-domain verification
+mechanism similarity across domains
+full Python runtime verification
+full observational/runtime refinement
+runtime/formal impact equivalence
+production-wide Lean admission gating
+QX solved or formalized
+QC solved or formalized
 ```
 
-Technical bridge expansion stops by default after this checkpoint.
+Strict-L6 is closed. Future work on any excluded axis is a new research objective, not unfinished Level-6 completion.
 
-## 9. Q_open handoff firewall
+## 10. Post-freeze research firewall
 
-Level-6 completion adds a required diagnostic separation for the next theory:
+Current research governance is:
+
+```text
+QO: ARCHIVED NEGATIVE CONTROL
+QX: DORMANT / OPEN / PRE-FORMAL
+QC: EVIDENCE-LIMITED / PRE-FORMAL
+QX Lean: NO
+QC Lean: NO
+```
+
+No default dependency is assumed between QX and QC.
+
+The frozen technical bridge also preserves an important diagnostic separation:
 
 ```text
 observation / acquisition failure
@@ -348,19 +426,19 @@ observation / acquisition failure
 In particular:
 
 ```text
-O0 SEMANTIC-MISMATCH
+O0 semantic mismatch
 -/-> regime inadequate
 
-Lean checker rejects certificate
+Lean checker rejection
 -/-> runtime regime inadequate
 
-runtime violates represented B0 expectation
+runtime violation of represented B0 expectation
 -/-> regime inadequate
 ```
 
-These can be evidence of different failure classes. Q_open must not treat bridge disagreement or implementation failure as an automatic entitlement to reopen the governing regime.
+A future QX or QC formal line must be independently earned under `RESEARCH_STATE.md` and `CONTRIBUTING.md`; bridge disagreement or an easy-to-write predicate is not sufficient evidence.
 
-## 10. Change rule
+## 11. Change rule
 
 Any future document claiming `refines`, `implements exactly`, `verified runtime`, `semantically equivalent`, `complete dependency extraction`, `universal responsibility invariant`, or an equivalent strong relation must cite a concrete theorem/artifact establishing that relation.
 
@@ -377,6 +455,7 @@ conceptual alignment
 partial observational boundary
 restricted certified observational bridge
 selected conformance / observational evidence
+formal similarity under explicit interpretation
 ```
 
 This contract changes neither repository's object semantics nor runtime behavior.
