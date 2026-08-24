@@ -1,9 +1,10 @@
 # Cross-Repository Relation Contract
 
-This document defines the current relationship between:
+This document defines the current relationship among:
 
+- `xiongweilin/ratio`, directory `责任拓扑/` — canonical Framework V1 definition owners, semantic governance, handoff rules, and the responsibility-record interface;
 - `xiongweilin/responsibility_topology` — Lean-centered formal kernels, cross-domain calculi, explicit interpretation obligations, theorem surfaces, and the frozen restricted observational checker;
-- `xiongweilin/portable-runtime` — Framework V1.0 documentation, record semantics, operational/runtime mechanisms, revision/revalidation/reopen workflows, and engineering implementation.
+- `xiongweilin/portable-runtime` — provider-neutral runtime mechanisms, product responsibility contracts, executable adapters, persistence/protocol surfaces, fixtures, runtime-native observation artifacts, and engineering implementation.
 
 `RESEARCH_STATE.md` is authoritative for current research governance. `STRICT_LEVEL6_TECHNICAL_AUDIT.md` is authoritative for the frozen strict technical bridge boundary.
 
@@ -28,14 +29,14 @@ The governing rule remains:
 call != redefinition
 ```
 
-Definition ownership, specialization ownership, evidence ownership, operational-fact ownership, and verification ownership remain distinct.
+Definition ownership, specialization ownership, evidence ownership, operational-fact ownership, implementation ownership, and verification ownership remain distinct.
 
 ## 2. Current relation
 
 ### Framework/theory -> Lean specialization
 
 ```text
-portable-runtime framework/theory documents
+ratio/责任拓扑 canonical definitions
     --reference / boundary-reference / specialize-->
 responsibility_topology formal objects and relations
 ```
@@ -45,13 +46,13 @@ A Lean theorem proves a property of its explicit formal specialization. It does 
 ### Framework/practice -> runtime
 
 ```text
-portable-runtime theory/practice
-    --operationalize / represent-->
+ratio/责任拓扑 theory / practice / record interface
+    --reference / operationalize / represent-->
 portable-runtime records, authorization, revision,
 revalidation, reopen, recovery, execution
 ```
 
-Executable behavior is evidence about the implementation. It does not redefine the theoretical concepts represented by its records.
+Executable behavior is evidence about the implementation. It does not redefine the canonical theoretical concepts represented by its records.
 
 ### Lean kernel <-> runtime implementation
 
