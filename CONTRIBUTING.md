@@ -2,7 +2,7 @@
 
 This repository is in a **post-construction, evidence-gated research freeze**. Contributions are welcome only when they preserve the frozen claim boundaries and enter through one of the permitted maintenance/evidence channels below.
 
-`RESEARCH_STATE.md` is authoritative for current research status. This file does not authorize a new theory object merely because an implementation or theorem would be easy to add.
+`RESEARCH_STATE.md` is authoritative for current research status. `SEARCH_SCOPE_PROVENANCE.md` is authoritative for search-scope provenance, stopping semantics, and what a negative search is entitled to mean. This file does not authorize a new theory object merely because an implementation or theorem would be easy to add.
 
 ## Allowed change classes
 
@@ -35,7 +35,8 @@ Examples:
 - incorrect theorem description;
 - incorrect source reconstruction or citation;
 - licensing/citation metadata errors;
-- a mismatch between README/navigation summaries and `RESEARCH_STATE.md`.
+- a mismatch between README/navigation summaries and `RESEARCH_STATE.md`;
+- an unsupported inference from research dormancy to search saturation, exhaustion, or ontological absence.
 
 Corrections should reduce ambiguity rather than introduce new terminology.
 
@@ -90,6 +91,7 @@ The following are outside the current contribution boundary unless an independen
 - renamed revivals of `ChallengeStanding`, `ClosureDefeater`, or equivalent rejected QO objects;
 - broad runtime-refinement expansion beyond the frozen Strict-L6 boundary;
 - claims that a clean theorem statement, constructor, or abstraction is itself evidence for a new research object;
+- claims that a dormant/evidence-limited track has searched reality sufficiently unless the required search-scope provenance is recorded;
 - feature requests whose primary purpose is to restart theory construction.
 
 ## Evidence discipline
@@ -105,6 +107,61 @@ analyst reconstruction/inference.
 ```
 
 Do not use a later refinement, remediation, or institutional redesign as evidence that an earlier actor already possessed the information required by a claim.
+
+### Search-scope provenance burden
+
+Any contribution that proposes to change a `SearchState`, claim search saturation/exhaustion, or justify suspension **because search was sufficiently complete** must update `SEARCH_SCOPE_PROVENANCE.md` with a `SearchScopeRecord`.
+
+At minimum record:
+
+```text
+SearchQuestion
+PositiveCriterion
+Negative/AbsorptionCriteria
+MechanismFamiliesSearched
+MechanismFamiliesKnownButNotSearched
+DomainOrCaseSet
+SourceClassesSearched
+SourceAvailabilityFailures
+SearchStrategiesUsed
+Independent/AdversarialStrategiesUsed
+Date/TimeBoundary
+Databases/SearchEngines/QueryFamilies
+BudgetOrStoppingBudget
+CasesScreened
+CasesAuditedDeeply
+CasesExcludedForInsufficientSources
+CasesAbsorbedByOrdinaryExplanation
+MarginalNoveltyPattern
+KnownBlindSpots
+StopRule
+WakeConditions
+```
+
+If a historical field was never recorded, write:
+
+```text
+UNRECORDED
+```
+
+Do not reconstruct exact queries, budgets, database coverage, or screening counts after the fact and present them as contemporaneous provenance.
+
+Permanent firewalls:
+
+```text
+TheoryGate = CLOSED
+-/-> RealityHypothesis = ABSENT
+
+SearchExhaustion
+!= SearchSaturation
+!= SearchSuspensionEntitlement
+```
+
+A governance/resource pause may be legitimate without saturation. In that case say so explicitly and leave:
+
+```text
+RealityHypothesis = UNRESOLVED
+```
 
 ### QX access-level burden
 
@@ -173,9 +230,10 @@ Use a pull request for repository changes. A PR should state:
 2. the authoritative files affected;
 3. whether any research-state sentence changes;
 4. what CI/reproducibility surface was exercised;
-5. for Absorption/EvidenceEvent changes, the source chain and exact claim boundary affected.
+5. for Absorption/EvidenceEvent changes, the source chain and exact claim boundary affected;
+6. if the PR changes a search-state/closure claim, the corresponding `SearchScopeRecord` and any fields that remain `UNRECORDED`.
 
-If the change does **not** alter research state, do not edit `RESEARCH_STATE.md` merely to record activity. Audit or debt files are sufficient when the governance state is unchanged.
+If the change does **not** alter research state, do not edit `RESEARCH_STATE.md` merely to record activity. Audit or provenance files are sufficient when the governance state is unchanged.
 
 ## Issue entry points
 
@@ -221,4 +279,8 @@ Ask:
 
 > Does this change preserve the distinction between an interesting question and a theory object that the evidence has actually earned?
 
-If the answer is unclear, prefer a documentation/correction issue over a speculative implementation.
+Also ask:
+
+> If this change relies on having searched “enough,” is the search range itself explicitly recorded and are its blind spots still visible?
+
+If either answer is unclear, prefer a documentation/correction issue over a speculative implementation.
