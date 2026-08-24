@@ -2,12 +2,13 @@
 
 This file is the stable logical index for the repository.
 
-`RESEARCH_STATE.md` is authoritative for current research governance. Historical research documents are grouped under `research/` to keep the repository root readable while preserving their Git history and exact filenames.
+`RESEARCH_STATE.md` is authoritative for current research governance. `SEARCH_SCOPE.md` is the authoritative companion for search provenance, blind spots, stopping bases, and wake conditions. Historical research documents are grouped under `research/` to keep the repository root readable while preserving their Git history and exact filenames.
 
 ## Read first
 
 - [`README.md`](README.md) — public entry point and compact status summary.
 - [`RESEARCH_STATE.md`](RESEARCH_STATE.md) — **authoritative current research-governance state**.
+- [`SEARCH_SCOPE.md`](SEARCH_SCOPE.md) — **bounded search provenance and search-suspension semantics**.
 - [`PROGRAM_ROADMAP.md`](PROGRAM_ROADMAP.md) — frozen architecture and global stop rules.
 - [`RESEARCH_DEBT.md`](RESEARCH_DEBT.md) — evidence-gated research debt ledger.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — admissible Maintenance, Correction, Absorption, and EvidenceEvent contributions.
@@ -22,6 +23,8 @@ This file is the stable logical index for the repository.
 - [`formal/`](formal/) — Lean formal program and audit modules.
 
 Paper-specific claims must be read from the relevant artifact/manuscript files, not inferred from moving `main`.
+
+The paper/formal freeze is an artifact/semantic-baseline freeze, not a claim that all external responsibility phenomena have been searched or exhausted.
 
 ## Strict-L6 and runtime/formal bridge
 
@@ -43,7 +46,7 @@ selected runtime transition
 -> restricted B0 contract
 ```
 
-Do not infer full runtime refinement from this bridge.
+Do not infer full runtime refinement or transition-class exhaustiveness from this bridge.
 
 ## Current research anchors
 
@@ -51,6 +54,8 @@ Do not infer full runtime refinement from this bridge.
 
 - [`Q_OPEN_POST_FALSIFICATION_SYNTHESIS.md`](Q_OPEN_POST_FALSIFICATION_SYNTHESIS.md) — owning archived checkpoint.
 - Historical QO lineage: [`research/qo/`](research/qo/).
+
+QO is a protocol-relative falsification stop over a recorded bounded sample. It does not claim search saturation or ontological absence.
 
 ### QX — Representation Inadequacy
 
@@ -61,7 +66,7 @@ Current state: **DORMANT / OPEN / PRE-FORMAL**.
 - [`QX_SURVIVOR_ABSORPTION.md`](QX_SURVIVOR_ABSORPTION.md) — narrowed one-mechanism survivor audit.
 - Historical QX construction/falsification lineage: [`research/qx/`](research/qx/).
 
-No generic `InsufficiencyCertificate` or QX Lean module is currently earned.
+No generic `InsufficiencyCertificate` or QX Lean module is currently earned. QX search exhaustion/saturation is not claimed; E-WAKE remains externally wakeable.
 
 ### QC — Provisional Shared Determination
 
@@ -71,14 +76,32 @@ Current state: **EVIDENCE-LIMITED / PRE-FORMAL** with zero source-backed positiv
 - [`QC_RIVALFIT_FALSIFIABILITY.md`](QC_RIVALFIT_FALSIFIABILITY.md) — source-disciplined/falsifiable RivalFit method audit.
 - Historical QC scouting, controls, and evidence queue: [`research/qc/`](research/qc/).
 
-No `ProvisionalSharedReliance`, generic QC object, or QC Lean module is currently earned.
+No `ProvisionalSharedReliance`, generic QC object, or QC Lean module is currently earned. QC search saturation is explicitly **not established**.
+
+## Search-scope governance
+
+Use [`SEARCH_SCOPE.md`](SEARCH_SCOPE.md) whenever a claim depends on negative search, search suspension, or a future wake event.
+
+Permanent distinctions:
+
+```text
+TheoryGate = CLOSED
+-/->
+RealityHypothesis = ABSENT
+
+SearchExhaustion
+!= SearchSaturation
+!= SearchSuspensionEntitlement
+```
+
+A search-sufficiency claim without a recorded `SearchScopeRecord` is inadmissible. Unrecorded historical query/database fields must remain marked `UNRECORDED`, not reconstructed after the fact.
 
 ## Cross-domain lineage
 
 - [`CROSS_DOMAIN_CANDIDATE_VERDICT.md`](CROSS_DOMAIN_CANDIDATE_VERDICT.md) — current top-level verdict anchor.
 - Historical protocol/matrix/D4 material: [`research/cross-domain/`](research/cross-domain/).
 
-Cross-domain strength remains **FORMAL SIMILARITY** under explicit interpretations, not mechanism similarity or external-domain verification.
+Cross-domain strength remains **FORMAL SIMILARITY** under explicit interpretations, not mechanism similarity or external-domain verification. The discovery sample is bounded and does not claim domain saturation.
 
 ## Legacy pre-Lean / hand-formal documents
 
@@ -104,4 +127,4 @@ The `research/` grouping is a repository-maintenance move only. It does not chan
 
 Future path moves require an independent maintenance reason; directory aesthetics alone are not sufficient.
 
-When any summary conflicts with `RESEARCH_STATE.md`, treat `RESEARCH_STATE.md` as authoritative and file a documentation-drift issue.
+When any summary conflicts with `RESEARCH_STATE.md`, treat `RESEARCH_STATE.md` as authoritative and file a documentation-drift issue. When a negative-search or stopping claim lacks a scope record, treat `SEARCH_SCOPE.md` as the governing correction surface.
