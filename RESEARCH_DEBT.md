@@ -121,7 +121,7 @@ QX-D9  determine whether Candidate A's Web-PKI provenance mechanism survives a m
        -> OPEN; do not satisfy by adding rescue cases inside the completed QX-4A cycle
 ```
 
-Candidate B is preregistered but intentionally deferred to a later research cycle.
+Candidate B is preregistered and may be tested only in a later, separate QX-4B cycle.
 
 High-risk shortcut permanently prohibited:
 
@@ -136,7 +136,7 @@ unless the responsibility-relevant difference and discriminator-unavailability e
 
 ## QC — Provisional Shared Determination debt
 
-Open obligations:
+Original obligations:
 
 ```text
 QC-D1  keep local determination, provisional shared determination, shared reliance, global truth, and final authority distinct;
@@ -149,23 +149,66 @@ QC-D7  determine which failure facts survive consensus + authority + semantic-tr
 QC-D8  keep Lean closed until a non-eliminable multi-agent responsibility structure survives.
 ```
 
-Current evidence state:
+### Resolved / sharpened through QC-3A
 
 ```text
 QC-D1/QC-D2: firewalls established
 QC-D3: broad prior-art kill executed
-QC-D4: corpus seeded with source-backed negative controls
-QC-D5/QC-D6/QC-D7: source acquisition still required
-QC-D8: Lean gate remains closed
+QC-D4: corpus seeded; QC-3A source-viability method successfully applied to a third source-backed negative control
+QC-D8: Lean gate remains closed, now strengthened by zero source-backed positive residuals
 ```
 
-Next permitted QC action:
+QC-3A Web-PKI calibration result:
 
 ```text
-QC-3A source viability + native decomposition acquisition
+source chain: SUFFICIENT FOR NATIVE DECOMPOSITION
+ordinary decomposition: SUFFICIENT AT CURRENT EVIDENCE LEVEL
+QC residual: NONE
+classification: REJECTED AS QC EVIDENCE
 ```
 
-not a generic positive object.
+The ordinary decomposition that currently preserves the material facts is:
+
+```text
+CA qualification
++ local root-program authority
++ credential lifecycle
++ staged distrust / revalidation
++ compatibility / interoperability
++ concrete actor-indexed ownership.
+```
+
+This case also resolves a cross-track methodological debt negatively:
+
+```text
+same source-backed event survives QX
+-/->
+same event supports QC.
+```
+
+### Open QC debt
+
+```text
+QC-D5  acquire source-backed F7-like cases where a shared abstraction appears to erase responsibility-relevant disagreement
+       -> OPEN / HIGH PRIORITY
+
+QC-D6  find source-backed cases where evidence ownership, authority, delegation, revalidation, and discharge cannot be preserved by ordinary role/contract models
+       -> OPEN
+
+QC-D7  compute native residuals after consensus + authority + semantic-translation + versioning/revocation/ownership decomposition
+       -> OPEN; all source-backed cases so far have empty QC residual
+```
+
+F2–F8 remain source targets. QC-3A does not upgrade them by analogy.
+
+Next permitted QC work:
+
+```text
+targeted source acquisition + native decomposition for F2–F8,
+with F7 still the highest-priority falsifier.
+```
+
+Do not define `ProvisionalSharedReliance` and do not open Lean.
 
 ## Cross-track debt
 
@@ -177,7 +220,14 @@ RepresentationInsufficiency -> FalseSharedDetermination
 
 as a theory law merely because QC may eventually contain examples of agreement caused by lossy shared abstraction.
 
-The Web-PKI event may be used independently as a QC calibration case, but Candidate A survival in QX supplies **zero automatic QC evidence**.
+The Web-PKI event now supplies a direct empirical negative control for that shortcut:
+
+```text
+QX Candidate A residual survives narrowly;
+QC native residual = empty.
+```
+
+This is research evidence for track independence, not a formal theorem.
 
 Any future QX/QC connection must first survive independently in each track.
 
