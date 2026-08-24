@@ -82,29 +82,161 @@ responsibility owner;
 local vs shared consequence.
 ```
 
-## 4. RivalFit
+## 4. Rival admission
+
+Before scoring fit, require:
+
+```text
+RivalAdmissible(M,D)
+```
+
+for rival mechanism `M` and source-backed case `D` after `MaterialFactsFreeze`.
+
+All six conditions are mandatory.
+
+### R1 — Native/recognized mechanism
+
+`M` must be an existing domain-native mechanism, recognized ordinary theory, protocol/institutional rule, or established explanatory model.
+
+A bespoke relation invented only to eliminate the QC residual is inadmissible.
+
+### R2 — Source-instantiable path
+
+`M` must instantiate to the actual source-backed:
+
+```text
+actors;
+objects;
+authority path;
+evidence path;
+notification/revocation/revalidation path;
+relevant state transition.
+```
+
+Generic applicability to some possible institution is insufficient.
+
+### R3 — Institution preservation
+
+`M` must explain the institution that actually existed.
+
+Freeze:
+
+```text
+counterfactual repair
+!=
+explanation.
+```
+
+Statements such as:
+
+```text
+they should have appointed a revalidation owner;
+they should have introduced a central arbiter;
+they should have required a notification contract;
+```
+
+are remediation proposals unless those roles/rules were already part of the source-backed institution.
+
+### R4 — No invented owner/authority/contract
+
+`M` may not introduce source-absent facts merely to close the residual, including:
+
+```text
+owner;
+contract;
+arbiter;
+notification duty;
+revocation power;
+shared-state update right;
+common acceptance rule.
+```
+
+### R5 — Four-dimensional material-fact preservation
+
+`M` must be evaluated against all frozen facts across:
+
+```text
+DESCRIPTIVE
+CAUSAL
+NORMATIVE
+COUNTERFACTUAL
+```
+
+A rival that explains only the observed state transition is not automatically sufficient.
+
+### R6 — Case-specific failure exposure
+
+`M` must imply at least one case-specific consequence that can be checked against the frozen source facts.
+
+A theory label with no source-checkable actor/path/state consequence is not eliminative.
+
+## 5. RivalFit
 
 Ordinary decomposition is not satisfied by descriptive relabeling.
 
-A rival counts as sufficient only if it preserves all frozen material facts across four dimensions:
+Score every admissible rival as:
 
 ```text
-DESCRIPTIVE:    identifies the relevant actors, objects, states, and transitions;
-CAUSAL:         explains why the observed change/failure/success occurred;
-NORMATIVE:      preserves who was authorized/obligated/permitted to act or rely;
-COUNTERFACTUAL: preserves what would happen if a material actor withdrew, changed qualification,
-                failed to notify, or exercised its revision authority.
+Fit(M,D) = (
+  F_desc,
+  F_causal,
+  F_norm,
+  F_cf
+)
 ```
 
-A statement such as
+with each component in:
+
+```text
+FULL
+PARTIAL
+FAIL
+```
+
+Interpretation:
+
+```text
+F_desc:
+  preserves the relevant actors, objects, states, and transitions;
+
+F_causal:
+  explains why the observed change/failure/success occurred;
+
+F_norm:
+  preserves source-backed authority, obligation, permission,
+  reliance entitlement, and revalidation responsibility;
+
+F_cf:
+  preserves the material counterfactuals frozen before decomposition,
+  including withdrawal, qualification change, notification failure,
+  and exercise of revision authority.
+```
+
+Only:
+
+```text
+(FULL, FULL, FULL, FULL)
+```
+
+may support the conclusion that `M` is sufficient for the frozen material facts of `D`.
+
+For example:
+
+```text
+(FULL, FULL, PARTIAL, PARTIAL)
+```
+
+is not sufficient merely because the rival explains the visible stale-state or failure transition.
+
+A statement such as:
 
 ```text
 this is a versioning problem
 ```
 
-is not eliminative unless versioning semantics preserve those four dimensions without material loss.
+is not eliminative unless a source-instantiated versioning mechanism is admissible under R1–R6 and receives `FULL` on all four fit dimensions.
 
-Strong ordinary rivals include, as appropriate:
+Strong ordinary rival families include, as appropriate:
 
 ```text
 consensus / replicated state;
@@ -120,7 +252,29 @@ workflow revalidation;
 local policy composition.
 ```
 
-## 5. SharedDeterminationExistenceGate
+These are rival families, not automatic explanations.
+
+## 6. RivalFit rejection semantics
+
+A rival cannot eliminate a case if either:
+
+```text
+not RivalAdmissible(M,D)
+```
+
+or:
+
+```text
+Fit(M,D) != (FULL,FULL,FULL,FULL).
+```
+
+Therefore the method explicitly permits a source-backed case in which every admissible ordinary rival leaves at least one `PARTIAL` or `FAIL` dimension.
+
+Such a case has not yet earned a QC theory object; it has only survived ordinary elimination and may proceed to the remaining gates.
+
+See `QC_RIVALFIT_FALSIFIABILITY.md`.
+
+## 7. SharedDeterminationExistenceGate
 
 The following are not enough to establish a QC shared determination:
 
@@ -159,7 +313,7 @@ A and B both rely on the same bounded determination d.
 
 If the source facts support only coincident local determinations, the gate fails.
 
-## 6. Final-arbiter test
+## 8. Final-arbiter test
 
 `No central authority` is not equivalent to `no final arbiter`.
 
@@ -170,23 +324,23 @@ i can unilaterally settle the continued validity of shared d
 for the relevant bounded reliance position.
 ```
 
-If yes, ordinary authority/revocation models have a strong prima facie explanation.
+If yes, ordinary authority/revocation models have a strong prima facie explanation, but they still must satisfy `RivalAdmissible` and receive full four-dimensional fit for eliminative sufficiency.
 
 Different actors may still have final authority over different local determinations. That is not itself QC.
 
-## 7. Residual computation
+## 9. Residual computation
 
 Only after RivalFit and SharedDeterminationExistenceGate compute conceptually:
 
 ```text
-Delta_D = material facts not preserved by the strongest ordinary decomposition.
+Delta_D = material facts not preserved by the strongest admissible ordinary decomposition.
 ```
 
 A nonempty `Delta_D` is not yet a generic QC relation. It is only a case-specific residual.
 
 A positive residual must identify the exact missing responsibility fact, not merely say that the ordinary model feels incomplete.
 
-## 8. SharedRelianceConsequence
+## 10. SharedRelianceConsequence
 
 A residual matters for QC only if it changes a bounded shared-reliance consequence.
 
@@ -202,7 +356,7 @@ and who can settle continued validity?
 
 Without a material consequence for continued shared reliance, the case does not promote QC.
 
-## 9. Corpus classes
+## 11. Corpus classes
 
 The evidence corpus may contain:
 
@@ -214,7 +368,17 @@ FailureCases
 
 A success case is not presumed positive evidence. It must pass the same gates and may simply show that ordinary institutional/protocol structure already solves the problem.
 
-## 10. Post-QC3A source priorities
+Synthetic method fixtures, if ever used, are not evidence cases:
+
+```text
+SyntheticFixture notin QCEvidenceCorpus;
+SyntheticPass -/-> PositiveQCResidual;
+SyntheticFixture -/-> SourceBacked.
+```
+
+The current RivalFit audit did not require a synthetic fixture.
+
+## 12. Post-QC3A source priorities
 
 This is a new reprioritization, not the original QC-2 ordering:
 
@@ -241,10 +405,11 @@ The preferred F5 shape is:
 authority/evidence is delegated into a shared determination
 + downstream parties rely
 + underlying authority/evidence later changes
-+ no ordinary delegation/revocation/service-ownership rule fully preserves the revalidation burden.
++ no admissible ordinary delegation/revocation/service-ownership rule
+  preserves all four fit dimensions.
 ```
 
-## 11. Evidence IDs, not theory ladder
+## 13. Evidence IDs, not theory ladder
 
 Future work uses evidence IDs such as:
 
@@ -257,7 +422,7 @@ QC-SUCCESS-<case>
 
 Do not create QC-4/QC-5 merely because more cases are collected.
 
-## 12. Formal gate
+## 14. Formal gate
 
 This protocol does not earn:
 
