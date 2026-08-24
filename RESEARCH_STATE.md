@@ -1,6 +1,6 @@
 # Responsibility Topology — Research State
 
-Status: **governance checkpoint after Strict-L6, QO negative falsification, QX Candidate-A domain kill, and QC-3A source-viability calibration.**
+Status: **governance checkpoint after Strict-L6, QO negative falsification, QX Candidate-A domain kill, QC-3A source-viability calibration, and Candidate-B first-domain falsification.**
 
 This file separates frozen technical evidence, archived negative-control research, and currently open evidence-gated research tracks. It is not a theorem manifest.
 
@@ -20,7 +20,7 @@ No new bridge fragment, runtime refinement, or cross-domain universal claim is a
 
 The QO-1/QO-2 sequence is retained as a **negative-control lineage**.
 
-It established durable methodological corrections:
+Durable corrections remain:
 
 ```text
 Admissible_K(item,use) replaces unindexed A_K(e) as the forward default;
@@ -31,7 +31,7 @@ gate review / preserved challenge != closure defeater;
 syntactic/procedural scope != adequate localization.
 ```
 
-The positive operationalization attempted in that lineage is rejected at the current evidence level:
+Current QO verdict remains:
 
 ```text
 generic ChallengeStanding: NOT EARNED
@@ -39,22 +39,9 @@ generic closure-defeater relation: NOT EARNED
 QO-3 formalization: BLOCKED
 ```
 
-This result does **not** close the broader representation-inadequacy mother problem. It closes the standing/closure operationalization unless new evidence satisfies the restart conditions recorded in `Q_OPEN_POST_FALSIFICATION_SYNTHESIS.md`.
-
-Do not rescue that lineage by introducing renamed substitutes such as:
-
-```text
-ChallengeStanding'
-ClosureDefeater'
-MetaAdmissibility
-ReopenEntitlement'
-```
-
-without new non-eliminable evidence.
+Do not rescue that lineage with renamed substitute predicates without new non-eliminable evidence.
 
 ## 3. Parallel research architecture
-
-The program runs two independent evidence-gated tracks after the frozen Paper 1–3 and Strict-L6 baseline.
 
 ```text
 Frozen Strict-L6
@@ -71,7 +58,7 @@ QX -> QC        [not assumed]
 QC -> QX        [not assumed]
 ```
 
-The tracks may reuse an empirical event only through an independent track-specific audit. A result in one track is not evidence in the other by default.
+The tracks may reuse an empirical event only through an independent track-specific audit.
 
 ### QX — Representation Inadequacy
 
@@ -86,20 +73,35 @@ QX-1 problem kernel: COMPLETE
 QX-2 prior-art kill: COMPLETE
 QX-3 candidate preregistration: COMPLETE
 QX-4A three-domain Candidate-A falsification: COMPLETE
+QX-4B first-domain stress audit: COMPLETE FOR B-D1 ONLY
 
-A-D1 Web PKI: SURVIVES WITH EXACT RESIDUAL
-A-D2 737 MAX: ELIMINATED
-A-D3 pulse oximetry: ELIMINATED
+Candidate A:
+  Web PKI: SURVIVES WITH EXACT RESIDUAL
+  737 MAX: ELIMINATED
+  pulse oximetry: ELIMINATED
+  aggregate: MECHANISM-SPECIFIC CERTIFICATE CANDIDATE ONLY
 
-Candidate A: MECHANISM-SPECIFIC CERTIFICATE CANDIDATE ONLY
-Candidate B: PREREGISTERED / NOT YET DOMAIN-TESTED
+Candidate B:
+  B-D1 beta-decay / Pauli-neutrino story: ELIMINATED AS CANDIDATE-B EVIDENCE
+  aggregate Candidate-B verdict: NOT EARNED
+
 generic QX object: NOT EARNED
 QX Lean: NO
 ```
 
-The surviving Candidate-A residual is not elementary aliasing. It is the evidence-provenance problem of establishing, before the later correct refinement is known, that a task-relevant discriminator is unavailable at the relied-upon decision boundary rather than merely unused, noisy, miscalibrated, or hidden elsewhere.
+The Candidate-A residual remains the pre-refinement evidence-provenance problem, not elementary aliasing.
 
-One source-backed survivor is insufficient for a generic theorem family or Lean opening.
+The first Candidate-B audit adds a separate negative rule:
+
+```text
+retrospective finite list of famous hypotheses
+-/->
+historically complete represented candidate set H_V.
+```
+
+In B-D1, no source-backed finite complete enumeration boundary was established; finitude would be decorative/retrospective, and the live scientific debate did not supply one uncontested fixed criterion family over a closed candidate set.
+
+Therefore Candidate B remains preregistered but unvalidated. A later B-domain must make finitude operationally real rather than narratively convenient.
 
 ### QC — Provisional Shared Determination
 
@@ -125,23 +127,9 @@ generic QC object: NOT EARNED
 QC Lean: NO
 ```
 
-The Web-PKI event is particularly informative because it survives narrowly in QX while producing no QC residual after an independent native decomposition. At current evidence level:
+The Web-PKI event survives narrowly in QX while producing no QC residual after an independent native decomposition. This is empirical support for track independence, not a theorem.
 
-```text
-CA qualification
-+
-local root-program authority
-+
-credential lifecycle
-+
-staged distrust / revalidation
-+
-compatibility / interoperability
-```
-
-preserve the material QC facts. Therefore the event is a QC negative control, not a bridge case.
-
-The next legal QC action remains targeted source acquisition for F2–F8, with F7 still the highest-priority falsifier. It is not a generic relation or calculus.
+The next legal QC action remains targeted source acquisition for F2–F8, with F7 still the highest-priority falsifier.
 
 ## 4. Shared formal gate
 
@@ -157,15 +145,16 @@ non-eliminable native structure in heterogeneous evidence;
 a theorem/countermodel obligation that is not definition expansion.
 ```
 
-Candidate A has **not** met this gate: it has one mechanism-specific survivor only, while QX-3 explicitly requires more before generic formal promotion.
+Candidate A has one mechanism-specific survivor only. Candidate B has no surviving domain yet. QC has zero source-backed positive residuals.
 
-QC has **not** met this gate: QC-3A added another source-backed negative control and zero positive residuals.
+Therefore:
+
+```text
+QX Lean: NO
+QC Lean: NO
+```
 
 ## 5. Research progress metric
-
-Progress is not measured by theorem count, constructor count, or number of domains surveyed.
-
-Use:
 
 ```text
 progress
@@ -175,27 +164,15 @@ deleted freedom
 + independently surviving structure.
 ```
 
-The controlling question after each research cycle is:
-
-> **Which degrees of theoretical freedom were removed by the evidence?**
-
-QX-4A permanently removed at least:
+Important freedoms deleted so far include:
 
 ```text
 post-refinement hindsight may not serve as E_pre provenance;
 policy omission may not be redescribed as representation absence;
 measurement aliasing may not be redescribed as representation inadequacy;
-one surviving domain may not be generalized into a theorem family.
-```
-
-QC-3A permanently removes at least:
-
-```text
-same event survives QX -> event supports QC;
-no global arbiter -> QC;
-different local trust policies -> provisional shared determination;
-shared credential object -> shared trust determination;
-revocable multi-party trust -> irreducible shared revalidation responsibility.
+one Candidate-A survivor may not be generalized into a theorem family;
+retrospective hypothesis menus may not be redescribed as finite exhaustive H_V;
+no global arbiter / heterogeneous trust / shared credential object may not be promoted directly into QC.
 ```
 
 ## 6. Current execution status
@@ -203,22 +180,20 @@ revocable multi-party trust -> irreducible shared revalidation responsibility.
 ```text
 Strict-L6 technical track: FROZEN / CLOSED
 QO standing/closure operationalization: ARCHIVED NEGATIVE CONTROL
-QX: ACTIVE, PRE-FORMAL, Candidate A domain cycle complete
+QX: ACTIVE / PRE-FORMAL
 Candidate A: SURVIVES WITH EXACT RESIDUAL / MECHANISM-SPECIFIC ONLY
-Candidate B: ELIGIBLE FOR A LATER, SEPARATE QX-4B CYCLE
-QC: ACTIVE, PRE-FORMAL, QC-3A calibration complete; targeted source acquisition remains
+Candidate B: FIRST DOMAIN ELIMINATED; AGGREGATE VERDICT NOT EARNED
+QC: ACTIVE / PRE-FORMAL / TARGETED SOURCE ACQUISITION REMAINS
 Q_close as old linear successor to Q_open: RETIRED
 QX Lean: NO
 QC Lean: NO
 ```
 
-Permitted next moves are independent:
+Permitted next moves remain evidence-gated:
 
 ```text
 QC: targeted source acquisition + native decomposition for F2–F8;
-QX: QX-4B only as a new separate research cycle under the frozen Candidate-B protocol.
+QX Candidate B: select a later domain only if finitude has a plausible operational enumeration boundary.
 ```
 
-Do not infer a QX/QC bridge from the shared Web-PKI event.
-
-This state remains in force until a later evidence-gated checkpoint explicitly supersedes it.
+Do not add another historical story merely to rescue Candidate B, and do not infer a QX/QC bridge.
