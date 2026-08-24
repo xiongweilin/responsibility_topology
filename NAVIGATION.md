@@ -84,6 +84,9 @@ This is theoretical inquiry under the existing closed promotion gate; it is **no
 - [`META_ARCHITECTURE_P1_CORPUS.md`](META_ARCHITECTURE_P1_CORPUS.md) — freezes endogenous and native-language exogenous corpora; explicitly not an out-of-sample or saturation claim.
 - [`META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md`](META_ARCHITECTURE_P2_NARROWING_PROVENANCE.md) — reconstructs `ELIMINATED / ABSORBED / BRACKETED / UNOWNED / UNKNOWN` narrowing behavior across Q_open/QX and Q_close/QC lineage.
 - [`META_ARCHITECTURE_P3_P7_PROTOCOL.md`](META_ARCHITECTURE_P3_P7_PROTOCOL.md) — freezes A0/A1/A2/null competition, blind-test packet, hostile partial order, residual promotion gate, and meta-stop rules.
+- [`META_ARCHITECTURE_HELDOUT_UNIVERSE.md`](META_ARCHITECTURE_HELDOUT_UNIVERSE.md) — freezes an externally indexed RAIB source universe, deterministic #125-seeded primary/reserve selection, and reserve activation rules before case analysis.
+- [`META_ARCHITECTURE_EVALUATOR_PROTOCOL.md`](META_ARCHITECTURE_EVALUATOR_PROTOCOL.md) — freezes evaluator provenance, three-layer blindness, pre-literature predictions, neutral `A_D` construction, and P5 failure modes.
+- [`META_ARCHITECTURE_EXPERIMENT_BUDGET.md`](META_ARCHITECTURE_EXPERIMENT_BUDGET.md) — freezes the `3 evaluator lineages + 2 held-out cases + 1 adjudication` maximum budget and post-experiment wake rule.
 
 Current meta-audit checkpoint:
 
@@ -92,8 +95,9 @@ P0: AUDIT-WORTHY
 P1: CORPORA FROZEN
 P2: PROVENANCE AUDITED
 P3: CANDIDATES FROZEN; NO WINNER
-P4: BLIND PACKET READY; INDEPENDENT OUTPUTS NOT COLLECTED
-P5: BLOCKED ON P4 + GENUINELY HELD-OUT CASE
+P4: PROTOCOL + HOLDOUT SELECTION FROZEN; EVALUATOR OUTPUTS NOT COLLECTED
+P5: BLOCKED ON FROZEN P4 OUTPUTS; HELD-OUT CASES ALREADY SELECTED
+R-U1/R-U2 ACTIVE DEVELOPMENT: PAUSED UNTIL P5
 ```
 
 Do not infer a third Q-track, a small global partition, architecture completeness, or a formalization entitlement from this meta-audit.
