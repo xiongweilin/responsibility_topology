@@ -29,13 +29,12 @@ jobs:
           test_v0122_currentness.py
           test_v0122_conformance.py
           test_v0122_currentness_conformance.py
-      - name: Fetch pinned portable-runtime raw withdrawal artifact
+      - name: Verify frozen Strict-L6 runtime artifact
         run: >-
-          curl -fsSL
-          https://raw.githubusercontent.com/xiongweilin/portable-runtime/21fa75e0364b9a67d3596295e005e8052504e694/tests/fixtures/o0/raw_withdrawal_transition_v1.json
-          -o /tmp/raw_withdrawal_transition_v1.json
-      - name: Lean-check raw runtime transition artifact
+          echo "61705ce6d1f2005571ba174232df3aae6d3a64b3b872029dd2156c664732b465  frozen/strict-l6/raw_withdrawal_transition_v1.json"
+          | sha256sum -c -
+      - name: Lean-check frozen raw runtime transition artifact
         working-directory: formal
         run: >-
           lake env lean --run ResponsibilityTopology/Bridge/RawWithdrawalCli.lean
-          /tmp/raw_withdrawal_transition_v1.json
+          ../frozen/strict-l6/raw_withdrawal_transition_v1.json
