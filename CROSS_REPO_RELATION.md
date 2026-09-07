@@ -1,18 +1,18 @@
 # Cross-Repository Relation Contract
 
-This document defines the current relationship among:
+This document defines the frozen relationship among:
 
-- `xiongweilin/ratio`, directory `责任拓扑/` — canonical Framework V1 definition owners, semantic governance, handoff rules, and the responsibility-record interface;
-- `xiongweilin/responsibility_topology` — Lean-centered formal kernels, cross-domain calculi, explicit interpretation obligations, theorem surfaces, and the frozen restricted observational checker;
-- `xiongweilin/portable-runtime` — provider-neutral runtime mechanisms, product responsibility contracts, executable adapters, persistence/protocol surfaces, fixtures, runtime-native observation artifacts, and engineering implementation.
+- `xiongweilin/ratio`, directory `元模型/` — current upstream conceptual / Framework definition owners, semantic governance, responsibility cuts, handoff rules and theory-practice synthesis;
+- `xiongweilin/responsibility_topology` — frozen Lean-centered formal kernels, cross-domain calculi, explicit interpretation obligations, theorem surfaces, research-governance lineage and the restricted observational checker;
+- `xiongweilin/agent-kernel`, directory `contracts/` — current canonical product semantics, executable runtime mechanisms, persistence/protocol surfaces, fixtures and engineering implementation. The Python distribution / namespace retains the compatibility name `portable-runtime` / `portable_runtime`.
 
-`RESEARCH_STATE.md` is authoritative for current research governance. `STRICT_LEVEL6_TECHNICAL_AUDIT.md` is authoritative for the frozen strict technical bridge boundary.
+`ARCHIVE_STATUS.md` is authoritative for the post-freeze ownership boundary. `RESEARCH_STATE.md` is authoritative for frozen research governance. `STRICT_LEVEL6_TECHNICAL_AUDIT.md` is authoritative for the frozen strict technical bridge boundary.
 
 The relation is intentionally **not** implementation equality and **not** verified whole-runtime refinement.
 
 ## 1. Vocabulary and ownership
 
-The contract reuses the Framework V1.0 call relations:
+The contract reuses the Framework call relations:
 
 | Relation | Meaning here |
 | --- | --- |
@@ -29,30 +29,32 @@ The governing rule remains:
 call != redefinition
 ```
 
-Definition ownership, specialization ownership, evidence ownership, operational-fact ownership, implementation ownership, and verification ownership remain distinct.
+Definition ownership, specialization ownership, evidence ownership, operational-fact ownership, implementation ownership, product-contract ownership and verification ownership remain distinct.
 
 ## 2. Current relation
 
 ### Framework/theory -> Lean specialization
 
 ```text
-ratio/责任拓扑 canonical definitions
+ratio/元模型 canonical definitions
     --reference / boundary-reference / specialize-->
 responsibility_topology formal objects and relations
 ```
 
-A Lean theorem proves a property of its explicit formal specialization. It does not automatically prove the broader framework concept for every domain.
+A Lean theorem proves a property of its explicit formal specialization. It does not automatically prove the broader Framework concept for every domain.
 
-### Framework/practice -> runtime
+### Framework/practice -> product contracts/runtime
 
 ```text
-ratio/责任拓扑 theory / practice / record interface
-    --reference / operationalize / represent-->
-portable-runtime records, authorization, revision,
-revalidation, reopen, recovery, execution
+ratio/元模型 theory / practice / responsibility cuts
+    --reference / deliberate product adoption / operationalize / represent-->
+agent-kernel/contracts
+    -> portable-runtime compatibility implementation
+    -> records, authorization, revision,
+       revalidation, reopen, recovery, execution
 ```
 
-Executable behavior is evidence about the implementation. It does not redefine the canonical theoretical concepts represented by its records.
+Product adoption is explicit and versioned. Executable behavior is evidence about the implementation. Neither product adoption nor implementation behavior redefines the upstream conceptual owner.
 
 ### Lean kernel <-> runtime implementation
 
@@ -60,13 +62,15 @@ No full refinement relation is established:
 
 ```text
 responsibility_topology
-    -/-> verified refinement of portable-runtime
+    -/-> verified refinement of agent-kernel / portable-runtime
 
-portable-runtime
+agent-kernel / portable-runtime
     -/-> verified implementation of responsibility_topology
 ```
 
-The current strongest bridge is a **restricted certified observational bridge** for one selected qualification-withdrawal fragment.
+The strongest frozen bridge is a **restricted certified observational bridge** for one selected qualification-withdrawal fragment.
+
+`responsibility_topology` is not a normative runtime dependency. Current legal product state, transition, authority, replay identity, qualification and wire meaning are owned by `agent-kernel/contracts/`.
 
 ## 3. Known semantic non-identity
 
@@ -182,7 +186,7 @@ Not approved:
 ```text
 Python runtime verified
 certificate extraction verified by Lean
-portable-runtime refines responsibility_topology
+agent-kernel / portable-runtime refines responsibility_topology
 RuntimeStep -> FormalStep*
 ```
 
@@ -192,7 +196,7 @@ Strict-L6 moves the checked boundary left from a Python-derived B0 certificate t
 
 ### Runtime artifact
 
-`portable-runtime` produces a versioned raw envelope:
+The historical runtime source commit `xiongweilin/agent-kernel@21fa75e0364b9a67d3596295e005e8052504e694` added a versioned raw envelope:
 
 ```text
 RawWithdrawalTransitionV1
@@ -218,6 +222,14 @@ qualificationBefore
 qualificationAfter
 B0 key/value
 ```
+
+The exact artifact used by Strict-L6 is now vendored at:
+
+```text
+frozen/strict-l6/raw_withdrawal_transition_v1.json
+```
+
+Its origin commit, original path and SHA-256 are recorded in `frozen/strict-l6/PROVENANCE.md`. The archival conformance workflow verifies the frozen local hash before invoking Lean; it no longer depends on another repository retaining a historical name, branch or file path.
 
 ### Lean-owned projection and checker
 
@@ -252,10 +264,12 @@ RawB0WithdrawalHolds t
 
 where `RawB0WithdrawalHolds` applies the already-existing restricted B0 qualification-withdrawal contract to the Lean-defined projection.
 
-The cross-repository conformance workflow pins the exact `portable-runtime` merge commit, fetches the committed raw JSON fixture, and sends it directly through:
+The frozen success path is:
 
 ```text
-Lean JSON parser
+frozen exact raw JSON artifact
+-> SHA-256 integrity check
+-> Lean JSON parser
 -> alphaB0Lean
 -> checkRawWithdrawal
 -> restricted B0 contract
@@ -265,17 +279,18 @@ The Python O0/B0 semantic adapter and REF-3 certificate extractor are not part o
 
 ## 7. Strict bridge trust boundary
 
-The current frozen boundary is:
+The frozen boundary is:
 
 ```text
-actual selected Python runtime transition
+historical selected Python runtime transition
         |
         | runtime execution / Assertion construction / model_dump serialization
         | TRUSTED / NOT LEAN-VERIFIED
         v
 RawWithdrawalTransitionV1 JSON artifact
         |
-        | pinned artifact transport / I/O
+        | exact copy preserved in this repository
+        | SHA-256 integrity checked for archival reproduction
         v
 Lean JSON parser
         |
@@ -291,17 +306,17 @@ restricted B0 withdrawal contract
 
 The remaining trust boundary includes:
 
-- raw runtime execution and record construction;
+- historical raw runtime execution and record construction;
 - serialization correctness;
-- artifact transport/I/O fidelity;
+- fidelity of the originally committed artifact to that runtime path;
 - representativeness of the selected fixture/path;
 - all runtime fields and behaviors outside the selected B0 observation surface.
 
-The checker does not verify every field in the full raw `Assertion` snapshot.
+The checker does not verify every field in the full raw `Assertion` snapshot. Vendoring and hashing stabilize archival reproduction; they do not move the verified boundary further into historical Python execution.
 
 Therefore the strongest approved strict claim is:
 
-> The exact pinned serialized selected runtime transition artifact, when parsed and projected by Lean, satisfies the restricted B0 qualification-withdrawal contract when `checkRawWithdrawal` accepts it.
+> The exact frozen serialized selected runtime transition artifact, when parsed and projected by Lean, satisfies the restricted B0 qualification-withdrawal contract when `checkRawWithdrawal` accepts it.
 
 It is **not**:
 
@@ -310,7 +325,7 @@ Python runtime verified
 all Assertion transitions verified
 production admission path guarded by Lean
 RuntimeStep -> FormalStep*
-portable-runtime refines responsibility_topology
+agent-kernel / portable-runtime refines responsibility_topology
 ```
 
 ## 8. Cross-domain interpretation status
@@ -459,4 +474,4 @@ selected conformance / observational evidence
 formal similarity under explicit interpretation
 ```
 
-This contract changes neither repository's object semantics nor runtime behavior.
+This frozen relationship contract changes neither `ratio` Framework definitions nor `agent-kernel` product/runtime behavior. Post-freeze ownership is summarized in `ARCHIVE_STATUS.md`.
